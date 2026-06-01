@@ -1,0 +1,267 @@
+/* Backdrop */
+.cart-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 200;
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.cart-backdrop--visible {
+  display: block;
+  opacity: 1;
+}
+
+/* Drawer */
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 380px;
+  max-width: 95vw;
+  background: #fff;
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+}
+
+.cart-drawer--open {
+  transform: translateX(0);
+}
+
+/* Header */
+.cart-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f0ece8;
+  flex-shrink: 0;
+}
+
+.cart-drawer__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.cart-drawer__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.cart-drawer__close:hover {
+  color: #1a1a1a;
+}
+
+/* Empty */
+.cart-drawer__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #ccc;
+  font-size: 0.875rem;
+}
+
+/* Item list */
+.cart-drawer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Cart item */
+.cart-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 1.5rem;
+  border-bottom: 1px solid #f8f4f2;
+  align-items: flex-start;
+  position: relative;
+}
+
+.cart-item__img-wrap {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #faf7f5;
+}
+
+.cart-item__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item__name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 20px;
+}
+
+.cart-item__price {
+  font-size: 0.8125rem;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.cart-item__extras {
+  list-style: none;
+  margin: 4px 0 8px;
+  padding: 6px 8px;
+  background: #faf7f5;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cart-item__extra-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.cart-item__qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-item__qty-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #e8e4e0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.cart-item__qty-btn:hover {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+.cart-item__qty-num {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  min-width: 16px;
+  text-align: center;
+}
+
+.cart-item__remove {
+  position: absolute;
+  top: 14px;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ccc;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.cart-item__remove:hover {
+  color: #e05;
+}
+
+/* Footer */
+.cart-drawer__footer {
+  border-top: 1px solid #f0ece8;
+  padding: 1.25rem 1.5rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cart-drawer__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9375rem;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+
+.cart-drawer__total-price {
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+
+.cart-drawer__checkout {
+  width: 100%;
+  padding: 12px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cart-drawer__checkout:hover {
+  background: #333;
+}
+
+.cart-drawer__clear {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  color: #aaa;
+  border: none;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.cart-drawer__clear:hover {
+  color: #e05;
+}

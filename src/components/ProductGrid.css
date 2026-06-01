@@ -1,0 +1,33 @@
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.grid__item {
+  display: contents; /* lets the card be the grid item */
+}
+
+.grid__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #aaa;
+  font-size: 0.9375rem;
+}
+
+.grid__empty-hint {
+  font-size: 0.8125rem;
+  color: #ccc;
+  margin-top: 6px;
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}

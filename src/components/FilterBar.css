@@ -1,0 +1,132 @@
+/* Sticky wrapper — sits just below the header (60px tall) */
+.filterbar-sticky {
+  position: sticky;
+  top: 60px;
+  z-index: 90;
+  background: #fdfaf8;
+  border-bottom: 1px solid #f0ece8;
+  margin: 0 -2rem;
+  padding: 0 2rem;
+}
+
+.filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 1.25rem 0 1.5rem;
+}
+
+/* Search */
+.filterbar__search {
+  position: relative;
+  flex: 0 0 220px;
+}
+
+.filterbar__search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  color: #aaa;
+  pointer-events: none;
+}
+
+.filterbar__search-input {
+  width: 100%;
+  padding: 7px 12px 7px 32px;
+  border: 1px solid #e8e4e0;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  background: #fafafa;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  box-sizing: border-box;
+}
+
+.filterbar__search-input:focus {
+  border-color: #c2567a;
+  background: #fff;
+}
+
+/* Category pills */
+.filterbar__pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filterbar__pill {
+  padding: 6px 14px;
+  border: 1px solid #e8e4e0;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.filterbar__pill:hover {
+  border-color: #aaa;
+  color: #1a1a1a;
+}
+
+.filterbar__pill--active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+/* Right controls */
+.filterbar__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.filterbar__label {
+  font-size: 0.8125rem;
+  color: #888;
+}
+
+.filterbar__select {
+  padding: 6px 10px;
+  border: 1px solid #e8e4e0;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.filterbar__select:hover,
+.filterbar__select:focus {
+  border-color: #aaa;
+}
+
+.filterbar__count {
+  font-size: 0.8125rem;
+  color: #aaa;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .filterbar__controls {
+    margin-left: 0;
+    width: 100%;
+  }
+  .filterbar__search {
+    flex: 1 1 100%;
+  }
+}

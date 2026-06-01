@@ -1,0 +1,302 @@
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  Product,
+  BuqueExtras,
+  ChocolateOption,
+  CHOCOLATE_OPTIONS,
+  BALAO_OPTIONS,
+  PLAQUINHA_OPTIONS_BY_PAGE,
+  BalaoOption,
+  PlaquinhaOption,
+  EXTRAS_PRICES,
+  extrasTotal,
+} from "../data/products";
+import { useCart } from "../context/CartContext";
+import "./BuqueExtrasDialog.css";
+
+// ─── Plaquinha image carousel ─────────────────────────────────────────────────
+
+const PLAQUINHA_IMAGES = [
+  { src: "/images/plaquinhas1.png", alt: "Plaquinhas — página 1" },
+  { src: "/images/plaquinhas2.png", alt: "Plaquinhas — página 2" },
+  { src: "/images/plaquinhas3.png", alt: "Plaquinhas — página 3" },
+];
+
+interface CarouselProps {
+  current: number;
+  onChange: (i: number) => void;
+}
+
+function PlaquinhaCarousel({ current, onChange }: CarouselProps) {
+  const total = PLAQUINHA_IMAGES.length;
+  const prev = () => onChange((current - 1 + total) % total);
+  const next = () => onChange((current + 1) % total);
+
+  return (
+    <div className="plaq-carousel">
+      <button className="plaq-carousel__arrow plaq-carousel__arrow--prev" onClick={prev} aria-label="Imagem anterior">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </button>
+
+      <div className="plaq-carousel__img-wrap">
+        {PLAQUINHA_IMAGES.map((img, i) => (
+          <img
+            key={img.src}
+            src={img.src}
+            alt={img.alt}
+            className={`plaq-carousel__img${i === current ? " plaq-carousel__img--active" : ""}`}
+          />
+        ))}
+      </div>
+
+      <button className="plaq-carousel__arrow plaq-carousel__arrow--next" onClick={next} aria-label="Próxima imagem">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </button>
+
+      <div className="plaq-carousel__dots">
+        {PLAQUINHA_IMAGES.map((_, i) => (
+          <button
+            key={i}
+            className={`plaq-carousel__dot${i === current ? " plaq-carousel__dot--active" : ""}`}
+            onClick={() => onChange(i)}
+            aria-label={`Ver página ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface Props {
+  product: Product | null;
+  onClose: () => void;
+}
+
+function formatPrice(cents: number): string {
+  return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+const EMPTY_EXTRAS: BuqueExtras = {
+  balao: null,
+  plaquinha: null,
+  chocolates: {},
+};
+
+export default function BuqueExtrasDialog({ product, onClose }: Props) {
+  const { addBuque } = useCart();
+  const [extras, setExtras] = useState<BuqueExtras>(EMPTY_EXTRAS);
+  const [plaquinhaPage, setPlaquinhaPage] = useState(0);
+
+  // When the page changes, clear the plaquinha selection if it's not on the new page
+  const handlePlaquinhaPage = (page: number) => {
+    setPlaquinhaPage(page);
+    setExtras((prev) => {
+      if (!prev.plaquinha) return prev;
+      const pageOptions = PLAQUINHA_OPTIONS_BY_PAGE[page] as readonly string[];
+      if (!pageOptions.includes(prev.plaquinha)) return { ...prev, plaquinha: null };
+      return prev;
+    });
+  };
+
+  const isOpen = product !== null;
+  const isCesta = product?.category === "cestas";
+
+  useEffect(() => {
+    if (isOpen) {
+      setExtras(EMPTY_EXTRAS);
+      setPlaquinhaPage(0);
+    }
+  }, [product?.id, isOpen]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
+
+  const maxChoc = product?.maxChocolates ?? 0;
+  const totalChocSelected = Object.values(extras.chocolates).reduce((s, n) => s + (n ?? 0), 0);
+
+  const setChocolate = useCallback((id: ChocolateOption, delta: number) => {
+    setExtras((prev) => {
+      const current = prev.chocolates[id] ?? 0;
+      const next = Math.max(0, current + delta);
+      const newTotal = totalChocSelected + (next - current);
+      if (newTotal > maxChoc) return prev;
+      const updated = { ...prev.chocolates, [id]: next };
+      if (updated[id] === 0) delete updated[id];
+      return { ...prev, chocolates: updated };
+    });
+  }, [totalChocSelected, maxChoc]);
+
+  const handleAdd = () => {
+    if (!product) return;
+    addBuque(product, extras);
+    onClose();
+  };
+
+  const handleSkip = () => {
+    if (!product) return;
+    addBuque(product, EMPTY_EXTRAS);
+    onClose();
+  };
+
+  if (!product) return null;
+
+  const extrasCost = extrasTotal(extras);
+
+  return (
+    <>
+      <div className="bed-backdrop" onClick={onClose} aria-hidden="true" />
+
+      <div className="bed" role="dialog" aria-modal="true" aria-labelledby="bed-title">
+
+        {/* Product image */}
+        <div className="bed__img-wrap">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="bed__img"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          />
+        </div>
+
+        {/* Header */}
+        <div className="bed__header">
+          <div>
+            <p className="bed__label">Adicionais para</p>
+            <h2 className="bed__title" id="bed-title">{product.name}</h2>
+          </div>
+          <button className="bed__close" onClick={onClose} aria-label="Fechar">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="bed__body">
+
+          {/* ── Balão ─────────────────────────────────────────────────── */}
+          <div className="bed__section">
+            <div className="bed__section-header">
+              <h3 className="bed__section-title">Balão</h3>
+              <span className="bed__section-price">{formatPrice(EXTRAS_PRICES.balao)}</span>
+            </div>
+
+            {/* Reference image */}
+            <div className="bed__ref-img-wrap">
+              <img src="/images/baloes.png" alt="Opções de balão" className="bed__ref-img" />
+            </div>
+
+            <div className="bed__select-row">
+              <select
+                className="bed__select"
+                value={extras.balao ?? ""}
+                onChange={(e) => setExtras((p) => ({
+                  ...p,
+                  balao: e.target.value ? e.target.value as BalaoOption : null,
+                }))}
+              >
+                <option value="">— Não quero balão —</option>
+                {BALAO_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+              {extras.balao && (
+                <button className="bed__clear-btn" onClick={() => setExtras((p) => ({ ...p, balao: null }))} aria-label="Remover balão">✕</button>
+              )}
+            </div>
+          </div>
+
+          {/* ── Plaquinha ─────────────────────────────────────────────── */}
+          <div className="bed__section">
+            <div className="bed__section-header">
+              <h3 className="bed__section-title">Plaquinha</h3>
+              <span className="bed__section-price">{formatPrice(EXTRAS_PRICES.plaquinha)}</span>
+            </div>
+
+            {/* Carousel — controlled by plaquinhaPage */}
+            <PlaquinhaCarousel current={plaquinhaPage} onChange={handlePlaquinhaPage} />
+
+            <div className="bed__select-row">
+              <select
+                className="bed__select"
+                value={extras.plaquinha ?? ""}
+                onChange={(e) => setExtras((p) => ({
+                  ...p,
+                  plaquinha: e.target.value ? e.target.value as PlaquinhaOption : null,
+                }))}
+              >
+                <option value="">— Não quero plaquinha —</option>
+                {PLAQUINHA_OPTIONS_BY_PAGE[plaquinhaPage].map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+              {extras.plaquinha && (
+                <button className="bed__clear-btn" onClick={() => setExtras((p) => ({ ...p, plaquinha: null }))} aria-label="Remover plaquinha">✕</button>
+              )}
+            </div>
+          </div>
+
+          {/* ── Chocolates (buquês only) ───────────────────────────────── */}
+          {!isCesta && (
+            <div className="bed__section">
+              <div className="bed__section-header">
+                <h3 className="bed__section-title">Chocolates</h3>
+                <span className="bed__choc-counter">{totalChocSelected}/{maxChoc} selecionados</span>
+              </div>
+
+              {/* Reference image */}
+              <div className="bed__ref-img-wrap">
+                <img src="/images/chocolates.png" alt="Opções de chocolate" className="bed__ref-img" />
+              </div>
+
+              <p className="bed__section-hint">
+                Escolha até {maxChoc} chocolate{maxChoc !== 1 ? "s" : ""} para acompanhar.
+              </p>
+
+              {CHOCOLATE_OPTIONS.map((choc) => {
+                const qty = extras.chocolates[choc.id] ?? 0;
+                const canAdd = totalChocSelected < maxChoc;
+                return (
+                  <div key={choc.id} className="bed__choc-row">
+                    <div className="bed__choc-info">
+                      <span className="bed__choc-name">{choc.name}</span>
+                      <span className="bed__choc-price">{formatPrice(choc.price)} / un.</span>
+                    </div>
+                    <div className="bed__qty-ctrl">
+                      <button className="bed__qty-btn" onClick={() => setChocolate(choc.id, -1)} disabled={qty === 0} aria-label={`Remover ${choc.name}`}>−</button>
+                      <span className="bed__qty-num">{qty}</span>
+                      <button className="bed__qty-btn" onClick={() => setChocolate(choc.id, +1)} disabled={!canAdd} aria-label={`Adicionar ${choc.name}`}>+</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="bed__footer">
+          <div className="bed__summary">
+            <span className="bed__summary-label">
+              {formatPrice(product.price)}
+              {extrasCost > 0 && (
+                <span className="bed__summary-extras"> + {formatPrice(extrasCost)} em adicionais</span>
+              )}
+            </span>
+            <span className="bed__summary-total">{formatPrice(product.price + extrasCost)}</span>
+          </div>
+          <button className="bed__add-btn" onClick={handleAdd}>Adicionar ao carrinho</button>
+          <button className="bed__skip-btn" onClick={handleSkip}>Adicionar sem extras</button>
+        </div>
+      </div>
+    </>
+  );
+}
