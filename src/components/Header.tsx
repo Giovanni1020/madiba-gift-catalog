@@ -6,7 +6,10 @@ export default function Header() {
   const { totalCount, openCart } = useCart();
 
   return (
-    <header className="header">
+    <header
+      className="header"
+      style={{ '--header-bg-pattern': `url(${process.env.PUBLIC_URL}/images/succulentas-pattern.png)` } as React.CSSProperties}
+    >
       <div className="header__inner">
         <a href="/" className="header__brand" aria-label="Gifted — início">
           <span className="header__mark" aria-hidden="true">
