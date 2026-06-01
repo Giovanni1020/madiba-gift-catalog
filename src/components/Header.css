@@ -7,12 +7,12 @@
   overflow: hidden;
 }
 
-/* Padrão de succulentas — salve o PNG em public/images/succulentas-pattern.png */
+/* URL injetada via CSS variable em Header.tsx usando process.env.PUBLIC_URL */
 .header::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/images/succulentas-pattern.png');
+  background-image: var(--header-bg-pattern);
   background-size: 220px;
   background-repeat: repeat;
   opacity: 0.08;
