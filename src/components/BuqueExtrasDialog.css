@@ -23,7 +23,7 @@
   width: 460px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 32px);
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -43,7 +43,7 @@
   height: 220px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #faf7f5;
+  background: var(--color-surface-tint);
 }
 
 .bed__img {
@@ -60,7 +60,7 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: 1.25rem 1.5rem 1rem;
-  border-bottom: 1px solid #f0ece8;
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
@@ -68,14 +68,14 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #b0a8a2;
+  color: var(--color-text-subtle);
   margin: 0 0 3px;
 }
 
 .bed__title {
   font-size: 1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text);
   margin: 0;
   line-height: 1.3;
 }
@@ -84,7 +84,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #aaa;
+  color: var(--color-text-subtle);
   padding: 4px;
   border-radius: 6px;
   display: flex;
@@ -94,7 +94,7 @@
   margin-left: 12px;
 }
 
-.bed__close:hover { color: #1a1a1a; }
+.bed__close:hover { color: var(--color-text); }
 
 /* Scrollable body */
 .bed__body {
@@ -107,7 +107,7 @@
 /* Section */
 .bed__section {
   padding: 1rem 0;
-  border-bottom: 1px solid #f8f4f2;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .bed__section:last-child { border-bottom: none; }
@@ -124,20 +124,20 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #888;
+  color: var(--color-text-muted);
   margin: 0 0 10px;
 }
 
 .bed__section-hint {
   font-size: 0.8125rem;
-  color: #b0a8a2;
+  color: var(--color-text-subtle);
   margin: 0 0 12px;
 }
 
 .bed__choc-counter {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #c2567a;
+  color: var(--brand-pink);
   margin-bottom: 10px;
 }
 
@@ -152,7 +152,7 @@
 .bed__section-price {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #c2567a;
+  color: var(--brand-pink);
 }
 
 /* ── Plaquinha carousel ──────────────────────────────────────────────────── */
@@ -167,7 +167,7 @@
   aspect-ratio: 16 / 9;
   border-radius: 8px;
   overflow: hidden;
-  background: #faf7f5;
+  background: var(--color-surface-tint);
 }
 
 .plaq-carousel__img {
@@ -226,14 +226,14 @@
   height: 7px;
   border-radius: 50%;
   border: none;
-  background: #ddd;
+  background: var(--color-border-hover);
   cursor: pointer;
   padding: 0;
   transition: background 0.15s, transform 0.15s;
 }
 
 .plaq-carousel__dot--active {
-  background: #c2567a;
+  background: var(--brand-pink);
   transform: scale(1.2);
 }
 
@@ -243,9 +243,8 @@
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 10px;
-  background: #faf7f5;
+  background: var(--color-surface-tint);
 }
-
 
 .bed__ref-img {
   width: 100%;
@@ -264,11 +263,11 @@
 .bed__select {
   flex: 1;
   padding: 9px 12px;
-  border: 1px solid #e0dbd8;
+  border: 1px solid var(--color-border-input);
   border-radius: 8px;
   font-size: 0.875rem;
-  color: #1a1a1a;
-  background: #fff;
+  color: var(--color-text);
+  background: var(--color-surface);
   cursor: pointer;
   outline: none;
   transition: border-color 0.15s;
@@ -280,7 +279,7 @@
 }
 
 .bed__select:focus {
-  border-color: #c2567a;
+  border-color: var(--brand-pink);
 }
 
 .bed__clear-btn {
@@ -288,9 +287,9 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid #e0dbd8;
+  border: 1px solid var(--color-border-input);
   background: transparent;
-  color: #aaa;
+  color: var(--color-text-subtle);
   cursor: pointer;
   font-size: 0.75rem;
   display: flex;
@@ -300,11 +299,10 @@
 }
 
 .bed__clear-btn:hover {
-  background: #fee;
-  border-color: #e05;
-  color: #e05;
+  background: #fee8ec;
+  border-color: #e00530;
+  color: #e00530;
 }
-
 
 /* Chocolate rows */
 .bed__choc-row {
@@ -312,7 +310,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 9px 0;
-  border-bottom: 1px solid #faf7f5;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .bed__choc-row:last-child { border-bottom: none; }
@@ -325,12 +323,12 @@
 
 .bed__choc-name {
   font-size: 0.9rem;
-  color: #1a1a1a;
+  color: var(--color-text);
 }
 
 .bed__choc-price {
   font-size: 0.8125rem;
-  color: #aaa;
+  color: var(--color-text-subtle);
 }
 
 /* Qty controls */
@@ -344,7 +342,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 1px solid #e0dbd8;
+  border: 1px solid var(--color-border-input);
   background: transparent;
   font-size: 1rem;
   color: #555;
@@ -357,9 +355,9 @@
 }
 
 .bed__qty-btn:hover:not(:disabled) {
-  background: #1a1a1a;
+  background: var(--brand-pink-dark);
   color: #fff;
-  border-color: #1a1a1a;
+  border-color: var(--brand-pink-dark);
 }
 
 .bed__qty-btn:disabled {
@@ -370,14 +368,14 @@
 .bed__qty-num {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text);
   min-width: 18px;
   text-align: center;
 }
 
 /* Footer */
 .bed__footer {
-  border-top: 1px solid #f0ece8;
+  border-top: 1px solid var(--color-border);
   padding: 1rem 1.5rem 1.25rem;
   flex-shrink: 0;
   display: flex;
@@ -394,23 +392,23 @@
 
 .bed__summary-label {
   font-size: 0.8125rem;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .bed__summary-extras {
-  color: #c2567a;
+  color: var(--brand-pink);
 }
 
 .bed__summary-total {
   font-size: 1.0625rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text);
 }
 
 .bed__add-btn {
   width: 100%;
   padding: 12px;
-  background: #1a1a1a;
+  background: var(--color-text);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -420,17 +418,17 @@
   transition: background 0.15s;
 }
 
-.bed__add-btn:hover { background: #333; }
+.bed__add-btn:hover { background: var(--brand-pink-dark); }
 
 .bed__skip-btn {
   width: 100%;
   padding: 7px;
   background: transparent;
-  color: #aaa;
+  color: var(--color-text-subtle);
   border: none;
   font-size: 0.8125rem;
   cursor: pointer;
   transition: color 0.15s;
 }
 
-.bed__skip-btn:hover { color: #555; }
+.bed__skip-btn:hover { color: var(--color-text-muted); }

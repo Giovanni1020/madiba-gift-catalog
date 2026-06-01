@@ -1,3 +1,27 @@
+:root {
+  /* ── Brand palette (extracted from madibaIcon.png) ── */
+  --brand-pink:        #EA75AA;  /* hot pink do logo */
+  --brand-pink-dark:   #C55088;  /* fundo com texto branco — contraste AA */
+  --brand-pink-soft:   #FDE8F3;  /* hover areas, tints */
+  --brand-green:       #96B487;  /* sage green do logo */
+  --brand-green-dark:  #6E9063;
+  --brand-green-soft:  #EBF2E7;
+
+  /* ── Superfícies / estrutura ── */
+  --color-bg:           #FDF8F5;  /* fundo geral, creme quente */
+  --color-surface:      #FFFFFF;
+  --color-surface-tint: #FAF6F3;  /* img placeholders, extras bg */
+  --color-border:       #EDE8E2;
+  --color-border-subtle: #F5F0EC; /* divisórias leves */
+  --color-border-input: #E8E4E0;  /* inputs e pills */
+  --color-border-hover: #D4C8C0;
+
+  /* ── Texto ── */
+  --color-text:        #1A1A1A;
+  --color-text-muted:  #888888;
+  --color-text-subtle: #B0A8A2;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -5,8 +29,8 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #fdfaf8;
-  color: #1a1a1a;
+  background: var(--color-bg);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
 }
 
