@@ -3,8 +3,8 @@
   position: sticky;
   top: 60px;
   z-index: 90;
-  background: #fdfaf8;
-  border-bottom: 1px solid #f0ece8;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
   margin: 0 -2rem;
   padding: 0 2rem;
 }
@@ -30,26 +30,26 @@
   transform: translateY(-50%);
   width: 14px;
   height: 14px;
-  color: #aaa;
+  color: var(--color-text-subtle);
   pointer-events: none;
 }
 
 .filterbar__search-input {
   width: 100%;
   padding: 7px 12px 7px 32px;
-  border: 1px solid #e8e4e0;
+  border: 1px solid var(--color-border-input);
   border-radius: 20px;
   font-size: 0.8125rem;
-  background: #fafafa;
-  color: #1a1a1a;
+  background: var(--color-surface-tint);
+  color: var(--color-text);
   outline: none;
   transition: border-color 0.15s, background 0.15s;
   box-sizing: border-box;
 }
 
 .filterbar__search-input:focus {
-  border-color: #c2567a;
-  background: #fff;
+  border-color: var(--brand-pink);
+  background: var(--color-surface);
 }
 
 /* Category pills */
@@ -61,25 +61,25 @@
 
 .filterbar__pill {
   padding: 6px 14px;
-  border: 1px solid #e8e4e0;
+  border: 1px solid var(--color-border-input);
   border-radius: 20px;
   font-size: 0.8125rem;
   background: transparent;
-  color: #666;
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
 }
 
 .filterbar__pill:hover {
-  border-color: #aaa;
-  color: #1a1a1a;
+  border-color: var(--brand-pink);
+  color: var(--brand-pink-dark);
 }
 
 .filterbar__pill--active {
-  background: #1a1a1a;
+  background: var(--brand-pink-dark);
   color: #fff;
-  border-color: #1a1a1a;
+  border-color: var(--brand-pink-dark);
 }
 
 /* Right controls */
@@ -93,16 +93,16 @@
 
 .filterbar__label {
   font-size: 0.8125rem;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .filterbar__select {
   padding: 6px 10px;
-  border: 1px solid #e8e4e0;
+  border: 1px solid var(--color-border-input);
   border-radius: 20px;
   font-size: 0.8125rem;
   background: transparent;
-  color: #1a1a1a;
+  color: var(--color-text);
   cursor: pointer;
   outline: none;
   transition: border-color 0.15s;
@@ -110,12 +110,12 @@
 
 .filterbar__select:hover,
 .filterbar__select:focus {
-  border-color: #aaa;
+  border-color: var(--brand-pink);
 }
 
 .filterbar__count {
   font-size: 0.8125rem;
-  color: #aaa;
+  color: var(--brand-green);
   margin-left: 4px;
   white-space: nowrap;
 }
