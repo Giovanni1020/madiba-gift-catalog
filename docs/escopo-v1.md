@@ -73,7 +73,7 @@ Quem recebe: João Silva
 
 Endereço: 90000-000, Rua das Flores, 123, Centro
 
-Horário: 8h às 16h
+Horário: 14h às 15h
 
 Cliente: Maria — (51) 98508-2700
 ```

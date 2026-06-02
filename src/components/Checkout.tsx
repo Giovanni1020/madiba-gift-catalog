@@ -30,6 +30,9 @@ function formatBRL(cents: number): string {
   });
 }
 
+// Janelas de entrega: 1 em 1 hora, das 8h às 18h (8h às 9h … 17h às 18h).
+const HORARIOS = Array.from({ length: 10 }, (_, i) => `${8 + i}h às ${9 + i}h`);
+
 interface CheckoutProps {
   form: CheckoutForm;
   onClose: () => void;
@@ -247,7 +250,12 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 value={form.horario}
                 onChange={(e) => form.setHorario(e.target.value)}
               >
-                <option value="8h às 16h">8h às 16h</option>
+                <option value="">— Escolha um horário —</option>
+                {HORARIOS.map((h) => (
+                  <option key={h} value={h}>
+                    {h}
+                  </option>
+                ))}
               </select>
             </label>
           </>

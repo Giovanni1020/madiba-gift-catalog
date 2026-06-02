@@ -48,7 +48,7 @@ export function useCheckoutForm(): CheckoutForm {
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
   const [recebe, setRecebe] = useState("");
-  const [horario, setHorario] = useState("8h às 16h"); // única opção por ora
+  const [horario, setHorario] = useState(""); // escolha obrigatória (só entrega)
 
   const setTelefone = (raw: string) => setTelefoneRaw(normalizePhone(raw));
   const setCep = (raw: string) => setCepRaw(onlyDigits(raw).slice(0, 8));
