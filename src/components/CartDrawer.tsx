@@ -215,10 +215,7 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
             </div>
             <button
               className="cart-drawer__checkout"
-              onClick={() => {
-                closeCart();
-                onCheckout();
-              }}
+              onClick={onCheckout}
             >
               Finalizar pedido
             </button>

@@ -21,7 +21,12 @@ function CatalogPage() {
   const checkoutForm = useCheckoutForm();
 
   const openCheckout = useCallback(() => {
-    window.history.pushState({ checkout: true }, "");
+    // Reusa a entrada de overlay já criada pelo cart (transição cart → checkout
+    // não empilha): "voltar" do checkout volta ao catálogo em 1 passo. Se vier
+    // sem overlay (caso não passe pelo cart), cria.
+    if (!window.history.state?.overlay) {
+      window.history.pushState({ overlay: true }, "");
+    }
     setView("checkout");
   }, []);
   const closeCheckout = useCallback(() => {
