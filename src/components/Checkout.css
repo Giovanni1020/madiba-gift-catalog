@@ -158,3 +158,25 @@
   background: #d9c2cc;
   cursor: not-allowed;
 }
+
+/* Setinha "há mais conteúdo abaixo" — semitransparente, não bloqueia toques */
+.checkout__scroll-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  color: #c2185b;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 40;
+  animation: checkout-bounce 1.4s ease-in-out infinite;
+}
+
+@keyframes checkout-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkout__scroll-hint { animation: none; }
+}

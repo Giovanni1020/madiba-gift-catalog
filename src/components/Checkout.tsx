@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { extrasTotal } from "../data/products";
-import { Cliente, Entrega } from "../types/order";
 import { CheckoutForm } from "../hooks/useCheckoutForm";
+import { buildWhatsAppMessage, buildWhatsAppUrl } from "./checkoutMessage";
+import { STORE_PHONE } from "../config";
 import "./Checkout.css";
 
 // ─── Helpers puros de EXIBIÇÃO (máscara/moeda) ─────────────────────────────────
@@ -17,7 +18,8 @@ function formatTelefone(d: string): string {
   const x = d.slice(0, 11);
   if (x.length <= 2) return x;
   if (x.length <= 6) return `(${x.slice(0, 2)}) ${x.slice(2)}`;
-  if (x.length <= 10) return `(${x.slice(0, 2)}) ${x.slice(2, 6)}-${x.slice(6)}`;
+  if (x.length <= 10)
+    return `(${x.slice(0, 2)}) ${x.slice(2, 6)}-${x.slice(6)}`;
   return `(${x.slice(0, 2)}) ${x.slice(2, 7)}-${x.slice(7)}`;
 }
 
@@ -28,24 +30,46 @@ function formatBRL(cents: number): string {
   });
 }
 
-// ─── Props ──────────────────────────────────────────────────────────────────
-// View "burra": recebe o rascunho por prop (vive no pai) e devolve cliente+entrega.
-
 interface CheckoutProps {
   form: CheckoutForm;
   onClose: () => void;
-  onSubmit: (cliente: Cliente, entrega: Entrega) => void;
+  onSent: () => void; // pedido enviado: o pai volta pro catálogo (mantém carrinho)
 }
 
-export default function Checkout({ form, onClose, onSubmit }: CheckoutProps) {
+export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   const { items, totalCount, totalPrice } = useCart();
 
   const cepErro =
     form.cep.length > 0 && form.cep.length < 8 ? "CEP incompleto." : null;
 
+  // Setinha "há mais abaixo" quando o conteúdo passa da tela (mobile c/ entrega).
+  const [maisAbaixo, setMaisAbaixo] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      const doc = document.documentElement;
+      setMaisAbaixo(doc.scrollHeight - window.scrollY - window.innerHeight > 24);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+    // re-checa quando a altura muda (itens add/remove, toggle entrega/retirada)
+  }, [items.length, form.tipo]);
+
   function handleSubmit() {
     const r = form.build();
-    if (r) onSubmit(r.cliente, r.entrega);
+    if (!r) return;
+    const msg = buildWhatsAppMessage({
+      itens: items,
+      total: totalPrice,
+      cliente: r.cliente,
+      entrega: r.entrega,
+    });
+    window.open(buildWhatsAppUrl(STORE_PHONE, msg), "_blank");
+    onSent();
   }
 
   return (
@@ -204,10 +228,28 @@ export default function Checkout({ form, onClose, onSubmit }: CheckoutProps) {
           </>
         )}
 
-        <button type="submit" className="checkout__submit" disabled={!form.valido}>
+        <button
+          type="submit"
+          className="checkout__submit"
+          disabled={!form.valido}
+        >
           Enviar pelo WhatsApp
         </button>
       </form>
+
+      {maisAbaixo && (
+        <div className="checkout__scroll-hint" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M6 9l6 6 6-6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      )}
     </section>
   );
 }
