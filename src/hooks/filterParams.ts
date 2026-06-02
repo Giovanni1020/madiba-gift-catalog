@@ -44,7 +44,7 @@ const URL_TO_SORT: Record<string, SortOrder> = {
   nome: "name",
 };
 
-const CATEGORIES: ReadonlyArray<Category | "todos"> = ["todos", "buques", "cestas"];
+const CATEGORIES: ReadonlyArray<Category | "todos"> = ["todos", "buques", "buques-cetim", "cestas"];
 
 // query string -> Filters. Param inválido/ausente cai no default (URL é editável).
 export function parseFilters(search: string): Filters {

@@ -1,6 +1,6 @@
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type Category = "buques" | "cestas";
+export type Category = "buques" | "buques-cetim" | "cestas";
 
 export interface Product {
   id: number;
@@ -83,6 +83,7 @@ export function extrasTotal(extras: BuqueExtras): number {
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   buques: "Buquês",
+  "buques-cetim": "Buquês Cetim",
   cestas: "Cestas",
 };
 
@@ -251,7 +252,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 1 Rosa de Cetim + 6 Sonho de Valsa",
     description: "Buquê com 1 rosa de cetim e 6 bombons Sonho de Valsa, embrulho temático com laço.",
     price: 3990,
-    category: "buques",
+    category: "buques-cetim",
     image: "/images/buque-cetim-6-sonho-de-valsa.jpeg",
   },
   {
@@ -259,7 +260,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 1 Rosa de Cetim + 3 Ouro Branco e 3 Sonho de Valsa",
     description: "Buquê com 1 rosa de cetim, 3 Ouro Branco e 3 Sonho de Valsa, embrulho temático com laço.",
     price: 3990,
-    category: "buques",
+    category: "buques-cetim",
     image: "/images/buque-cetim-3-ouro-branco-3-sonho-de-valsa.jpeg",
   },
   {
@@ -267,7 +268,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 1 Rosa de Cetim + 6 Ouro Branco",
     description: "Buquê com 1 rosa de cetim e 6 bombons Ouro Branco, embrulho temático com laço.",
     price: 3990,
-    category: "buques",
+    category: "buques-cetim",
     image: "/images/buque-cetim-6-ouro-branco.jpeg",
   },
   {
@@ -275,7 +276,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 1 Rosa de Cetim + 7 Ferrero Rocher",
     description: "Buquê com 1 rosa de cetim e 7 Ferrero Rocher, embrulho vermelho com laço.",
     price: 5990,
-    category: "buques",
+    category: "buques-cetim",
     image: "/images/buque-cetim-7-ferrero-rocher.jpeg",
   },
   {
@@ -283,7 +284,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 1 Rosa de Cetim + 7 Rafaello",
     description: "Buquê com 1 rosa de cetim e 7 Rafaello, embrulho com laço.",
     price: 4990,
-    category: "buques",
+    category: "buques-cetim",
     image: "/images/buque-cetim-7-rafaello.jpeg",
   },
 ];

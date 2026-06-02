@@ -172,6 +172,11 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
           <div>
             <p className="bed__label">Adicionais para</p>
             <h2 className="bed__title" id="bed-title">{product.name}</h2>
+            {exclusive && showBalao && (
+              <p className="bed__exclusive-hint">
+                Escolha balão <strong>ou</strong> plaquinha (não os dois).
+              </p>
+            )}
           </div>
           <button className="bed__close" onClick={onClose} aria-label="Fechar">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -182,12 +187,6 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
 
         {/* Body */}
         <div className="bed__body">
-
-          {exclusive && showBalao && (
-            <p className="bed__exclusive-hint">
-              Escolha balão <strong>ou</strong> plaquinha (não os dois).
-            </p>
-          )}
 
           {/* ── Balão (escondido se a cesta já vem com balão) ───────────── */}
           {showBalao && (

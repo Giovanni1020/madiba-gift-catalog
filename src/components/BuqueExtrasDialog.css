@@ -435,10 +435,10 @@
 
 /* Aviso de exclusividade balão/plaquinha (cestas) */
 .bed__exclusive-hint {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--brand-pink-dark);
   background: #fdeef4;
   border-radius: 8px;
-  padding: 8px 12px;
-  margin: 12px 0 0;
+  padding: 6px 10px;
+  margin: 8px 0 0;
 }

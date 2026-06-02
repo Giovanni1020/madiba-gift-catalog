@@ -30,7 +30,11 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
   } = product;
 
   const handleAdd = () => {
-    if (category === "buques" || category === "cestas") {
+    if (
+      category === "buques" ||
+      category === "buques-cetim" ||
+      category === "cestas"
+    ) {
       onOpenExtras(product);
     } else {
       addItem(product);
