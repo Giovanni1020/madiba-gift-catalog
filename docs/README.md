@@ -3,6 +3,8 @@
 > Pasta **canônica e sempre atualizada**. É a **fonte de verdade** do projeto.
 > Em qualquer sessão/janela nova, **comece por aqui.**
 
+> **Status:** v1.0 **no ar** desde 2026-06-02 → <https://madiba-garden.vercel.app> (Vercel, deploy automático da `main`).
+
 ## Índice
 
 | Doc | O que é |

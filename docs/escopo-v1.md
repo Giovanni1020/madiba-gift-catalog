@@ -3,6 +3,13 @@
 > Objetivo do v1: **deploy rápido** de uma versão base que cataloga os itens existentes e
 > direciona o pedido formatado para o WhatsApp do atendente. Sem pagamento online.
 
+## Status — v1.0 no ar ✅ (2026-06-02)
+
+- **Produção:** <https://madiba-garden.vercel.app>
+- **Hospedagem:** Vercel (Create React App; deploy automático a cada push na `main`, preview por PR).
+- **WhatsApp da loja:** `STORE_PHONE` em `src/config.ts` (`555186103494`, confirmado).
+- **Entregue:** catálogo · filtros↔URL · carrinho · checkout (entrega/retirada) · envio pelo WhatsApp · OG/meta p/ preview do link.
+
 ## Dentro do escopo (v1)
 
 - **Catálogo** com os ~6 itens de `src/data/products.ts`.
