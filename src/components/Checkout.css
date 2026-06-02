@@ -1,0 +1,160 @@
+/* Checkout — layout base. A view tela-cheia (flag + pushState) entra no Passo 2. */
+
+.checkout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.checkout__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkout__back {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #555;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.checkout__title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.checkout__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkout__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.checkout__item-name {
+  color: #333;
+}
+
+.checkout__item-extras {
+  color: #999;
+  font-style: normal;
+  font-size: 0.78rem;
+}
+
+.checkout__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: #faf6f2;
+  border-radius: 10px;
+}
+
+.checkout__toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.checkout__toggle-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1.5px solid #e2d9d0;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.checkout__toggle-btn.is-active {
+  border-color: #c2185b;
+  background: #fdeef4;
+  font-weight: 600;
+}
+
+.checkout__note {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  color: #7a5b00;
+  background: #fff7e0;
+  border-radius: 8px;
+}
+
+.checkout__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checkout__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkout__row {
+  display: flex;
+  gap: 12px;
+}
+
+.checkout__field--numero {
+  flex: 0 0 110px;
+}
+
+.checkout__field--bairro {
+  flex: 1;
+}
+
+.checkout__label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.checkout__input {
+  padding: 10px 12px;
+  border: 1.5px solid #e2d9d0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.checkout__input:focus {
+  outline: none;
+  border-color: #c2185b;
+}
+
+.checkout__error {
+  font-size: 0.75rem;
+  color: #c2185b;
+}
+
+.checkout__submit {
+  margin-top: 4px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #c2185b;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkout__submit:disabled {
+  background: #d9c2cc;
+  cursor: not-allowed;
+}
