@@ -1,14 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { Product, BuqueExtras, extrasTotal } from "../data/products";
-
-// Marca UMA entrada de histórico para overlays (cart drawer / checkout), pro
-// "voltar" do celular fechar o overlay em vez de sair do site. A entrada é
-// compartilhada: a transição cart → checkout reusa a mesma (não empilha).
-function pushOverlayOnce() {
-  if (!window.history.state?.overlay) {
-    window.history.pushState({ overlay: true }, "");
-  }
-}
+import { pushOverlayOnce, popOverlayOr } from "../overlayHistory";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -47,11 +39,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(true);
   }, []);
   const closeCart = useCallback(() => {
-    if (window.history.state?.overlay) {
-      window.history.back(); // → popstate → setIsOpen(false)
-    } else {
-      setIsOpen(false);
-    }
+    popOverlayOr(() => setIsOpen(false)); // → popstate → setIsOpen(false)
   }, []);
 
   // "Voltar" do celular (popstate) fecha o drawer em vez de sair do site.
