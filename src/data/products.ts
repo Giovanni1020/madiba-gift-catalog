@@ -129,7 +129,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 5,
     name: "Buquê 1 Girassol Luxo",
-    description: "Buquê luxo com 1 girassol, alstroemérias brancas, solidago e baby breath, embrulho 'I Love You'.",
+    description: "Buquê luxo com 1 girassol e baby breath, embrulho 'I Love You'.",
     price: 4990,
     category: "buques",
     image: "/images/buque-1-girassol-luxo.jpeg",
@@ -138,7 +138,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 6,
     name: "Buquê 3 Rosas Vermelhas Importadas",
-    description: "Buquê com 3 rosas vermelhas importadas, solidago, baby breath e folhagem, embrulho vermelho.",
+    description: "Buquê com 3 rosas vermelhas importadas, baby breath e folhagem, embrulho vermelho.",
     price: 7490,
     category: "buques",
     image: "/images/buque-3-rosas-vermelhas-importadas.jpeg",
