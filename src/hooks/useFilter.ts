@@ -1,8 +1,10 @@
-import { useState, useMemo } from "react";
-import { PRODUCTS, Product, Category } from "../data/products";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PRODUCTS, Product } from "../data/products";
+import { parseFilters, serializeFilters } from "./filterParams";
+import type { Filters, PriceRange, SortOrder } from "./filterParams";
 
-export type PriceRange = "all" | "low" | "mid" | "high";
-export type SortOrder = "default" | "price-asc" | "price-desc" | "name";
+// Re-export para consumidores existentes (ex.: FilterBar) não mudarem o import.
+export type { PriceRange, SortOrder } from "./filterParams";
 
 function matchesPrice(price: number, range: PriceRange): boolean {
   const dollars = price / 100;
@@ -23,17 +25,46 @@ function sortProducts(products: Product[], order: SortOrder): Product[] {
 }
 
 export function useFilter() {
-  const [category, setCategory] = useState<Category | "todos">("todos");
-  const [priceRange, setPriceRange] = useState<PriceRange>("all");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("default");
-  const [search, setSearch] = useState("");
+  // Modelo (a): o estado React é a fonte do render; a URL é semeada na init
+  // e sincronizada via replaceState (sem empilhar histórico — ADR-0001).
+  const [filters, setFilters] = useState<Filters>(() =>
+    parseFilters(window.location.search),
+  );
+
+  // Sincroniza a URL com o estado. serializeFilters é canônica (omite defaults
+  // e tokens inválidos), então isto também AUTO-LIMPA uma URL inicial "suja".
+  useEffect(() => {
+    const qs = serializeFilters(filters);
+    if (qs !== window.location.search) {
+      const url = window.location.pathname + qs + window.location.hash;
+      window.history.replaceState(window.history.state, "", url);
+    }
+  }, [filters]);
+
+  const setCategory = useCallback(
+    (category: Filters["category"]) => setFilters((f) => ({ ...f, category })),
+    [],
+  );
+  const setPriceRange = useCallback(
+    (priceRange: PriceRange) => setFilters((f) => ({ ...f, priceRange })),
+    [],
+  );
+  const setSortOrder = useCallback(
+    (sortOrder: SortOrder) => setFilters((f) => ({ ...f, sortOrder })),
+    [],
+  );
+  const setSearch = useCallback(
+    (search: string) => setFilters((f) => ({ ...f, search })),
+    [],
+  );
 
   const filtered = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const query = filters.search.trim().toLowerCase();
 
     const result = PRODUCTS.filter((p) => {
-      if (category !== "todos" && p.category !== category) return false;
-      if (!matchesPrice(p.price, priceRange)) return false;
+      if (filters.category !== "todos" && p.category !== filters.category)
+        return false;
+      if (!matchesPrice(p.price, filters.priceRange)) return false;
       if (p.inStock === false) return false;
       if (
         query &&
@@ -44,18 +75,18 @@ export function useFilter() {
       return true;
     });
 
-    return sortProducts(result, sortOrder);
-  }, [category, priceRange, sortOrder, search]);
+    return sortProducts(result, filters.sortOrder);
+  }, [filters]);
 
   return {
-    // state
-    category,
+    // state (vindo do objeto filters)
+    category: filters.category,
     setCategory,
-    priceRange,
+    priceRange: filters.priceRange,
     setPriceRange,
-    sortOrder,
+    sortOrder: filters.sortOrder,
     setSortOrder,
-    search,
+    search: filters.search,
     setSearch,
     // derived
     filtered,
