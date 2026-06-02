@@ -57,6 +57,8 @@ carrinho** — o envio pode falhar, então não limpamos cedo demais.
 - **Linha em branco entre itens diferentes** (leitura do cliente e do atendente).
 - **Lista todos os adicionais** como conteúdo (balão/plaquinha/chocolate ×N) —
   o valor de cada linha já inclui os adicionais.
+- **Bloco da entrega agrupado** (Forma / Quem recebe / Endereço / Horário em
+  linhas seguidas, sem linha em branco entre elas) para ocupar menos espaço.
 
 ```
 - 2x Buquê 5 Rosas Importadas — R$ 297,80
@@ -68,11 +70,8 @@ carrinho** — o envio pode falhar, então não limpamos cedo demais.
 *Total: R$ 487,70*
 
 Forma: Entrega
-
 Quem recebe: João Silva
-
 Endereço: 90000-000, Rua das Flores, 123, Centro
-
 Horário: 14h às 15h
 
 Cliente: Maria — (51) 98508-2700

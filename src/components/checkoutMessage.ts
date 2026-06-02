@@ -49,20 +49,25 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
     return linhas.join("\n");
   });
 
-  // Cada seção é separada por linha em branco (\n\n): itens, total, forma,
-  // endereço (só entrega) e cliente — cada um no seu próprio bloco.
-  const secoes = [
-    blocos.join("\n\n"),
-    `*Total: ${brl(pedido.total)}*`,
+  // Bloco da entrega: linhas AGRUPADAS (um \n entre elas, sem linha em branco)
+  // para ocupar menos espaço na mensagem.
+  const entregaLinhas = [
     `Forma: ${pedido.entrega.tipo === "entrega" ? "Entrega" : "Retirada"}`,
   ];
   if (pedido.entrega.tipo === "entrega") {
     const e = pedido.entrega.endereco;
-    secoes.push(`Quem recebe: ${pedido.entrega.recebe}`);
-    secoes.push(`Endereço: ${cepFmt(e.cep)}, ${e.rua}, ${e.numero}, ${e.bairro}`);
-    secoes.push(`Horário: ${pedido.entrega.horario}`);
+    entregaLinhas.push(`Quem recebe: ${pedido.entrega.recebe}`);
+    entregaLinhas.push(`Endereço: ${cepFmt(e.cep)}, ${e.rua}, ${e.numero}, ${e.bairro}`);
+    entregaLinhas.push(`Horário: ${pedido.entrega.horario}`);
   }
-  secoes.push(`Cliente: ${pedido.cliente.nome} — ${telFmt(pedido.cliente.telefone)}`);
+
+  // Itens, total, entrega (bloco) e cliente separados por linha em branco (\n\n).
+  const secoes = [
+    blocos.join("\n\n"),
+    `*Total: ${brl(pedido.total)}*`,
+    entregaLinhas.join("\n"),
+    `Cliente: ${pedido.cliente.nome} — ${telFmt(pedido.cliente.telefone)}`,
+  ];
 
   return secoes.join("\n\n");
 }
