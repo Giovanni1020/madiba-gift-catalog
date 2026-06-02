@@ -20,7 +20,7 @@
   + um `history.pushState` ao entrar, para o "voltar" do celular fechar o checkout em vez de
   sair do site. **Não é rota** (ver ADR-0001).
 - **Checkout — toggle Retirada / Entrega:**
-  - Entrega → campos **quem recebe, CEP, rua, número, bairro** (sem complemento).
+  - Entrega → campos **quem recebe, CEP, rua, número, bairro, horário de entrega** (sem complemento).
   - Retirada → sem endereço.
 - **"Lembrar meus dados"** opt-in (`localStorage`) — ver [ADR-0002](adr/0002-estado-e-persistencia-do-carrinho.md).
 - **Finalizar → abre o WhatsApp** (`wa.me`) com a mensagem formatada.
@@ -72,6 +72,8 @@ Forma: Entrega
 Quem recebe: João Silva
 
 Endereço: 90000-000, Rua das Flores, 123, Centro
+
+Horário: 8h às 16h
 
 Cliente: Maria — (51) 98508-2700
 ```

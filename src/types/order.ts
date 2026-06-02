@@ -13,7 +13,7 @@ export interface Endereco {
 
 export type Entrega =
   | { tipo: "retirada" }
-  | { tipo: "entrega"; endereco: Endereco; recebe: string }; // recebe = nome de quem recebe
+  | { tipo: "entrega"; endereco: Endereco; recebe: string; horario: string }; // recebe = quem recebe; horario = janela de entrega
 
 export interface Cliente {
   nome: string;

@@ -187,7 +187,6 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 value={form.recebe}
                 onChange={(e) => form.setRecebe(e.target.value)}
                 placeholder="Nome de quem vai receber"
-                maxLength={60}
                 autoComplete="off"
               />
             </label>
@@ -237,6 +236,20 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 />
               </label>
             </div>
+
+            <p className="checkout__note">
+              ⏰ A entrega ocorre dentro de um período de aproximadamente 2 horas — a loja confirma o horário exato.
+            </p>
+            <label className="checkout__field">
+              <span className="checkout__label">Horário de entrega *</span>
+              <select
+                className="checkout__input"
+                value={form.horario}
+                onChange={(e) => form.setHorario(e.target.value)}
+              >
+                <option value="8h às 16h">8h às 16h</option>
+              </select>
+            </label>
           </>
         )}
 

@@ -60,6 +60,7 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
     const e = pedido.entrega.endereco;
     secoes.push(`Quem recebe: ${pedido.entrega.recebe}`);
     secoes.push(`Endereço: ${cepFmt(e.cep)}, ${e.rua}, ${e.numero}, ${e.bairro}`);
+    secoes.push(`Horário: ${pedido.entrega.horario}`);
   }
   secoes.push(`Cliente: ${pedido.cliente.nome} — ${telFmt(pedido.cliente.telefone)}`);
 
