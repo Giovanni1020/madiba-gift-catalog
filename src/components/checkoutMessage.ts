@@ -58,6 +58,7 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
   ];
   if (pedido.entrega.tipo === "entrega") {
     const e = pedido.entrega.endereco;
+    secoes.push(`Quem recebe: ${pedido.entrega.recebe}`);
     secoes.push(`Endereço: ${cepFmt(e.cep)}, ${e.rua}, ${e.numero}, ${e.bairro}`);
   }
   secoes.push(`Cliente: ${pedido.cliente.nome} — ${telFmt(pedido.cliente.telefone)}`);

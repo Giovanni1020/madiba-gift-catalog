@@ -181,6 +181,18 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             </p>
 
             <label className="checkout__field">
+              <span className="checkout__label">Quem recebe? *</span>
+              <input
+                className="checkout__input"
+                value={form.recebe}
+                onChange={(e) => form.setRecebe(e.target.value)}
+                placeholder="Nome de quem vai receber"
+                maxLength={60}
+                autoComplete="off"
+              />
+            </label>
+
+            <label className="checkout__field">
               <span className="checkout__label">CEP *</span>
               <input
                 className="checkout__input"

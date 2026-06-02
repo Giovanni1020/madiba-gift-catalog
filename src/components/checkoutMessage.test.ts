@@ -35,6 +35,7 @@ test("separa itens e seções com linha em branco", () => {
     cliente: { nome: "Maria", telefone: "51985082700" },
     entrega: {
       tipo: "entrega",
+      recebe: "João Silva",
       endereco: { cep: "90000000", rua: "Rua das Flores", numero: "123", bairro: "Centro" },
     },
   });
@@ -43,9 +44,9 @@ test("separa itens e seções com linha em branco", () => {
   expect(msg).toContain("Ferrero Rocher x2\n\n- 1x Box for Lovers");
   // linha em branco ANTES e DEPOIS do total (regex evita o espaço da moeda)
   expect(msg).toMatch(/\n\n\*Total:.*\*\n\n/);
-  // cada seção do rodapé separada por linha em branco
+  // cada seção do rodapé separada por linha em branco (com "Quem recebe" na entrega)
   expect(msg).toContain(
-    "Forma: Entrega\n\nEndereço: 90000-000, Rua das Flores, 123, Centro\n\nCliente: Maria — (51) 98508-2700",
+    "Forma: Entrega\n\nQuem recebe: João Silva\n\nEndereço: 90000-000, Rua das Flores, 123, Centro\n\nCliente: Maria — (51) 98508-2700",
   );
 });
 

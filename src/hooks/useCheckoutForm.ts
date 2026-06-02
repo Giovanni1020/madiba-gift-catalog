@@ -29,6 +29,8 @@ export interface CheckoutForm {
   setNumero: (v: string) => void;
   bairro: string;
   setBairro: (v: string) => void;
+  recebe: string; // nome de quem recebe (só entrega)
+  setRecebe: (v: string) => void;
   // derivados
   telefoneOk: boolean;
   valido: boolean;
@@ -43,9 +45,11 @@ export function useCheckoutForm(): CheckoutForm {
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
+  const [recebe, setRecebeRaw] = useState("");
 
   const setTelefone = (raw: string) => setTelefoneRaw(normalizePhone(raw));
   const setCep = (raw: string) => setCepRaw(onlyDigits(raw).slice(0, 8));
+  const setRecebe = (v: string) => setRecebeRaw(v.slice(0, 60)); // limite razoável p/ nome
 
   const nomeOk = nome.trim().length > 0;
   const telefoneOk = telefone.length === 10 || telefone.length === 11;
@@ -57,7 +61,8 @@ export function useCheckoutForm(): CheckoutForm {
     (cepOk &&
       rua.trim().length > 0 &&
       numero.trim().length > 0 &&
-      bairro.trim().length > 0);
+      bairro.trim().length > 0 &&
+      recebe.trim().length > 0);
   const valido = nomeOk && telefoneOk && enderecoOk;
 
   const build = () => {
@@ -67,6 +72,7 @@ export function useCheckoutForm(): CheckoutForm {
       tipo === "entrega"
         ? {
             tipo: "entrega",
+            recebe: recebe.trim(),
             endereco: {
               cep,
               rua: rua.trim(),
@@ -86,6 +92,7 @@ export function useCheckoutForm(): CheckoutForm {
     rua, setRua,
     numero, setNumero,
     bairro, setBairro,
+    recebe, setRecebe,
     telefoneOk, valido, build,
   };
 }
