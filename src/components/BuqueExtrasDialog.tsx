@@ -99,7 +99,6 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
   };
 
   const isOpen = product !== null;
-  const isCesta = product?.category === "cestas";
 
   useEffect(() => {
     if (isOpen) {
@@ -244,8 +243,8 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
             </div>
           </div>
 
-          {/* ── Chocolates (buquês only) ───────────────────────────────── */}
-          {!isCesta && (
+          {/* ── Chocolates (só quando o buquê aceita: maxChocolates > 0) ── */}
+          {maxChoc > 0 && (
             <div className="bed__section">
               <div className="bed__section-header">
                 <h3 className="bed__section-title">Chocolates</h3>
