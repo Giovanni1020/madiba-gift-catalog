@@ -18,34 +18,53 @@
 - **"Lembrar meus dados"** opt-in (`localStorage`) — ver [ADR-0002](adr/0002-estado-e-persistencia-do-carrinho.md).
 - **Finalizar → abre o WhatsApp** (`wa.me`) com a mensagem formatada.
 
-## Helper do WhatsApp (`src/lib/whatsapp.ts`)
+## Helper do WhatsApp (`src/components/checkoutMessage.ts`)
 
-Funções **puras** (sem React), testáveis isoladas:
+Funções **puras** (sem React), **coladas ao checkout** (é o único fluxo que
+redireciona pro WhatsApp — sempre passa pelo checkout antes). Decisão: não virou
+`src/lib/whatsapp.ts` global nem exigiu mover `CartItem` pro tipo de domínio.
 
 - `buildWhatsAppMessage(pedido): string`
 - `buildWhatsAppUrl(telefone, mensagem): string`
 
-A UI só dispara o efeito (`window.open(url)`).
+A UI (`Checkout.handleSubmit`) monta o `Pedido` (itens+total do `useCart`) e
+dispara o efeito (`window.open(url)`). O número da loja vem de `STORE_PHONE`
+em `src/config.ts`.
+
+**Pós-envio (decisão C):** abre o WhatsApp e **volta pro catálogo mantendo o
+carrinho** — o envio pode falhar, então não limpamos cedo demais.
 
 **Gotchas obrigatórios:**
 
 - **`encodeURIComponent`** (nunca `encodeURI`) na mensagem. `\n` vira `%0A`.
-- **Telefone**: só dígitos com DDI, sem `+`/espaço/traço → ex. `5511999999999`.
-- **Moeda**: `Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })`, centralizado.
+- **Telefone da loja**: só dígitos com DDI, sem `+`/espaço/traço → `555186103494`.
+- **Telefone do cliente**: vai **no corpo** da mensagem (sem DDI, formatado), não na URL.
+- **Moeda**: `Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })`
+  (helpers locais por ora; centralizar em `lib/format.ts` se a duplicação incomodar).
 - **Montagem**: array de linhas + `join('\n')` (testável, diff limpo).
-- **Teto de 10 itens** (não há compra gigante) — mantém folga sob o limite prático de URL (~2000 chars).
+- **Teto de 10 itens** (não há compra gigante) — mantém folga sob o limite prático de URL (~2000 chars). *(ainda não aplicado.)*
 
-**Ordem da mensagem (rascunho a refinar):**
+**Formato da mensagem:**
+
+- **Sem emojis** (clareza); **sem linha de cabeçalho** ("Novo pedido" era redundante).
+- **Linha em branco entre itens diferentes** (leitura do cliente e do atendente).
+- **Lista todos os adicionais** como conteúdo (balão/plaquinha/chocolate ×N) —
+  o valor de cada linha já inclui os adicionais.
 
 ```
-🌸 *Novo pedido — Madiba*
-- 1x Buquê 5 rosas importadas — R$ XX
-    + adicional: cartão personalizado
-- 2x Caixa para namorados — R$ XX
-*Total: R$ XXX*
-Forma: 🚚 Entrega   (ou 🏪 Retirada)
-Endereço: CEP, rua, número, bairro   (só se entrega)
-Cliente: Nome — (telefone)
+- 2x Buquê 5 Rosas Importadas — R$ 297,80
+    + Balão: Te Amo
+    + Ferrero Rocher x2
+
+- 1x Box for Lovers — R$ 189,90
+
+*Total: R$ 487,70*
+
+Forma: Entrega
+
+Endereço: 90000-000, Rua das Flores, 123, Centro
+
+Cliente: Maria — (51) 98508-2700
 ```
 
 O formatador **ramifica em `entrega.tipo`**: imprime o bloco de endereço só quando `entrega`.

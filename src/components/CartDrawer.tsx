@@ -10,7 +10,7 @@ function formatPrice(cents: number): string {
   });
 }
 
-export default function CartDrawer() {
+export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
   const {
     items,
     totalPrice,
@@ -20,35 +20,6 @@ export default function CartDrawer() {
     updateQuantity,
     clearCart,
   } = useCart();
-
-  const message =
-    "Olá! Gostaria de fazer um pedido:\n\n" +
-    items
-      .map(({ product, quantity, extras }) => {
-        let line = `- ${product.name} x${quantity} (${formatPrice(product.price * quantity)})`;
-        if (extras) {
-          const extrasLines = [];
-          if (extras.balao)
-            extrasLines.push(
-              `Balão — ${extras.balao} (${formatPrice(EXTRAS_PRICES.balao)})`,
-            );
-          if (extras.plaquinha)
-            extrasLines.push(
-              `Plaquinha — ${extras.plaquinha} (${formatPrice(EXTRAS_PRICES.plaquinha)})`,
-            );
-          CHOCOLATE_OPTIONS.forEach((c) => {
-            const qty = extras.chocolates[c.id] ?? 0;
-            if (qty > 0)
-              extrasLines.push(
-                `${c.name} ×${qty} (${formatPrice(c.price * qty)})`,
-              );
-          });
-          line += "\n  " + extrasLines.join("\n  ");
-        }
-        return (line += `\n`);
-      })
-      .join("\n") +
-    `\nTotal: ${formatPrice(totalPrice)}`;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -244,12 +215,10 @@ export default function CartDrawer() {
             </div>
             <button
               className="cart-drawer__checkout"
-              onClick={() =>
-                window.open(
-                  `https://wa.me/555186103494?text=${encodeURIComponent(message)}`,
-                  "_blank",
-                )
-              }
+              onClick={() => {
+                closeCart();
+                onCheckout();
+              }}
             >
               Finalizar pedido
             </button>
