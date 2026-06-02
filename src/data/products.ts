@@ -11,7 +11,10 @@ export interface Product {
   image: string;           // caminho relativo a /public, ex: "/images/produto.jpg"
   featured?: boolean;
   inStock?: boolean;
-  maxChocolates?: number;  // apenas para buquês
+  maxChocolates?: number;    // buquês: controla a seção de chocolates (0/ausente = sem chocolate)
+  note?: string;             // observação visível no card (ex.: pelúcia pode variar)
+  exclusiveExtras?: boolean; // cestas: balão e plaquinha são mutuamente exclusivos
+  includesBalao?: boolean;   // já vem com balão → não oferecer balão como adicional
 }
 
 // ─── Extras ──────────────────────────────────────────────────────────────────
@@ -95,15 +98,102 @@ export const PRODUCTS: Product[] = [
     price: 7990,
     category: "cestas",
     image: "/images/box-for-man.jpeg",
+    exclusiveExtras: true,
   },
   {
     id: 2,
     name: "Box for Lovers",
-    description: "Contém: 1 vinho chileno, castanha, torradinha, 2 KitKat, Nutella, Ferrero Rocher c4, pelúcia, caixa MDF.",
+    description: "Contém: pelúcia, 1 vinho chileno, castanha, torradinha, 2 KitKat, Nutella, Ferrero Rocher c/4, caixa MDF.",
+    note: "Obs: pelúcia pode variar da imagem.",
     price: 18990,
     category: "cestas",
     image: "/images/box-for-lovers.jpeg",
     featured: true,
+    exclusiveExtras: true,
+  },
+
+  {
+    id: 13,
+    name: "Cesta Te Amo",
+    description: "Contém: 1 pelúcia GG, 2 KitKat, 1 Nutella 140g, Ferrero Rocher c/3.",
+    note: "Obs: pelúcia pode variar da imagem.",
+    price: 18990,
+    category: "cestas",
+    image: "/images/cesta-te-amo.jpeg",
+    exclusiveExtras: true,
+  },
+  {
+    id: 14,
+    name: "Cesta Love",
+    description: "Contém: 1 pelúcia G, 1 KitKat, 1 Nutella 140g, Ferrero Rocher c/3, 1 Kinder Bueno.",
+    note: "Obs: pelúcia pode variar da imagem.",
+    price: 13990,
+    category: "cestas",
+    image: "/images/cesta-love.jpeg",
+    exclusiveExtras: true,
+  },
+  {
+    id: 15,
+    name: "Cesta Encanto",
+    description: "Contém: 1 pelúcia M, 1 balão coração, 1 KitKat e 15 itens diversos.",
+    note: "Obs: pelúcia pode variar da imagem.",
+    price: 7990,
+    category: "cestas",
+    image: "/images/cesta-encanto.jpeg",
+    exclusiveExtras: true,
+    includesBalao: true,
+  },
+  {
+    id: 16,
+    name: "Box Você é Especial",
+    description: "Contém: 1 pelúcia G, 1 balão coração, 1 KitKat, 2 bombons, Ferrero Rocher c/3.",
+    note: "Obs: pelúcia pode variar da imagem.",
+    price: 8990,
+    category: "cestas",
+    image: "/images/box-voce-e-especial.jpeg",
+    exclusiveExtras: true,
+    includesBalao: true,
+  },
+  {
+    id: 17,
+    name: "Box 5",
+    description: "Contém: 1 pelúcia M, 1 balão coração, 3 rosas, Ferrero Rocher c/4, 1 Kinder Bueno.",
+    note: "Obs: pelúcia pode variar da imagem.",
+    price: 14990,
+    category: "cestas",
+    image: "/images/box-5.jpeg",
+    exclusiveExtras: true,
+    includesBalao: true,
+  },
+  {
+    id: 18,
+    name: "Box 6",
+    description: "Contém: 1 pelúcia G, 1 balão coração, 3 rosas, Ferrero Rocher c/8, 1 Kinder Bueno, 1 Nutella, 2 Bis Extra.",
+    note: "Obs: pelúcia pode variar da imagem.",
+    price: 24990,
+    category: "cestas",
+    image: "/images/box-6.jpeg",
+    exclusiveExtras: true,
+    includesBalao: true,
+  },
+  {
+    id: 19,
+    name: "Box Café da Manhã",
+    description: "Contém um mix de 30 itens de café da manhã.",
+    price: 7490,
+    category: "cestas",
+    image: "/images/box-cafe-da-manha.jpeg",
+    exclusiveExtras: true,
+  },
+  {
+    id: 20,
+    name: "Box Com Carinho",
+    description: "Contém: 1 balão coração, arranjo com 2 rosas, trufas 55g.",
+    price: 7490,
+    category: "cestas",
+    image: "/images/box-com-carinho.jpeg",
+    exclusiveExtras: true,
+    includesBalao: true,
   },
 
   // ── Buquês ───────────────────────────────────────────────────────────────

@@ -148,6 +148,8 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
   if (!product) return null;
 
   const extrasCost = extrasTotal(extras);
+  const showBalao = !product.includesBalao; // cesta que já vem com balão não oferece outro
+  const exclusive = !!product.exclusiveExtras; // cestas: balão XOR plaquinha
 
   return (
     <>
@@ -181,7 +183,14 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
         {/* Body */}
         <div className="bed__body">
 
-          {/* ── Balão ─────────────────────────────────────────────────── */}
+          {exclusive && showBalao && (
+            <p className="bed__exclusive-hint">
+              Escolha balão <strong>ou</strong> plaquinha (não os dois).
+            </p>
+          )}
+
+          {/* ── Balão (escondido se a cesta já vem com balão) ───────────── */}
+          {showBalao && (
           <div className="bed__section">
             <div className="bed__section-header">
               <h3 className="bed__section-title">Balão</h3>
@@ -197,10 +206,14 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
               <select
                 className="bed__select"
                 value={extras.balao ?? ""}
-                onChange={(e) => setExtras((p) => ({
-                  ...p,
-                  balao: e.target.value ? e.target.value as BalaoOption : null,
-                }))}
+                onChange={(e) => {
+                  const val = e.target.value ? (e.target.value as BalaoOption) : null;
+                  setExtras((p) => ({
+                    ...p,
+                    balao: val,
+                    plaquinha: exclusive && val ? null : p.plaquinha,
+                  }));
+                }}
               >
                 <option value="">— Não quero balão —</option>
                 {BALAO_OPTIONS.map((opt) => (
@@ -212,6 +225,7 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
               )}
             </div>
           </div>
+          )}
 
           {/* ── Plaquinha ─────────────────────────────────────────────── */}
           <div className="bed__section">
@@ -227,10 +241,14 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
               <select
                 className="bed__select"
                 value={extras.plaquinha ?? ""}
-                onChange={(e) => setExtras((p) => ({
-                  ...p,
-                  plaquinha: e.target.value ? e.target.value as PlaquinhaOption : null,
-                }))}
+                onChange={(e) => {
+                  const val = e.target.value ? (e.target.value as PlaquinhaOption) : null;
+                  setExtras((p) => ({
+                    ...p,
+                    plaquinha: val,
+                    balao: exclusive && val ? null : p.balao,
+                  }));
+                }}
               >
                 <option value="">— Não quero plaquinha —</option>
                 {PLAQUINHA_OPTIONS_BY_PAGE[plaquinhaPage].map((opt) => (

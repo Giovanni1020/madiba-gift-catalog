@@ -138,3 +138,13 @@
   color: var(--color-text-subtle);
   cursor: not-allowed;
 }
+
+/* Observação (ex.: pelúcia pode variar) — distinta e abaixo da descrição */
+.card__note {
+  font-size: 0.6875rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-border);
+}
