@@ -46,7 +46,8 @@ Modelo mental dos **três baldes** que rege todo o estado do app:
 **Negativas / custos**
 - Precisamos serializar/desserializar filtros para a query string.
 - Precisamos validar params inválidos/adulterados de forma defensiva (URL é editável pelo usuário).
-- Sem router, gerenciamos `replaceState` + listener de `popstate` na mão (escopo pequeno, aceitável).
+- Sem router, gerenciamos `replaceState` na mão (escopo pequeno). **Não** há listener de
+  `popstate` — ver "Notas de implementação".
 
 ## Alternativas consideradas
 
@@ -55,3 +56,19 @@ Modelo mental dos **três baldes** que rege todo o estado do app:
 - **`react-router-dom` + `useSearchParams`:** API mais limpa, mas adiciona dependência e um
   modelo de roteamento que um app de tela única + overlays não precisa. Rejeitada no v1;
   reavaliar se surgirem rotas reais (ex.: `/produto/:id`).
+
+## Notas de implementação (2026-06-02)
+
+- **Modelo (a) — espelho + sync:** o `useState` continua sendo a fonte do render;
+  a URL é **semeada na inicialização** e **sincronizada via `replaceState`** a cada
+  mudança. Evita o purismo "URL é a única fonte" (`useSyncExternalStore`) sem perder
+  o compartilhamento/sobrevivência a reload.
+- **Sem `popstate`:** como filtros só usam `replaceState` (nunca empilham histórico) e o
+  `pushState` do checkout usa URL vazia (não mexe na query), nenhum `popstate` afeta os
+  filtros. O listener seria YAGNI — cortado.
+- **Tokens em PT-BR na URL** (`?categoria=`, `?preco=baixo|medio|alto`,
+  `?ordem=menor-preco|maior-preco|nome`, `?q=`) por acessibilidade do link.
+- **Auto-limpeza:** `serializeFilters` é canônica (omite defaults e tokens inválidos);
+  no mount, `serialize(parse(url))` reescreve a URL sem lixo/params desconhecidos.
+- **Núcleo puro testável:** `parseFilters`/`serializeFilters` em `src/hooks/filterParams.ts`,
+  cobertos por `filterParams.test.ts`. O `useFilter` só os liga ao `window.location`.
