@@ -9,6 +9,7 @@ import BuqueExtrasDialog from "./components/BuqueExtrasDialog";
 import Checkout from "./components/Checkout";
 import { useFilter } from "./hooks/useFilter";
 import { useCheckoutForm } from "./hooks/useCheckoutForm";
+import { pushOverlayOnce, popOverlayOr } from "./overlayHistory";
 import "./App.css";
 
 function CatalogPage() {
@@ -21,19 +22,28 @@ function CatalogPage() {
   const checkoutForm = useCheckoutForm();
 
   const openCheckout = useCallback(() => {
-    // Reusa a entrada de overlay já criada pelo cart (transição cart → checkout
-    // não empilha): "voltar" do checkout volta ao catálogo em 1 passo. Se vier
-    // sem overlay (caso não passe pelo cart), cria.
-    if (!window.history.state?.overlay) {
-      window.history.pushState({ overlay: true }, "");
-    }
+    pushOverlayOnce(); // reusa a entrada de overlay do cart (não empilha)
     setView("checkout");
   }, []);
   const closeCheckout = useCallback(() => {
-    window.history.back(); // → popstate → setView("catalogo")
+    popOverlayOr(() => setView("catalogo"));
   }, []);
+
+  // Diálogo de extras = overlay (mesmo tratamento de histórico do cart/checkout).
+  const openExtras = useCallback((product: Product) => {
+    pushOverlayOnce();
+    setExtrasProduct(product);
+  }, []);
+  const dismissExtras = useCallback(() => {
+    popOverlayOr(() => setExtrasProduct(null));
+  }, []);
+
+  // "Voltar" do celular (popstate) fecha qualquer overlay aberto → catálogo.
   useEffect(() => {
-    const onPop = () => setView("catalogo");
+    const onPop = () => {
+      setView("catalogo");
+      setExtrasProduct(null);
+    };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -67,7 +77,7 @@ function CatalogPage() {
           />
           <ProductGrid
             products={filter.filtered}
-            onOpenExtras={setExtrasProduct}
+            onOpenExtras={openExtras}
           />
         </div>
       </main>
@@ -76,6 +86,7 @@ function CatalogPage() {
       <BuqueExtrasDialog
         product={extrasProduct}
         onClose={() => setExtrasProduct(null)}
+        onDismiss={dismissExtras}
       />
     </div>
   );

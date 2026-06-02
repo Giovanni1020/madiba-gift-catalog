@@ -69,7 +69,8 @@ function PlaquinhaCarousel({ current, onChange }: CarouselProps) {
 
 interface Props {
   product: Product | null;
-  onClose: () => void;
+  onClose: () => void;   // fecha sem mexer no histórico (após adicionar; o cart reusa o overlay)
+  onDismiss: () => void; // descarta o overlay no "voltar"/X/fora/Esc
 }
 
 function formatPrice(cents: number): string {
@@ -82,7 +83,7 @@ const EMPTY_EXTRAS: BuqueExtras = {
   chocolates: {},
 };
 
-export default function BuqueExtrasDialog({ product, onClose }: Props) {
+export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props) {
   const { addBuque } = useCart();
   const [extras, setExtras] = useState<BuqueExtras>(EMPTY_EXTRAS);
   const [plaquinhaPage, setPlaquinhaPage] = useState(0);
@@ -108,10 +109,10 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
   }, [product?.id, isOpen]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onDismiss(); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onClose]);
+  }, [onDismiss]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -153,7 +154,7 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
 
   return (
     <>
-      <div className="bed-backdrop" onClick={onClose} aria-hidden="true" />
+      <div className="bed-backdrop" onClick={onDismiss} aria-hidden="true" />
 
       <div className="bed" role="dialog" aria-modal="true" aria-labelledby="bed-title">
 
@@ -178,7 +179,7 @@ export default function BuqueExtrasDialog({ product, onClose }: Props) {
               </p>
             )}
           </div>
-          <button className="bed__close" onClick={onClose} aria-label="Fechar">
+          <button className="bed__close" onClick={onDismiss} aria-label="Fechar">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
             </svg>
