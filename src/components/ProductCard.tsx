@@ -26,10 +26,15 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
     image,
     featured,
     inStock = true,
+    note,
   } = product;
 
   const handleAdd = () => {
-    if (category === "buques" || category === "cestas") {
+    if (
+      category === "buques" ||
+      category === "buques-cetim" ||
+      category === "cestas"
+    ) {
       onOpenExtras(product);
     } else {
       addItem(product);
@@ -70,6 +75,7 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
         <span className="card__category">{CATEGORY_LABELS[category]}</span>
         <h3 className="card__name">{name}</h3>
         <p className="card__desc">{description}</p>
+        {note && <p className="card__note">{note}</p>}
         <div className="card__footer">
           <span className="card__price">{formatPrice(price)}</span>
           <button
