@@ -22,6 +22,15 @@ feature branch ──(PR, quando pronta)──▶ main ──(testada + permiss�
 3. `main` é **testada** (preview na Vercel).
 4. Aprovada **por uma pessoa** → **PR `main` → `production`** → merge → **deploy de produção**.
 
+## Ciclo de versões
+
+O trabalho acontece por ciclos: **desenvolvimento de uma versão → feedback / próxima
+versão** (é o fluxo que estamos rodando agora). O desenvolvimento da versão nova pode
+ocorrer **em paralelo** ao feedback da versão anterior, que já está em produção.
+
+- Feedback/ajustes da versão no ar entram pelo mesmo fluxo de branches (→ `main` → `production`, com permissão).
+- A próxima versão é tocada nas suas próprias branches, sem travar o atendimento ao feedback da versão atual.
+
 ## Regra de produção (inegociável)
 
 **Nenhuma mudança vai para `production` sem permissão humana explícita.**

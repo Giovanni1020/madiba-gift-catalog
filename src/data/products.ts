@@ -237,7 +237,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 7,
-    name: "Buquê 3 Rosas Importadas + 1 Girassol",
+    name: "Buquê Medelin",
     description: "Buquê com 3 rosas vermelhas importadas e 1 girassol, solidago, baby breath, embrulho preto e dourado.",
     price: 9990,
     category: "buques",

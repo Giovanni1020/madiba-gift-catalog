@@ -30,6 +30,9 @@ function formatBRL(cents: number): string {
   });
 }
 
+// Janelas de entrega: 1 em 1 hora, das 8h às 18h (8h às 9h … 17h às 18h).
+const HORARIOS = Array.from({ length: 10 }, (_, i) => `${8 + i}h às ${9 + i}h`);
+
 interface CheckoutProps {
   form: CheckoutForm;
   onClose: () => void;
@@ -181,6 +184,17 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             </p>
 
             <label className="checkout__field">
+              <span className="checkout__label">Quem recebe? *</span>
+              <input
+                className="checkout__input"
+                value={form.recebe}
+                onChange={(e) => form.setRecebe(e.target.value)}
+                placeholder="Nome de quem vai receber"
+                autoComplete="off"
+              />
+            </label>
+
+            <label className="checkout__field">
               <span className="checkout__label">CEP *</span>
               <input
                 className="checkout__input"
@@ -225,6 +239,25 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 />
               </label>
             </div>
+
+            <p className="checkout__note">
+              ⏰ A entrega ocorre dentro de um período de aproximadamente 2 horas — a loja confirma o horário exato.
+            </p>
+            <label className="checkout__field">
+              <span className="checkout__label">Horário de entrega *</span>
+              <select
+                className="checkout__input"
+                value={form.horario}
+                onChange={(e) => form.setHorario(e.target.value)}
+              >
+                <option value="">— Escolha um horário —</option>
+                {HORARIOS.map((h) => (
+                  <option key={h} value={h}>
+                    {h}
+                  </option>
+                ))}
+              </select>
+            </label>
           </>
         )}
 

@@ -29,6 +29,10 @@ export interface CheckoutForm {
   setNumero: (v: string) => void;
   bairro: string;
   setBairro: (v: string) => void;
+  recebe: string; // nome de quem recebe (só entrega)
+  setRecebe: (v: string) => void;
+  horario: string; // janela de entrega (só entrega)
+  setHorario: (v: string) => void;
   // derivados
   telefoneOk: boolean;
   valido: boolean;
@@ -43,6 +47,8 @@ export function useCheckoutForm(): CheckoutForm {
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
+  const [recebe, setRecebe] = useState("");
+  const [horario, setHorario] = useState(""); // escolha obrigatória (só entrega)
 
   const setTelefone = (raw: string) => setTelefoneRaw(normalizePhone(raw));
   const setCep = (raw: string) => setCepRaw(onlyDigits(raw).slice(0, 8));
@@ -57,7 +63,9 @@ export function useCheckoutForm(): CheckoutForm {
     (cepOk &&
       rua.trim().length > 0 &&
       numero.trim().length > 0 &&
-      bairro.trim().length > 0);
+      bairro.trim().length > 0 &&
+      recebe.trim().length > 0 &&
+      horario.trim().length > 0);
   const valido = nomeOk && telefoneOk && enderecoOk;
 
   const build = () => {
@@ -67,6 +75,8 @@ export function useCheckoutForm(): CheckoutForm {
       tipo === "entrega"
         ? {
             tipo: "entrega",
+            recebe: recebe.trim(),
+            horario,
             endereco: {
               cep,
               rua: rua.trim(),
@@ -86,6 +96,8 @@ export function useCheckoutForm(): CheckoutForm {
     rua, setRua,
     numero, setNumero,
     bairro, setBairro,
+    recebe, setRecebe,
+    horario, setHorario,
     telefoneOk, valido, build,
   };
 }

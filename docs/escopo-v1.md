@@ -20,7 +20,7 @@
   + um `history.pushState` ao entrar, para o "voltar" do celular fechar o checkout em vez de
   sair do site. **Não é rota** (ver ADR-0001).
 - **Checkout — toggle Retirada / Entrega:**
-  - Entrega → campos **CEP, rua, número, bairro** (sem complemento).
+  - Entrega → campos **quem recebe, CEP, rua, número, bairro, horário de entrega** (sem complemento).
   - Retirada → sem endereço.
 - **"Lembrar meus dados"** opt-in (`localStorage`) — ver [ADR-0002](adr/0002-estado-e-persistencia-do-carrinho.md).
 - **Finalizar → abre o WhatsApp** (`wa.me`) com a mensagem formatada.
@@ -57,6 +57,8 @@ carrinho** — o envio pode falhar, então não limpamos cedo demais.
 - **Linha em branco entre itens diferentes** (leitura do cliente e do atendente).
 - **Lista todos os adicionais** como conteúdo (balão/plaquinha/chocolate ×N) —
   o valor de cada linha já inclui os adicionais.
+- **Bloco da entrega agrupado** (Forma / Quem recebe / Endereço / Horário em
+  linhas seguidas, sem linha em branco entre elas) para ocupar menos espaço.
 
 ```
 - 2x Buquê 5 Rosas Importadas — R$ 297,80
@@ -68,8 +70,9 @@ carrinho** — o envio pode falhar, então não limpamos cedo demais.
 *Total: R$ 487,70*
 
 Forma: Entrega
-
+Quem recebe: João Silva
 Endereço: 90000-000, Rua das Flores, 123, Centro
+Horário: 14h às 15h
 
 Cliente: Maria — (51) 98508-2700
 ```
