@@ -6,6 +6,7 @@ import "./ProductCard.css";
 interface Props {
   product: Product;
   onOpenExtras: (product: Product) => void;
+  onOpenImage: (image: { src: string; alt: string }) => void;
 }
 
 function formatPrice(cents: number): string {
@@ -15,7 +16,7 @@ function formatPrice(cents: number): string {
   });
 }
 
-export default function ProductCard({ product, onOpenExtras }: Props) {
+export default function ProductCard({ product, onOpenExtras, onOpenImage }: Props) {
   const [imgError, setImgError] = useState(false);
   const { addItem } = useCart();
   const {
@@ -41,8 +42,29 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
     }
   };
 
+  // Clicar no card faz o mesmo do botão "Adicionar" (só quando disponível).
+  const cardActivate = () => {
+    if (inStock) handleAdd();
+  };
+
+  // Card vira "botão" apenas quando disponível; OOS continua só visual.
+  const interactiveProps = inStock
+    ? {
+        role: "button" as const,
+        tabIndex: 0,
+        onClick: cardActivate,
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            cardActivate();
+          }
+        },
+        "aria-label": `${name} — adicionar ao carrinho`,
+      }
+    : {};
+
   return (
-    <article className={`card${!inStock ? " card--oos" : ""}`}>
+    <article className={`card${!inStock ? " card--oos" : ""}`} {...interactiveProps}>
       <div className="card__img-wrap">
         {imgError ? (
           <div className="card__img-placeholder" aria-hidden="true">
@@ -55,13 +77,23 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
             </svg>
           </div>
         ) : (
-          <img
-            src={image}
-            alt={name}
-            className="card__img"
-            onError={() => setImgError(true)}
-            loading="lazy"
-          />
+          <button
+            type="button"
+            className="card__img-btn"
+            aria-label={`Ampliar imagem de ${name}`}
+            onClick={(e) => {
+              e.stopPropagation(); // não dispara o clique do card
+              onOpenImage({ src: image, alt: name });
+            }}
+          >
+            <img
+              src={image}
+              alt={name}
+              className="card__img"
+              onError={() => setImgError(true)}
+              loading="lazy"
+            />
+          </button>
         )}
         {featured && (
           <span className="card__badge card__badge--featured">Destaque</span>
@@ -82,7 +114,10 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
             className="card__btn"
             disabled={!inStock}
             aria-label={`Adicionar ${name} ao carrinho`}
-            onClick={handleAdd}
+            onClick={(e) => {
+              e.stopPropagation(); // evita disparar também o clique do card
+              handleAdd();
+            }}
           >
             {inStock ? "Adicionar" : "Indisponível"}
           </button>
