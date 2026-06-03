@@ -46,6 +46,5 @@ ocorrer **em paralelo** ao feedback da versão anterior, que já está em produ�
   - Merge em `production` → **deploy de produção** → <https://madiba-garden.vercel.app>.
   - Push em `main` e nas feature branches → **deploys de preview** (URL temporária por branch/PR), para testar antes de promover.
 - App estático (sem backend / sem variáveis de ambiente): build `npm run build`, saída `build/`.
-
-> **Pendência operacional:** trocar o *Production Branch* na Vercel de `main` para
-> `production`. Enquanto não for trocado, é a `main` que publica e o `production` fica parado.
+- **Após publicar em `production`, voltar sempre o working tree para `main`.** A
+  `production` não é branch de trabalho — só recebe promoções. Nenhum commit nasce nela.
