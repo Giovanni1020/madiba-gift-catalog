@@ -139,6 +139,22 @@
   cursor: not-allowed;
 }
 
+/* Mobile: em 2 colunas o card fica ~150px; preço + botão lado a lado
+   estouram a largura e o botão era cortado pelo overflow:hidden do card.
+   Empilha o footer e dá ao botão alvo de toque >= 44px (largura total). */
+@media (max-width: 480px) {
+  .card__footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .card__btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+}
+
 /* Observação (ex.: pelúcia pode variar) — distinta e abaixo da descrição */
 .card__note {
   font-size: 0.6875rem;

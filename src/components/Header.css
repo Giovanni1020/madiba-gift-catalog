@@ -60,39 +60,3 @@
   text-decoration: none;
   transition: color 0.15s;
 }
-
-.header__cart-btn {
-  position: relative;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--color-text);
-  padding: 6px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  transition: background 0.15s;
-}
-
-.header__cart-btn:hover {
-  background: var(--brand-pink-soft);
-}
-
-.header__cart-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: var(--brand-pink-dark);
-  color: #fff;
-  font-size: 0.625rem;
-  font-weight: 700;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 3px;
-  line-height: 1;
-  transform: translate(4px, -4px);
-}

@@ -4,7 +4,7 @@
   top: 60px;
   z-index: 90;
   background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.12);
   margin: 0 -2rem;
   padding: 0 2rem;
 }
@@ -50,6 +50,21 @@
 .filterbar__search-input:focus {
   border-color: var(--brand-pink);
   background: var(--color-surface);
+}
+
+/* Toggle (seta) — só aparece no mobile; no desktop tudo fica sempre visível. */
+.filterbar__toggle {
+  display: none;
+}
+
+/* No desktop o wrapper "some" e seus filhos voltam a participar do flex-wrap
+   original da barra (pills + controles na mesma linha). */
+.filterbar__collapsible {
+  display: contents;
+}
+
+.filterbar__toggle-icon {
+  transition: transform 0.2s ease;
 }
 
 /* Category pills */
@@ -122,11 +137,79 @@
 
 /* Responsive */
 @media (max-width: 640px) {
+  /* No mobile o .app__main usa padding 1rem; o sangramento (margin/padding)
+     da barra precisa acompanhar — senão estoura 16px à esquerda (scroll-x). */
+  .filterbar-sticky {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+  /* Barra mais enxuta no mobile: menos padding vertical. */
+  .filterbar {
+    padding: 0.875rem 0;
+    gap: 10px;
+  }
   .filterbar__controls {
     margin-left: 0;
     width: 100%;
   }
+  /* Busca divide a 1ª linha com a seta (não ocupa 100%). */
   .filterbar__search {
-    flex: 1 1 100%;
+    flex: 1 1 auto;
+    min-width: 0;
   }
+
+  /* Seta de expansão — pill compacto ao lado da busca. */
+  .filterbar__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--color-border-input);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+  .filterbar__toggle--active {
+    border-color: var(--brand-pink);
+    color: var(--brand-pink-dark);
+  }
+  .filterbar__toggle[aria-expanded="true"] .filterbar__toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Bloco colapsável: vira coluna de largura total; oculto até abrir. */
+  .filterbar__collapsible {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .filterbar__collapsible:not(.is-open) {
+    display: none;
+  }
+  .filterbar__collapsible.is-open {
+    animation: filterbarReveal 0.2s ease;
+  }
+
+  /* Alvos de toque: pills/seletor/busca >= 44px de altura no mobile. */
+  .filterbar__pill,
+  .filterbar__select,
+  .filterbar__search-input {
+    min-height: 44px;
+  }
+}
+
+@keyframes filterbarReveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filterbar__collapsible.is-open { animation: none; }
+  .filterbar__toggle-icon { transition: none; }
 }
