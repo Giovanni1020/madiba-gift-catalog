@@ -23,6 +23,7 @@ as decisões de design. Discussão primeiro, implementação depois.
 - **Estrutura modular**, componentes limpos, **funções puras** na camada de domínio.
 - **Mostrar o diff e aguardar aprovação** antes de qualquer commit.
 - Tópicos que o Filipe marcar como "estudar depois" → adicionar em `matriz-mental.md`.
+- Formato dos cards do Trello (tipos, seções, checklist de aceite): ver [`trello-padrao.md`](trello-padrao.md).
 
 ## Como usar como contexto em uma janela nova
 

@@ -10,6 +10,7 @@
 | Doc | O que é |
 |---|---|
 | [como-trabalhamos.md](como-trabalhamos.md) | Papel do Claude + dinâmica de trabalho (Grill Me, PT-BR, economia de contexto, governança). **Leia antes de pedir código.** |
+| [trello-padrao.md](trello-padrao.md) | Padrão de card do Trello (tipos, estrutura da descrição, checklist de aceite). Formato do card; o processo é dono do `como-trabalhamos.md`. |
 | [escopo-v1.md](escopo-v1.md) | Escopo fechado do v1, spec do helper do WhatsApp, e o que fica pro v1.1+. |
 | [branches-e-deploy.md](branches-e-deploy.md) | Estratégia de branches (feature → main → production) e a regra: **produção só com permissão humana**. |
 | [adr/0001-filtros-na-url.md](adr/0001-filtros-na-url.md) | Filtros como estado de navegação na URL. |
