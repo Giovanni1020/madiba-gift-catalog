@@ -12,10 +12,6 @@ function brl(cents: number): string {
   });
 }
 
-function cepFmt(d: string): string {
-  return d.length === 8 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
-}
-
 function telFmt(d: string): string {
   const x = d.slice(0, 11);
   if (x.length <= 10) return `(${x.slice(0, 2)}) ${x.slice(2, 6)}-${x.slice(6)}`;
@@ -57,7 +53,9 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
   if (pedido.entrega.tipo === "entrega") {
     const e = pedido.entrega.endereco;
     entregaLinhas.push(`Quem recebe: ${pedido.entrega.recebe}`);
-    entregaLinhas.push(`Endereço: ${cepFmt(e.cep)}, ${e.rua}, ${e.numero}, ${e.bairro}`);
+    const enderecoPartes = [e.rua, e.numero, e.bairro];
+    if (e.complemento) enderecoPartes.push(e.complemento); // só quando preenchido
+    entregaLinhas.push(`Endereço: ${enderecoPartes.join(", ")}`);
     entregaLinhas.push(`Horário: ${pedido.entrega.horario}`);
   }
 

@@ -9,11 +9,6 @@ import "./Checkout.css";
 // ─── Helpers puros de EXIBIÇÃO (máscara/moeda) ─────────────────────────────────
 // O saneamento (dígitos, DDI) vive no useCheckoutForm; aqui é só formatar a view.
 
-function formatCep(d: string): string {
-  const x = d.slice(0, 8);
-  return x.length > 5 ? `${x.slice(0, 5)}-${x.slice(5)}` : x;
-}
-
 function formatTelefone(d: string): string {
   const x = d.slice(0, 11);
   if (x.length <= 2) return x;
@@ -41,9 +36,6 @@ interface CheckoutProps {
 
 export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   const { items, totalCount, totalPrice } = useCart();
-
-  const cepErro =
-    form.cep.length > 0 && form.cep.length < 8 ? "CEP incompleto." : null;
 
   // Setinha "há mais abaixo" quando o conteúdo passa da tela (mobile c/ entrega).
   const [maisAbaixo, setMaisAbaixo] = useState(false);
@@ -195,19 +187,6 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             </label>
 
             <label className="checkout__field">
-              <span className="checkout__label">CEP *</span>
-              <input
-                className="checkout__input"
-                value={formatCep(form.cep)}
-                onChange={(e) => form.setCep(e.target.value)}
-                placeholder="00000-000"
-                inputMode="numeric"
-                autoComplete="postal-code"
-              />
-              {cepErro && <span className="checkout__error">{cepErro}</span>}
-            </label>
-
-            <label className="checkout__field">
               <span className="checkout__label">Rua *</span>
               <input
                 className="checkout__input"
@@ -239,6 +218,18 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 />
               </label>
             </div>
+
+            <label className="checkout__field">
+              <span className="checkout__label">Complemento</span>
+              <input
+                className="checkout__input"
+                value={form.complemento}
+                onChange={(e) => form.setComplemento(e.target.value)}
+                placeholder="Apto, bloco, referência (opcional)"
+                maxLength={50}
+                autoComplete="address-line2"
+              />
+            </label>
 
             <p className="checkout__note">
               ⏰ A entrega ocorre dentro de um período de aproximadamente 2 horas — a loja confirma o horário exato.
