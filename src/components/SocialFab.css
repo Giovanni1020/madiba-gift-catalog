@@ -1,0 +1,71 @@
+/* FABs sociais — canto inferior esquerdo.
+   Telas pequenas: lado a lado (row) — poupa altura no celular.
+   Telas grandes (>=768px): empilhados (column), como era originalmente. */
+.social-fab {
+  position: fixed;
+  left: calc(20px + env(safe-area-inset-left, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 150;
+
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .social-fab {
+    flex-direction: column;
+  }
+}
+
+.social-fab__btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+
+  box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.28),
+              0 2px 6px rgba(0, 0, 0, 0.16);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.social-fab__btn:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 8px 22px -2px rgba(0, 0, 0, 0.32),
+              0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+.social-fab__btn:active {
+  transform: scale(0.94);
+}
+
+.social-fab__btn:focus-visible {
+  outline: 2px solid var(--brand-pink);
+  outline-offset: 3px;
+}
+
+/* WhatsApp — verde oficial */
+.social-fab__btn--whatsapp {
+  background: #25d366;
+}
+
+/* Instagram — gradiente clássico */
+.social-fab__btn--instagram {
+  background: radial-gradient(
+      circle at 30% 107%,
+      #fdf497 0%,
+      #fdf497 5%,
+      #fd5949 45%,
+      #d6249f 60%,
+      #285aeb 90%
+    );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-fab__btn { transition: none; }
+  .social-fab__btn:active { transform: none; }
+}

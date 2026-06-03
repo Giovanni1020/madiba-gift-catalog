@@ -5,6 +5,8 @@ import Header from "./components/Header";
 import FilterBar from "./components/FilterBar";
 import ProductGrid from "./components/ProductGrid";
 import CartDrawer from "./components/CartDrawer";
+import CartFab from "./components/CartFab";
+import SocialFab from "./components/SocialFab";
 import BuqueExtrasDialog from "./components/BuqueExtrasDialog";
 import Checkout from "./components/Checkout";
 import { useFilter } from "./hooks/useFilter";
@@ -82,6 +84,8 @@ function CatalogPage() {
         </div>
       </main>
 
+      <CartFab />
+      <SocialFab />
       <CartDrawer onCheckout={openCheckout} />
       <BuqueExtrasDialog
         product={extrasProduct}

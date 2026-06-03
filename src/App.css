@@ -39,7 +39,10 @@ body {
 }
 
 .app__main {
-  padding: 0 2rem 4rem;
+  /* padding-bottom extra: garante que o FAB do carrinho (canto inf. direito)
+     não cubra o CTA do último card ao fim do scroll. */
+  padding: 0 2rem;
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 .app__container {
@@ -49,6 +52,7 @@ body {
 
 @media (max-width: 640px) {
   .app__main {
-    padding: 0 1rem 3rem;
+    padding: 0 1rem;
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
 }

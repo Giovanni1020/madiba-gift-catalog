@@ -1,0 +1,73 @@
+/* FAB do carrinho — flutua no canto inferior direito, acima da lista.
+   z-index abaixo do backdrop/drawer (200/210) para sumir quando o cart abre. */
+.cart-fab {
+  position: fixed;
+  right: calc(20px + env(safe-area-inset-right, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 150;
+
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+
+  background: var(--brand-pink-dark);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.28),
+              0 2px 6px rgba(0, 0, 0, 0.16);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.cart-fab[hidden] {
+  display: none;
+}
+
+.cart-fab:hover {
+  background: var(--brand-pink);
+  box-shadow: 0 8px 22px -2px rgba(0, 0, 0, 0.32),
+              0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+.cart-fab:active {
+  transform: scale(0.94);
+}
+
+.cart-fab:focus-visible {
+  outline: 2px solid var(--brand-pink);
+  outline-offset: 3px;
+}
+
+.cart-fab__icon {
+  /* leve ajuste óptico — o carrinho "pesa" à esquerda */
+  transform: translateX(1px);
+}
+
+/* Contador */
+.cart-fab__badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--color-text);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-fab { transition: none; }
+  .cart-fab:active { transform: none; }
+}

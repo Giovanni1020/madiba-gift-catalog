@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { CATEGORY_LABELS, Category } from "../data/products";
 import { PriceRange, SortOrder } from "../hooks/useFilter";
 import "./FilterBar.css";
@@ -28,6 +28,12 @@ export default function FilterBar({
   setSearch,
   total,
 }: Props) {
+  // No mobile a barra começa compacta (só busca + seta); categorias e ordenação
+  // ficam ocultas até o clique. No desktop o bloco é sempre visível (CSS).
+  const [open, setOpen] = useState(false);
+  // Indica filtro/ordenação ativos enquanto está colapsado.
+  const hasActive = category !== "todos" || sortOrder !== "default";
+
   return (
     <div className="filterbar-sticky">
       <div className="filterbar">
@@ -62,6 +68,37 @@ export default function FilterBar({
           />
         </div>
 
+        <button
+          type="button"
+          className={`filterbar__toggle${hasActive ? " filterbar__toggle--active" : ""}`}
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="filterbar-collapsible"
+          aria-label={open ? "Ocultar filtros" : "Mostrar filtros e ordenação"}
+        >
+          <span>Filtros</span>
+          <svg
+            className="filterbar__toggle-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 5l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <div
+          id="filterbar-collapsible"
+          className={`filterbar__collapsible${open ? " is-open" : ""}`}
+        >
         <div
           className="filterbar__pills"
           role="group"
@@ -113,6 +150,7 @@ export default function FilterBar({
           <span className="filterbar__count">
             {total} {total !== 1 ? "itens" : "item"}
           </span>
+        </div>
         </div>
       </div>
     </div>
