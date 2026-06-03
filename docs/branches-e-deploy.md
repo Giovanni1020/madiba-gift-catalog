@@ -20,7 +20,17 @@ feature branch ──(PR, quando pronta)──▶ main ──(testada + permiss�
 1. **Mudança** → branch separada (`feat/…`, `fix/…`, `chore/…`, `docs/…`).
 2. Pronta → **PR para `main`** → merge.
 3. `main` é **testada** (preview na Vercel).
-4. Aprovada **por uma pessoa** → **PR `main` → `production`** → merge → **deploy de produção**.
+4. Aprovada **por uma pessoa** → **promove `main` → `production` por fast-forward** → push → **deploy de produção**.
+
+A promoção é um **fast-forward** (`production` é sempre ancestral da `main`), sem PR e
+sem merge commit — o histórico de `production` fica idêntico ao da `main`:
+
+```sh
+git checkout production
+git merge --ff-only main      # falha se não for fast-forward (protege contra commits soltos)
+git push origin production    # dispara o deploy de produção
+git checkout main             # working tree volta sempre para a main
+```
 
 ## Ciclo de versões
 
@@ -43,7 +53,7 @@ ocorrer **em paralelo** ao feedback da versão anterior, que já está em produ�
 ## Deploy (Vercel)
 
 - **Production Branch = `production`** (Vercel → Settings → Git → Production Branch).
-  - Merge em `production` → **deploy de produção** → <https://madiba-garden.vercel.app>.
+  - Fast-forward + push em `production` → **deploy de produção** → <https://madiba-garden.vercel.app>.
   - Push em `main` e nas feature branches → **deploys de preview** (URL temporária por branch/PR), para testar antes de promover.
 - App estático (sem backend / sem variáveis de ambiente): build `npm run build`, saída `build/`.
 - **Após publicar em `production`, voltar sempre o working tree para `main`.** A
