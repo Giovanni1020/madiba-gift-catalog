@@ -5,10 +5,10 @@
 // "ramificar em entrega.tipo" com segurança de tipos (ver escopo-v1.md).
 
 export interface Endereco {
-  cep: string; // só dígitos (8) — sem máscara; máscara é só de exibição
   rua: string;
   numero: string; // string de propósito: aceita "123A", "s/n"
   bairro: string;
+  complemento: string; // opcional (apto, bloco, referência) — até 50 chars; "" quando vazio
 }
 
 export type Entrega =

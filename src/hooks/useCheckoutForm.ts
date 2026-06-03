@@ -21,8 +21,8 @@ export interface CheckoutForm {
   setNome: (v: string) => void;
   telefone: string; // só dígitos, sem DDI
   setTelefone: (raw: string) => void;
-  cep: string; // só dígitos
-  setCep: (raw: string) => void;
+  complemento: string; // opcional, texto livre até 50 chars
+  setComplemento: (v: string) => void;
   rua: string;
   setRua: (v: string) => void;
   numero: string;
@@ -43,7 +43,7 @@ export function useCheckoutForm(): CheckoutForm {
   const [tipo, setTipo] = useState<Entrega["tipo"]>("entrega");
   const [nome, setNome] = useState("");
   const [telefone, setTelefoneRaw] = useState("");
-  const [cep, setCepRaw] = useState("");
+  const [complemento, setComplementoRaw] = useState("");
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
@@ -51,17 +51,16 @@ export function useCheckoutForm(): CheckoutForm {
   const [horario, setHorario] = useState(""); // escolha obrigatória (só entrega)
 
   const setTelefone = (raw: string) => setTelefoneRaw(normalizePhone(raw));
-  const setCep = (raw: string) => setCepRaw(onlyDigits(raw).slice(0, 8));
+  // Complemento é opcional e de texto livre — só limita o tamanho (50 chars).
+  const setComplemento = (v: string) => setComplementoRaw(v.slice(0, 50));
 
   const nomeOk = nome.trim().length > 0;
   const telefoneOk = telefone.length === 10 || telefone.length === 11;
-  // RS é só aviso (não trava): pedido fora do RS pode ser entrega p/ alguém na
-  // região, resolvido com o atendente depois. Validamos só o formato (8 dígitos).
-  const cepOk = cep.length === 8;
+  // Complemento NÃO entra na validação (opcional). Endereço exige rua, número,
+  // bairro, quem recebe e horário.
   const enderecoOk =
     tipo === "retirada" ||
-    (cepOk &&
-      rua.trim().length > 0 &&
+    (rua.trim().length > 0 &&
       numero.trim().length > 0 &&
       bairro.trim().length > 0 &&
       recebe.trim().length > 0 &&
@@ -78,10 +77,10 @@ export function useCheckoutForm(): CheckoutForm {
             recebe: recebe.trim(),
             horario,
             endereco: {
-              cep,
               rua: rua.trim(),
               numero: numero.trim(),
               bairro: bairro.trim(),
+              complemento: complemento.trim(),
             },
           }
         : { tipo: "retirada" };
@@ -92,7 +91,7 @@ export function useCheckoutForm(): CheckoutForm {
     tipo, setTipo,
     nome, setNome,
     telefone, setTelefone,
-    cep, setCep,
+    complemento, setComplemento,
     rua, setRua,
     numero, setNumero,
     bairro, setBairro,
