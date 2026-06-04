@@ -190,7 +190,21 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                     onClick={() => removeItem(index)}
                     aria-label={`Remover ${product.name}`}
                   >
-                    <span aria-hidden="true">🗑️</span>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 7h16M10 4h4M9 7l.7 12.1a1 1 0 0 0 1 .9h2.6a1 1 0 0 0 1-.9L16 7M10 11v6M14 11v6"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
                 </li>
               );
