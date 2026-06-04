@@ -87,17 +87,11 @@
 }
 
 /* Hover só em ponteiro real (mouse) — evita o estado "grudado" no toque. */
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .filterbar__pill:hover {
     border-color: var(--brand-pink);
     color: var(--brand-pink-dark);
   }
-}
-
-/* Feedback de pressão no toque (some ao soltar o dedo). */
-.filterbar__pill:active {
-  border-color: var(--brand-pink);
-  color: var(--brand-pink-dark);
 }
 
 .filterbar__pill--active {
@@ -136,7 +130,7 @@
   border-color: var(--brand-pink);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .filterbar__select:hover {
     border-color: var(--brand-pink);
   }

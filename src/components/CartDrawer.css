@@ -65,13 +65,10 @@
   transition: color 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .cart-drawer__close:hover {
     color: var(--color-text);
   }
-}
-.cart-drawer__close:active {
-  color: var(--color-text);
 }
 
 /* Empty */
@@ -183,17 +180,12 @@
   transition: all 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .cart-item__qty-btn:hover {
     background: var(--brand-pink-dark);
     color: #fff;
     border-color: var(--brand-pink-dark);
   }
-}
-.cart-item__qty-btn:active {
-  background: var(--brand-pink-dark);
-  color: #fff;
-  border-color: var(--brand-pink-dark);
 }
 
 .cart-item__qty-num {
@@ -218,13 +210,10 @@
   transition: color 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .cart-item__remove:hover {
     color: #e00530;
   }
-}
-.cart-item__remove:active {
-  color: #e00530;
 }
 
 /* Footer */
@@ -264,13 +253,10 @@
   transition: background 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .cart-drawer__checkout:hover {
     background: var(--brand-pink-dark);
   }
-}
-.cart-drawer__checkout:active {
-  background: var(--brand-pink-dark);
 }
 
 .cart-drawer__clear {
@@ -284,11 +270,8 @@
   transition: color 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .cart-drawer__clear:hover {
     color: #e00530;
   }
-}
-.cart-drawer__clear:active {
-  color: #e00530;
 }
