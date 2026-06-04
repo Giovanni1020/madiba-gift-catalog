@@ -28,6 +28,16 @@ function formatBRL(cents: number): string {
 // Janelas de entrega: 1 em 1 hora, das 8h às 18h (8h às 9h … 17h às 18h).
 const HORARIOS = Array.from({ length: 10 }, (_, i) => `${8 + i}h às ${9 + i}h`);
 
+// Data em ISO local (yyyy-mm-dd) — sem usar toISOString (que converte p/ UTC e
+// pode "voltar um dia" perto da meia-noite). offsetDias=0 → hoje; 30 → daqui a 30 dias.
+function isoLocalDate(offsetDias: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDias);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
+
 interface CheckoutProps {
   form: CheckoutForm;
   onClose: () => void;
@@ -36,6 +46,10 @@ interface CheckoutProps {
 
 export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   const { items, totalCount, totalPrice } = useCart();
+
+  // Janela de escolha do dia: de hoje até 30 dias à frente.
+  const [minData] = useState(() => isoLocalDate(0));
+  const [maxData] = useState(() => isoLocalDate(30));
 
   // Setinha "há mais abaixo" quando o conteúdo passa da tela (mobile c/ entrega).
   const [maisAbaixo, setMaisAbaixo] = useState(false);
@@ -228,6 +242,18 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 placeholder="Apto, bloco, referência (opcional)"
                 maxLength={50}
                 autoComplete="address-line2"
+              />
+            </label>
+
+            <label className="checkout__field">
+              <span className="checkout__label">Dia da entrega *</span>
+              <input
+                type="date"
+                className="checkout__input"
+                value={form.data}
+                min={minData}
+                max={maxData}
+                onChange={(e) => form.setData(e.target.value)}
               />
             </label>
 

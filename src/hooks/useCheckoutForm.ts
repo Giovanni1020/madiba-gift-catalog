@@ -31,6 +31,8 @@ export interface CheckoutForm {
   setBairro: (v: string) => void;
   recebe: string; // nome de quem recebe (só entrega)
   setRecebe: (v: string) => void;
+  data: string; // dia desejado da entrega, ISO yyyy-mm-dd (só entrega)
+  setData: (v: string) => void;
   horario: string; // janela de entrega (só entrega)
   setHorario: (v: string) => void;
   // derivados
@@ -48,6 +50,7 @@ export function useCheckoutForm(): CheckoutForm {
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
   const [recebe, setRecebe] = useState("");
+  const [data, setData] = useState(""); // escolha obrigatória (só entrega)
   const [horario, setHorario] = useState(""); // escolha obrigatória (só entrega)
 
   const setTelefone = (raw: string) => setTelefoneRaw(normalizePhone(raw));
@@ -64,6 +67,7 @@ export function useCheckoutForm(): CheckoutForm {
       numero.trim().length > 0 &&
       bairro.trim().length > 0 &&
       recebe.trim().length > 0 &&
+      data.trim().length > 0 &&
       horario.trim().length > 0);
   const valido = nomeOk && telefoneOk && enderecoOk;
 
@@ -75,6 +79,7 @@ export function useCheckoutForm(): CheckoutForm {
         ? {
             tipo: "entrega",
             recebe: recebe.trim(),
+            data,
             horario,
             endereco: {
               rua: rua.trim(),
@@ -96,6 +101,7 @@ export function useCheckoutForm(): CheckoutForm {
     numero, setNumero,
     bairro, setBairro,
     recebe, setRecebe,
+    data, setData,
     horario, setHorario,
     telefoneOk, valido, build,
   };

@@ -36,6 +36,7 @@ test("separa itens e seções com linha em branco", () => {
     entrega: {
       tipo: "entrega",
       recebe: "João Silva",
+      data: "2026-06-10",
       horario: "14h às 15h",
       endereco: { rua: "Rua das Flores", numero: "123", bairro: "Centro", complemento: "Apto 42" },
     },
@@ -47,7 +48,7 @@ test("separa itens e seções com linha em branco", () => {
   expect(msg).toMatch(/\n\n\*Total:.*\*\n\n/);
   // cada seção do rodapé separada por linha em branco (com "Quem recebe" na entrega)
   expect(msg).toContain(
-    "Forma: Entrega\nQuem recebe: João Silva\nEndereço: Rua das Flores, 123, Centro, Apto 42\nHorário: 14h às 15h\n\nCliente: Maria — (51) 98508-2700",
+    "Forma: Entrega\nQuem recebe: João Silva\nEndereço: Rua das Flores, 123, Centro, Apto 42\nDia: 10/06/2026\nHorário: 14h às 15h\n\nCliente: Maria — (51) 98508-2700",
   );
 });
 
@@ -65,12 +66,13 @@ test("endereço sem complemento não acrescenta vírgula extra", () => {
     entrega: {
       tipo: "entrega",
       recebe: "Ana",
+      data: "2026-06-05",
       horario: "10h às 11h",
       endereco: { rua: "Av. Brasil", numero: "10", bairro: "Centro", complemento: "" },
     },
   });
 
-  expect(msg).toContain("Endereço: Av. Brasil, 10, Centro\nHorário:");
+  expect(msg).toContain("Endereço: Av. Brasil, 10, Centro\nDia: 05/06/2026\nHorário:");
 });
 
 test("retirada não imprime endereço; buquê sem extras não imprime adicionais", () => {

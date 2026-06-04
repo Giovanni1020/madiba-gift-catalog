@@ -126,10 +126,23 @@
 }
 
 .checkout__input {
+  /* box-sizing + width 100% + min-width 0: o input[type=date] tem largura
+     intrínseca grande (formato + ícone) e, sem isso, não encolhe no flex e
+     estoura a tela em aparelhos estreitos (~320–360px). */
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 10px 12px;
   border: 1.5px solid #e2d9d0;
   border-radius: 8px;
   font-size: 1rem;
+}
+
+/* Normaliza o controle de data no WebKit/iOS, que ignora width sem appearance. */
+input.checkout__input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .checkout__input:focus {
