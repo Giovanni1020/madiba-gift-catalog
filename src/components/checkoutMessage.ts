@@ -12,6 +12,12 @@ function brl(cents: number): string {
   });
 }
 
+// Data ISO (yyyy-mm-dd) → dd/mm/aaaa, sem criar Date (evita fuso/UTC).
+function dataFmt(iso: string): string {
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+
 function telFmt(d: string): string {
   const x = d.slice(0, 11);
   if (x.length <= 10) return `(${x.slice(0, 2)}) ${x.slice(2, 6)}-${x.slice(6)}`;
@@ -56,6 +62,7 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
     const enderecoPartes = [e.rua, e.numero, e.bairro];
     if (e.complemento) enderecoPartes.push(e.complemento); // só quando preenchido
     entregaLinhas.push(`Endereço: ${enderecoPartes.join(", ")}`);
+    entregaLinhas.push(`Dia: ${dataFmt(pedido.entrega.data)}`);
     entregaLinhas.push(`Horário: ${pedido.entrega.horario}`);
   }
 
