@@ -8,7 +8,6 @@ import CartDrawer from "./components/CartDrawer";
 import CartFab from "./components/CartFab";
 import SocialFab from "./components/SocialFab";
 import BuqueExtrasDialog from "./components/BuqueExtrasDialog";
-import ImageLightbox from "./components/ImageLightbox";
 import Checkout from "./components/Checkout";
 import { useFilter } from "./hooks/useFilter";
 import { useCheckoutForm } from "./hooks/useCheckoutForm";
@@ -18,9 +17,6 @@ import "./App.css";
 function CatalogPage() {
   const filter = useFilter();
   const [extrasProduct, setExtrasProduct] = useState<Product | null>(null);
-  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
-    null
-  );
   // Checkout é VIEW, não rota (ADR-0001): pushState ao entrar; o "voltar" do
   // celular dispara popstate e fecha o checkout em vez de sair do site.
   const [view, setView] = useState<"catalogo" | "checkout">("catalogo");
@@ -44,21 +40,11 @@ function CatalogPage() {
     popOverlayOr(() => setExtrasProduct(null));
   }, []);
 
-  // Lightbox da imagem do produto = overlay (mesmo tratamento de histórico).
-  const openImage = useCallback((image: { src: string; alt: string }) => {
-    pushOverlayOnce();
-    setLightbox(image);
-  }, []);
-  const dismissImage = useCallback(() => {
-    popOverlayOr(() => setLightbox(null));
-  }, []);
-
   // "Voltar" do celular (popstate) fecha qualquer overlay aberto → catálogo.
   useEffect(() => {
     const onPop = () => {
       setView("catalogo");
       setExtrasProduct(null);
-      setLightbox(null);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
@@ -91,15 +77,10 @@ function CatalogPage() {
             setSearch={filter.setSearch}
             total={filter.total}
           />
-          <ProductGrid
-            products={filter.filtered}
-            onOpenExtras={openExtras}
-            onOpenImage={openImage}
-          />
+          <ProductGrid products={filter.filtered} onOpenExtras={openExtras} />
         </div>
       </main>
 
-      <ImageLightbox image={lightbox} onDismiss={dismissImage} />
       <CartFab />
       <SocialFab />
       <CartDrawer onCheckout={openCheckout} />

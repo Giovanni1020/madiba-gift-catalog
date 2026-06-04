@@ -12,6 +12,7 @@ import {
   extrasTotal,
 } from "../data/products";
 import { useCart } from "../context/CartContext";
+import ImageLightbox from "./ImageLightbox";
 import "./BuqueExtrasDialog.css";
 
 // ─── Plaquinha image carousel ─────────────────────────────────────────────────
@@ -87,6 +88,8 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
   const { addBuque } = useCart();
   const [extras, setExtras] = useState<BuqueExtras>(EMPTY_EXTRAS);
   const [plaquinhaPage, setPlaquinhaPage] = useState(0);
+  // Imagem ampliada do produto (lightbox sobre o diálogo).
+  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
 
   // When the page changes, clear the plaquinha selection if it's not on the new page
   const handlePlaquinhaPage = (page: number) => {
@@ -105,14 +108,20 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
     if (isOpen) {
       setExtras(EMPTY_EXTRAS);
       setPlaquinhaPage(0);
+      setZoom(null);
     }
   }, [product?.id, isOpen]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onDismiss(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      // Com a imagem ampliada aberta, o Esc fecha só o lightbox (tratado lá).
+      if (zoom) return;
+      onDismiss();
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onDismiss]);
+  }, [onDismiss, zoom]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -158,14 +167,21 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
 
       <div className="bed" role="dialog" aria-modal="true" aria-labelledby="bed-title">
 
-        {/* Product image */}
+        {/* Product image — clicar amplia (lightbox) */}
         <div className="bed__img-wrap">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="bed__img"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-          />
+          <button
+            type="button"
+            className="bed__img-btn"
+            aria-label={`Ampliar imagem de ${product.name}`}
+            onClick={() => setZoom({ src: product.image, alt: product.name })}
+          >
+            <img
+              src={product.image}
+              alt={product.name}
+              className="bed__img"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+            />
+          </button>
         </div>
 
         {/* Header */}
@@ -314,6 +330,9 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
           <button className="bed__skip-btn" onClick={handleSkip}>Adicionar sem extras</button>
         </div>
       </div>
+
+      {/* Imagem ampliada sobre o diálogo */}
+      <ImageLightbox image={zoom} onDismiss={() => setZoom(null)} />
     </>
   );
 }
