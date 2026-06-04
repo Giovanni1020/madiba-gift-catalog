@@ -94,10 +94,9 @@
   margin-left: 12px;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .bed__close:hover { color: var(--color-text); }
 }
-.bed__close:active { color: var(--color-text); }
 
 /* Scrollable body */
 .bed__body {
@@ -210,13 +209,10 @@
   transition: background 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .plaq-carousel__arrow:hover {
     background: #fff;
   }
-}
-.plaq-carousel__arrow:active {
-  background: #fff;
 }
 
 .plaq-carousel__arrow--prev { left: 8px; }
@@ -306,17 +302,12 @@
   transition: all 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .bed__clear-btn:hover {
     background: #fee8ec;
     border-color: #e00530;
     color: #e00530;
   }
-}
-.bed__clear-btn:active {
-  background: #fee8ec;
-  border-color: #e00530;
-  color: #e00530;
 }
 
 /* Chocolate rows */
@@ -369,17 +360,12 @@
   line-height: 1;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .bed__qty-btn:hover:not(:disabled) {
     background: var(--brand-pink-dark);
     color: #fff;
     border-color: var(--brand-pink-dark);
   }
-}
-.bed__qty-btn:active:not(:disabled) {
-  background: var(--brand-pink-dark);
-  color: #fff;
-  border-color: var(--brand-pink-dark);
 }
 
 .bed__qty-btn:disabled {
@@ -440,10 +426,9 @@
   transition: background 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .bed__add-btn:hover { background: var(--brand-pink-dark); }
 }
-.bed__add-btn:active { background: var(--brand-pink-dark); }
 
 .bed__skip-btn {
   width: 100%;
@@ -456,10 +441,9 @@
   transition: color 0.15s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .bed__skip-btn:hover { color: var(--color-text-muted); }
 }
-.bed__skip-btn:active { color: var(--color-text-muted); }
 
 /* Aviso de exclusividade balão/plaquinha (cestas) */
 .bed__exclusive-hint {

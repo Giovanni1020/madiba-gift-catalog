@@ -32,6 +32,9 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  /* Feedback de toque no mobile: flash gerenciado pelo navegador (some sozinho
+     ao soltar o dedo — nunca "gruda" como :hover/:active em telas touch). */
+  -webkit-tap-highlight-color: rgba(234, 117, 170, 0.24);
 }
 
 .app {
