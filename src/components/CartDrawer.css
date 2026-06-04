@@ -131,7 +131,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 20px;
+  padding-right: 24px;
 }
 
 .cart-item__price {
