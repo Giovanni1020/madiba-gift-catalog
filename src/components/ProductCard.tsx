@@ -6,7 +6,6 @@ import "./ProductCard.css";
 interface Props {
   product: Product;
   onOpenExtras: (product: Product) => void;
-  onOpenImage: (image: { src: string; alt: string }) => void;
 }
 
 function formatPrice(cents: number): string {
@@ -16,7 +15,7 @@ function formatPrice(cents: number): string {
   });
 }
 
-export default function ProductCard({ product, onOpenExtras, onOpenImage }: Props) {
+export default function ProductCard({ product, onOpenExtras }: Props) {
   const [imgError, setImgError] = useState(false);
   const { addItem } = useCart();
   const {
@@ -77,23 +76,15 @@ export default function ProductCard({ product, onOpenExtras, onOpenImage }: Prop
             </svg>
           </div>
         ) : (
-          <button
-            type="button"
-            className="card__img-btn"
-            aria-label={`Ampliar imagem de ${name}`}
-            onClick={(e) => {
-              e.stopPropagation(); // não dispara o clique do card
-              onOpenImage({ src: image, alt: name });
-            }}
-          >
-            <img
-              src={image}
-              alt={name}
-              className="card__img"
-              onError={() => setImgError(true)}
-              loading="lazy"
-            />
-          </button>
+          // Imagem faz parte da área de clique do card (abre o diálogo); a
+          // ampliação foi movida para dentro do diálogo.
+          <img
+            src={image}
+            alt={name}
+            className="card__img"
+            onError={() => setImgError(true)}
+            loading="lazy"
+          />
         )}
         {featured && (
           <span className="card__badge card__badge--featured">Destaque</span>

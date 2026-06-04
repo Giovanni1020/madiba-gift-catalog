@@ -6,10 +6,9 @@ import "./ProductGrid.css";
 interface Props {
   products: Product[];
   onOpenExtras: (product: Product) => void;
-  onOpenImage: (image: { src: string; alt: string }) => void;
 }
 
-export default function ProductGrid({ products, onOpenExtras, onOpenImage }: Props) {
+export default function ProductGrid({ products, onOpenExtras }: Props) {
   if (products.length === 0) {
     return (
       <div className="grid__empty">
@@ -23,11 +22,7 @@ export default function ProductGrid({ products, onOpenExtras, onOpenImage }: Pro
     <ul className="grid" role="list">
       {products.map((product) => (
         <li key={product.id} className="grid__item">
-          <ProductCard
-            product={product}
-            onOpenExtras={onOpenExtras}
-            onOpenImage={onOpenImage}
-          />
+          <ProductCard product={product} onOpenExtras={onOpenExtras} />
         </li>
       ))}
     </ul>
