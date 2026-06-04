@@ -53,7 +53,12 @@
   transition: background 0.15s;
 }
 
-.lightbox__close:hover {
+@media (hover: hover) {
+  .lightbox__close:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+}
+.lightbox__close:active {
   background: rgba(255, 255, 255, 0.28);
 }
 

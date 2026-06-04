@@ -33,10 +33,12 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
-.social-fab__btn:hover {
-  filter: brightness(1.07);
-  box-shadow: 0 8px 22px -2px rgba(0, 0, 0, 0.32),
-              0 3px 8px rgba(0, 0, 0, 0.18);
+@media (hover: hover) {
+  .social-fab__btn:hover {
+    filter: brightness(1.07);
+    box-shadow: 0 8px 22px -2px rgba(0, 0, 0, 0.32),
+                0 3px 8px rgba(0, 0, 0, 0.18);
+  }
 }
 
 .social-fab__btn:active {

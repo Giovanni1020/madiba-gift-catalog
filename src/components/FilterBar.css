@@ -86,7 +86,16 @@
   white-space: nowrap;
 }
 
-.filterbar__pill:hover {
+/* Hover só em ponteiro real (mouse) — evita o estado "grudado" no toque. */
+@media (hover: hover) {
+  .filterbar__pill:hover {
+    border-color: var(--brand-pink);
+    color: var(--brand-pink-dark);
+  }
+}
+
+/* Feedback de pressão no toque (some ao soltar o dedo). */
+.filterbar__pill:active {
   border-color: var(--brand-pink);
   color: var(--brand-pink-dark);
 }
@@ -123,9 +132,14 @@
   transition: border-color 0.15s;
 }
 
-.filterbar__select:hover,
 .filterbar__select:focus {
   border-color: var(--brand-pink);
+}
+
+@media (hover: hover) {
+  .filterbar__select:hover {
+    border-color: var(--brand-pink);
+  }
 }
 
 .filterbar__count {
