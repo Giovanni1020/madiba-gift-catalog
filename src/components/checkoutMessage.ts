@@ -3,7 +3,7 @@
 
 import type { CartItem } from "../context/CartContext";
 import { CHOCOLATE_OPTIONS, extrasTotal } from "../data/products";
-import type { Cliente, Entrega } from "../types/order";
+import type { Cliente, Entrega, Pagamento } from "../types/order";
 
 function brl(cents: number): string {
   return (cents / 100).toLocaleString("pt-BR", {
@@ -18,6 +18,10 @@ function dataFmt(iso: string): string {
   return `${d}/${m}/${y}`;
 }
 
+function pagamentoLabel(p: Pagamento): string {
+  return p === "pix" ? "Pix" : "Link de pagamento";
+}
+
 function telFmt(d: string): string {
   const x = d.slice(0, 11);
   if (x.length <= 10) return `(${x.slice(0, 2)}) ${x.slice(2, 6)}-${x.slice(6)}`;
@@ -29,6 +33,7 @@ export interface Pedido {
   total: number; // centavos — confiamos no input (vem do próprio sistema)
   cliente: Cliente;
   entrega: Entrega;
+  pagamento: Pagamento;
 }
 
 // Sem emojis (clareza); linha em branco entre itens; lista TODOS os adicionais
@@ -69,7 +74,8 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
   // Itens, total, entrega (bloco) e cliente separados por linha em branco (\n\n).
   const secoes = [
     blocos.join("\n\n"),
-    `*Total: ${brl(pedido.total)}*`,
+    // Pagamento logo abaixo do total, no mesmo bloco (um \n, sem linha em branco).
+    `*Total: ${brl(pedido.total)}*\nPagamento: ${pagamentoLabel(pedido.pagamento)}`,
     entregaLinhas.join("\n"),
     `Cliente: ${pedido.cliente.nome} — ${telFmt(pedido.cliente.telefone)}`,
   ];

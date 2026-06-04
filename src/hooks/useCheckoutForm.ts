@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Cliente, Entrega } from "../types/order";
+import { Cliente, Entrega, Pagamento } from "../types/order";
 
 // Rascunho do checkout. Mora ACIMA do <Checkout> (no pai que não desmonta),
 // pra os dados sobreviverem ao "Voltar" e a add/remover itens.
@@ -17,6 +17,8 @@ function normalizePhone(raw: string): string {
 export interface CheckoutForm {
   tipo: Entrega["tipo"];
   setTipo: (t: Entrega["tipo"]) => void;
+  pagamento: Pagamento;
+  setPagamento: (p: Pagamento) => void;
   nome: string;
   setNome: (v: string) => void;
   telefone: string; // só dígitos, sem DDI
@@ -38,11 +40,12 @@ export interface CheckoutForm {
   // derivados
   telefoneOk: boolean;
   valido: boolean;
-  build: () => { cliente: Cliente; entrega: Entrega } | null;
+  build: () => { cliente: Cliente; entrega: Entrega; pagamento: Pagamento } | null;
 }
 
 export function useCheckoutForm(): CheckoutForm {
   const [tipo, setTipo] = useState<Entrega["tipo"]>("entrega");
+  const [pagamento, setPagamento] = useState<Pagamento>("pix");
   const [nome, setNome] = useState("");
   const [telefone, setTelefoneRaw] = useState("");
   const [complemento, setComplementoRaw] = useState("");
@@ -89,11 +92,12 @@ export function useCheckoutForm(): CheckoutForm {
             },
           }
         : { tipo: "retirada" };
-    return { cliente, entrega };
+    return { cliente, entrega, pagamento };
   };
 
   return {
     tipo, setTipo,
+    pagamento, setPagamento,
     nome, setNome,
     telefone, setTelefone,
     complemento, setComplemento,

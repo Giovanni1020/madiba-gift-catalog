@@ -33,6 +33,7 @@ test("separa itens e seções com linha em branco", () => {
     ],
     total: 48770,
     cliente: { nome: "Maria", telefone: "51985082700" },
+    pagamento: "pix",
     entrega: {
       tipo: "entrega",
       recebe: "João Silva",
@@ -44,8 +45,9 @@ test("separa itens e seções com linha em branco", () => {
 
   // linha em branco ENTRE itens diferentes
   expect(msg).toContain("Ferrero Rocher x2\n\n- 1x Box for Lovers");
-  // linha em branco ANTES e DEPOIS do total (regex evita o espaço da moeda)
-  expect(msg).toMatch(/\n\n\*Total:.*\*\n\n/);
+  // total com linha em branco antes; pagamento colado logo abaixo (um \n), e
+  // linha em branco depois do bloco total+pagamento (regex evita o espaço da moeda)
+  expect(msg).toMatch(/\n\n\*Total:.*\*\nPagamento: Pix\n\n/);
   // cada seção do rodapé separada por linha em branco (com "Quem recebe" na entrega)
   expect(msg).toContain(
     "Forma: Entrega\nQuem recebe: João Silva\nEndereço: Rua das Flores, 123, Centro, Apto 42\nDia: 10/06/2026\nHorário: 14h às 15h\n\nCliente: Maria — (51) 98508-2700",
@@ -63,6 +65,7 @@ test("endereço sem complemento não acrescenta vírgula extra", () => {
     ],
     total: 18990,
     cliente: { nome: "Ana", telefone: "51985082700" },
+    pagamento: "link",
     entrega: {
       tipo: "entrega",
       recebe: "Ana",
@@ -86,12 +89,16 @@ test("retirada não imprime endereço; buquê sem extras não imprime adicionais
     ],
     total: 12490,
     cliente: { nome: "João", telefone: "5133334444" },
+    pagamento: "pix",
     entrega: { tipo: "retirada" },
   });
 
   expect(msg).not.toContain("Endereço:");
   expect(msg).not.toContain("+ ");
   expect(msg).toContain("Forma: Retirada");
+  // pagamento aparece colado abaixo do total (fecho do *Total* + \n, sem linha
+  // em branco); evita asserir o valor por causa do NBSP da moeda no toLocaleString
+  expect(msg).toContain("*\nPagamento: Pix\n");
 });
 
 test("buildWhatsAppUrl encoda a mensagem (\\n -> %0A)", () => {

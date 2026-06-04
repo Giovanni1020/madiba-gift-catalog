@@ -38,6 +38,12 @@ function isoLocalDate(offsetDias: number): string {
   return `${d.getFullYear()}-${mm}-${dd}`;
 }
 
+// ISO (yyyy-mm-dd) → dd/mm/aaaa, só pra exibir na mensagem de validação.
+function brDate(iso: string): string {
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+
 interface CheckoutProps {
   form: CheckoutForm;
   onClose: () => void;
@@ -76,6 +82,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       total: totalPrice,
       cliente: r.cliente,
       entrega: r.entrega,
+      pagamento: r.pagamento,
     });
     window.open(buildWhatsAppUrl(STORE_PHONE, msg), "_blank");
     onSent();
@@ -120,6 +127,32 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
           {totalCount} {totalCount === 1 ? "item" : "itens"}
         </span>
         <strong>{formatBRL(totalPrice)}</strong>
+      </div>
+
+      {/* ── Toggle Pix / Link de pagamento ── */}
+      <div
+        className="checkout__toggle"
+        role="radiogroup"
+        aria-label="Forma de pagamento"
+      >
+        <button
+          type="button"
+          role="radio"
+          aria-checked={form.pagamento === "pix"}
+          className={`checkout__toggle-btn${form.pagamento === "pix" ? " is-active" : ""}`}
+          onClick={() => form.setPagamento("pix")}
+        >
+          💠 Pix
+        </button>
+        <button
+          type="button"
+          role="radio"
+          aria-checked={form.pagamento === "link"}
+          className={`checkout__toggle-btn${form.pagamento === "link" ? " is-active" : ""}`}
+          onClick={() => form.setPagamento("link")}
+        >
+          🔗 Link de pagamento
+        </button>
       </div>
 
       {/* ── Toggle Retirada / Entrega ── */}
@@ -253,7 +286,18 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 value={form.data}
                 min={minData}
                 max={maxData}
-                onChange={(e) => form.setData(e.target.value)}
+                // A mensagem nativa de validação (data fora do intervalo) sai no
+                // idioma do navegador. Sobrescrevemos em PT-BR via onInvalid e
+                // limpamos no onChange pra revalidar a cada digitação.
+                onInvalid={(e) =>
+                  e.currentTarget.setCustomValidity(
+                    `Escolha uma data entre ${brDate(minData)} e ${brDate(maxData)}.`,
+                  )
+                }
+                onChange={(e) => {
+                  e.currentTarget.setCustomValidity("");
+                  form.setData(e.target.value);
+                }}
               />
             </label>
 
