@@ -20,5 +20,9 @@ export interface Cliente {
   telefone: string; // só dígitos (DDD + número); o DDI entra no helper do WhatsApp
 }
 
+// Forma de pagamento — independente de retirada/entrega. Sempre há uma escolhida
+// (toggle com default), então não precisa de validação extra.
+export type Pagamento = "pix" | "link";
+
 // `Pedido` (itens + total + cliente + entrega) é montado no "Finalizar" do
 // Passo 2, juntando os itens do CartContext com o que vem deste formulário.
