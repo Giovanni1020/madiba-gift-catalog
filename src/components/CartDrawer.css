@@ -203,7 +203,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--color-border-hover);
+  color: #e00530;
   padding: 2px;
   display: flex;
   align-items: center;
@@ -212,7 +212,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .cart-item__remove:hover {
-    color: #e00530;
+    color: #a30425;
   }
 }
 
