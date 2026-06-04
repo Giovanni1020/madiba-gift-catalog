@@ -22,7 +22,11 @@
   z-index: 310;
   width: 460px;
   max-width: calc(100vw - 32px);
+  /* 100vh no mobile inclui a área atrás da barra do navegador, deixando o
+     diálogo mais alto que a tela visível (corta header/rodapé). dvh segue a
+     viewport real; env() reserva notch/indicador. vh fica de fallback. */
   max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   background: var(--color-surface);
   border-radius: 16px;
   display: flex;
