@@ -32,6 +32,11 @@ git push origin production    # dispara o deploy de produção
 git checkout main             # working tree volta sempre para a main
 ```
 
+> **Working tree após uma feature branch:** depois do commit + push da branch,
+> o working tree **permanece na própria branch** — não volta automaticamente
+> para a `main` logo após o commit. O retorno para a `main` acontece só **após
+> o humano confirmar o merge** (e/ou pedir para remover a branch já mergeada).
+
 ## Ciclo de versões
 
 O trabalho acontece por ciclos: **desenvolvimento de uma versão → feedback / próxima
