@@ -8,9 +8,11 @@
   transition: border-color 0.15s, transform 0.15s;
 }
 
-.card:hover {
-  border-color: var(--color-border-hover);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--color-border-hover);
+    transform: translateY(-2px);
+  }
 }
 
 /* Card clicável (disponível) — abre o diálogo/adiciona, como o botão. */
@@ -59,8 +61,10 @@
   transition: transform 0.3s;
 }
 
-.card:hover .card__img {
-  transform: scale(1.03);
+@media (hover: hover) {
+  .card:hover .card__img {
+    transform: scale(1.03);
+  }
 }
 
 .card__img-placeholder {
@@ -154,7 +158,15 @@
   white-space: nowrap;
 }
 
-.card__btn:hover:not(:disabled) {
+@media (hover: hover) {
+  .card__btn:hover:not(:disabled) {
+    background: var(--brand-pink-dark);
+    color: #fff;
+  }
+}
+
+/* Feedback de toque no mobile — sem hover "grudado". */
+.card__btn:active:not(:disabled) {
   background: var(--brand-pink-dark);
   color: #fff;
 }
