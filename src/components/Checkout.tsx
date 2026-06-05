@@ -25,8 +25,8 @@ function formatBRL(cents: number): string {
   });
 }
 
-// Janelas de entrega: 1 em 1 hora, das 8h às 18h (8h às 9h … 17h às 18h).
-const HORARIOS = Array.from({ length: 10 }, (_, i) => `${8 + i}h às ${9 + i}h`);
+// Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h).
+const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`);
 
 // Data em ISO local (yyyy-mm-dd) — sem usar toISOString (que converte p/ UTC e
 // pode "voltar um dia" perto da meia-noite). offsetDias=0 → hoje; 30 → daqui a 30 dias.
@@ -218,10 +218,6 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
         {/* ── Endereço (só quando entrega) ── */}
         {form.tipo === "entrega" && (
           <>
-            <p className="checkout__note">
-              📍 Entregas somente para o Rio Grande do Sul (RS).
-            </p>
-
             <label className="checkout__field">
               <span className="checkout__label">Quem recebe? *</span>
               <input
@@ -232,6 +228,10 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 autoComplete="off"
               />
             </label>
+
+            <p className="checkout__note">
+              📍 Entregas somente no RS, consulte taxa de entrega na finalização no whatsapp.
+            </p>
 
             <label className="checkout__field">
               <span className="checkout__label">Rua *</span>
