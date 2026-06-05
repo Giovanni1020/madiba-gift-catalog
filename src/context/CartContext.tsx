@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { Product, BuqueExtras, extrasTotal } from "../data/products";
 import { pushOverlayOnce, popOverlayOr } from "../overlayHistory";
+import { track } from "../lib/analytics/metaPixel";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -57,12 +58,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { product, quantity: 1 }];
     });
+    track("AddToCart", {
+      content_ids: [product.id],
+      content_name: product.name,
+      content_type: "product",
+      content_category: product.category,
+      value: product.price / 100,
+      currency: "BRL",
+    });
     pushOverlayOnce();
     setIsOpen(true);
   }, []);
 
   const addBuque = useCallback((product: Product, extras: BuqueExtras) => {
     setItems((prev) => [...prev, { product, quantity: 1, extras }]);
+    track("AddToCart", {
+      content_ids: [product.id],
+      content_name: product.name,
+      content_type: "product",
+      content_category: product.category,
+      value: (product.price + extrasTotal(extras)) / 100,
+      currency: "BRL",
+    });
     pushOverlayOnce();
     setIsOpen(true);
   }, []);

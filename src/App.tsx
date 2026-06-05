@@ -9,6 +9,7 @@ import CartFab from "./components/CartFab";
 import SocialFab from "./components/SocialFab";
 import BuqueExtrasDialog from "./components/BuqueExtrasDialog";
 import Checkout from "./components/Checkout";
+import ConsentBanner from "./components/ConsentBanner";
 import { useFilter } from "./hooks/useFilter";
 import { useCheckoutForm } from "./hooks/useCheckoutForm";
 import { pushOverlayOnce, popOverlayOr } from "./overlayHistory";
@@ -97,6 +98,8 @@ export default function App() {
   return (
     <CartProvider>
       <CatalogPage />
+      {/* Banner LGPD: liga o Meta Pixel só após consentimento (opt-in). */}
+      <ConsentBanner />
     </CartProvider>
   );
 }
