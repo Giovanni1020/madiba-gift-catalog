@@ -14,8 +14,10 @@
 | [escopo-v1.md](escopo-v1.md) | Escopo fechado do v1, spec do helper do WhatsApp, e o que fica pro v1.1+. |
 | [aparelhos-suportados.md](aparelhos-suportados.md) | Lista canônica de aparelhos/viewports que todo CSS deve suportar (mobile prioridade máxima). **Base do responsivo.** |
 | [branches-e-deploy.md](branches-e-deploy.md) | Estratégia de branches (feature → main → production) e a regra: **produção só com permissão humana**. |
+| [meta-pixel.md](meta-pixel.md) | Rastreamento via Meta Pixel: configuração (`REACT_APP_FB_PIXEL_ID`), consentimento (LGPD), eventos × ações e como validar. |
 | [adr/0001-filtros-na-url.md](adr/0001-filtros-na-url.md) | Filtros como estado de navegação na URL. |
 | [adr/0002-estado-e-persistencia-do-carrinho.md](adr/0002-estado-e-persistencia-do-carrinho.md) | Carrinho: Context+reducer; `sessionStorage`; `localStorage` opt-in p/ dados do cliente. |
+| [adr/0003-rastreamento-meta-pixel.md](adr/0003-rastreamento-meta-pixel.md) | Meta Pixel: browser-only (sem CAPI), consentimento opt-in, funil completo de eventos. |
 | [matriz-mental.md](matriz-mental.md) | Trilha de estudo — tópicos marcados para pesquisar depois. |
 
 ## Convenções

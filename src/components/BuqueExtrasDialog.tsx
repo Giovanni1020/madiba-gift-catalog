@@ -12,6 +12,7 @@ import {
   extrasTotal,
 } from "../data/products";
 import { useCart } from "../context/CartContext";
+import { track } from "../lib/analytics/metaPixel";
 import ImageLightbox from "./ImageLightbox";
 import "./BuqueExtrasDialog.css";
 
@@ -111,6 +112,20 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
       setZoom(null);
     }
   }, [product?.id, isOpen]);
+
+  // ViewContent (funil): visualização do produto ao abrir/trocar o diálogo.
+  useEffect(() => {
+    if (product) {
+      track("ViewContent", {
+        content_ids: [product.id],
+        content_name: product.name,
+        content_type: "product",
+        content_category: product.category,
+        value: product.price / 100,
+        currency: "BRL",
+      });
+    }
+  }, [product]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

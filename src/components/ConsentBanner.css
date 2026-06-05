@@ -1,0 +1,66 @@
+/* Banner de consentimento — fixo no rodapé, mobile-first.
+   Acima de qualquer overlay/FAB para nunca ficar inacessível. */
+.consent {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #2a2024;
+  color: #f5ece9;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.consent__text {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.consent__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.consent__btn {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.consent__btn--reject {
+  background: transparent;
+  color: #f5ece9;
+  border: 1px solid rgba(245, 236, 233, 0.4);
+}
+
+.consent__btn--accept {
+  background: #c2185b;
+  color: #fff;
+}
+
+/* Em telas maiores, vira uma barra: texto à esquerda, botões à direita. */
+@media (min-width: 640px) {
+  .consent {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+    padding: 14px 24px;
+  }
+
+  .consent__text {
+    flex: 1;
+  }
+
+  .consent__actions {
+    flex-shrink: 0;
+  }
+}

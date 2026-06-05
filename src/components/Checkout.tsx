@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { extrasTotal } from "../data/products";
 import { CheckoutForm } from "../hooks/useCheckoutForm";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "./checkoutMessage";
+import { track } from "../lib/analytics/metaPixel";
 import { STORE_PHONE } from "../config";
 import "./Checkout.css";
 
@@ -57,6 +58,16 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   const [minData] = useState(() => isoLocalDate(0));
   const [maxData] = useState(() => isoLocalDate(30));
 
+  // InitiateCheckout (funil): uma vez, ao entrar na tela de checkout.
+  // Snapshot do total no momento da montagem (deps vazias de propósito).
+  useEffect(() => {
+    track("InitiateCheckout", {
+      value: totalPrice / 100,
+      currency: "BRL",
+      num_items: totalCount,
+    });
+  }, []);
+
   // Setinha "há mais abaixo" quando o conteúdo passa da tela (mobile c/ entrega).
   const [maisAbaixo, setMaisAbaixo] = useState(false);
   useEffect(() => {
@@ -85,6 +96,12 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       pagamento: r.pagamento,
     });
     window.open(buildWhatsAppUrl(STORE_PHONE, msg), "_blank");
+    // Lead (funil): fim do funil possível no site — a venda fecha no WhatsApp.
+    track("Lead", {
+      value: totalPrice / 100,
+      currency: "BRL",
+      num_items: totalCount,
+    });
     onSent();
   }
 
