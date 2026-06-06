@@ -23,9 +23,14 @@ export default function ImageLightbox({ image, onDismiss }: Props) {
   }, [onDismiss]);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
+    if (!isOpen) return;
+    // Salva o estado anterior e restaura ao fechar — assim, quando o lightbox
+    // está aninhado sobre o diálogo (que já travou o scroll), fechar a imagem
+    // devolve "hidden" em vez de "" e o fundo continua travado.
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = prev;
     };
   }, [isOpen]);
 
