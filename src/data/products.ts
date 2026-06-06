@@ -142,6 +142,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/buque-3-rosas-importadas-1-girassol.jpeg",
     video: "/vids/buque-medelin.mp4",
     lazyVideo: false,
+    featured: true,
     maxChocolates: 5,
   },
 
