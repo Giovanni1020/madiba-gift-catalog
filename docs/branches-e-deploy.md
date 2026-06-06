@@ -60,6 +60,8 @@ ocorrer **em paralelo** ao feedback da versão anterior, que já está em produ�
 - **Production Branch = `production`** (Vercel → Settings → Git → Production Branch).
   - Fast-forward + push em `production` → **deploy de produção** → <https://madiba-garden.vercel.app>.
   - Push em `main` e nas feature branches → **deploys de preview** (URL temporária por branch/PR), para testar antes de promover.
-- App estático (sem backend / sem variáveis de ambiente): build `npm run build`, saída `build/`.
+- App estático (sem backend): build `npm run build`, saída `build/`.
+- **Variáveis de ambiente:** `REACT_APP_FB_PIXEL_ID` (Meta Pixel) — definir na Vercel
+  (Production + Preview). Inlinada no build; ausente ⇒ no-op. Ver [meta-pixel.md](meta-pixel.md).
 - **Após publicar em `production`, voltar sempre o working tree para `main`.** A
   `production` não é branch de trabalho — só recebe promoções. Nenhum commit nasce nela.
