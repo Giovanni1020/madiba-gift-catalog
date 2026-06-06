@@ -87,7 +87,7 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
           />
         )}
         {featured && (
-          <span className="card__badge card__badge--featured">Destaque</span>
+          <span className="card__badge card__badge--featured">Popular</span>
         )}
         {!inStock && (
           <span className="card__badge card__badge--oos">Indisponível</span>

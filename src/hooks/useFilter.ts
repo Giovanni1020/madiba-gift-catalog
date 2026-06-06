@@ -17,11 +17,14 @@ function matchesPrice(price: number, range: PriceRange): boolean {
 function sortProducts(products: Product[], order: SortOrder): Product[] {
   const copy = [...products];
 
-  if (order === "price-asc") return copy.sort((a, b) => a.price - b.price);
-  if (order === "price-desc") return copy.sort((a, b) => b.price - a.price);
-  if (order === "name")
-    return copy.sort((a, b) => a.name.localeCompare(b.name));
-  return copy; // "default" — preserves original order
+  if (order === "price-asc") copy.sort((a, b) => a.price - b.price);
+  else if (order === "price-desc") copy.sort((a, b) => b.price - a.price);
+  else if (order === "name") copy.sort((a, b) => a.name.localeCompare(b.name));
+  // "default" — preserves original order
+
+  // Produtos "Popular" (featured) vêm primeiro, preservando a ordenação acima
+  // entre os itens de cada grupo (Array.prototype.sort é estável).
+  return copy.sort((a, b) => Number(b.featured ?? false) - Number(a.featured ?? false));
 }
 
 export function useFilter() {
