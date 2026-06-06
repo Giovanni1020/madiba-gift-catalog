@@ -91,6 +91,10 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
   const [plaquinhaPage, setPlaquinhaPage] = useState(0);
   // Imagem ampliada do produto (lightbox sobre o diálogo).
   const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+  // Se o vídeo do produto falhar ao carregar, cai de volta para a imagem.
+  const [videoFailed, setVideoFailed] = useState(false);
+  // Expande a área de mídia para ver o vídeo inteiro (empurra o menu p/ baixo).
+  const [mediaExpanded, setMediaExpanded] = useState(false);
 
   // When the page changes, clear the plaquinha selection if it's not on the new page
   const handlePlaquinhaPage = (page: number) => {
@@ -110,6 +114,8 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
       setExtras(EMPTY_EXTRAS);
       setPlaquinhaPage(0);
       setZoom(null);
+      setVideoFailed(false);
+      setMediaExpanded(!!product?.video); // abre já com o vídeo em full
     }
   }, [product?.id, isOpen]);
 
@@ -176,26 +182,62 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
 
       <div className="bed" role="dialog" aria-modal="true" aria-labelledby="bed-title">
 
-        {/* Product image — clicar amplia (lightbox) */}
-        <div className="bed__img-wrap">
-          <button
-            type="button"
-            className="bed__img-btn"
-            aria-label={`Ampliar imagem de ${product.name}`}
-            onClick={() => setZoom({ src: product.image, alt: product.name })}
-          >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="bed__img"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+        {/* Product media — vídeo (autoplay/loop, tipo GIF) ou imagem (clicar amplia) */}
+        <div className={`bed__img-wrap${product.video && !videoFailed && mediaExpanded ? " bed__img-wrap--expanded" : ""}`}>
+          {product.video && !videoFailed ? (
+            <video
+              className="bed__img bed__video"
+              src={product.video}
+              poster={product.image}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload={product.lazyVideo ? "metadata" : "auto"}
+              tabIndex={-1}
+              aria-label={product.name}
+              disablePictureInPicture
+              controlsList="nodownload noplaybackrate nofullscreen"
+              onContextMenu={(e) => e.preventDefault()}
+              onError={() => setVideoFailed(true)}
             />
-          </button>
+          ) : (
+            <button
+              type="button"
+              className="bed__img-btn"
+              aria-label={`Ampliar imagem de ${product.name}`}
+              onClick={() => setZoom({ src: product.image, alt: product.name })}
+            >
+              <img
+                src={product.image}
+                alt={product.name}
+                className="bed__img"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+            </button>
+          )}
           <button className="bed__close" onClick={onDismiss} aria-label="Fechar">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
             </svg>
           </button>
+
+          {product.video && !videoFailed && (
+            <button
+              type="button"
+              className="bed__media-toggle"
+              onClick={() => setMediaExpanded((v) => !v)}
+              aria-label={mediaExpanded ? "Diminuir vídeo" : "Aumentar vídeo"}
+              aria-expanded={mediaExpanded}
+            >
+              <svg
+                className={`bed__media-toggle-icon${mediaExpanded ? " bed__media-toggle-icon--up" : ""}`}
+                width="18" height="18" viewBox="0 0 16 16" fill="none"
+              >
+                <path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Header */}

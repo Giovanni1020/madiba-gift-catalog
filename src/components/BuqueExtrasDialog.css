@@ -49,6 +49,20 @@
   overflow: hidden;
   flex-shrink: 0;
   background: var(--color-surface-tint);
+  transition: height 0.25s ease;
+}
+
+/* Mídia expandida: vídeos são em retrato (formato celular), então preenchemos a
+   largura (object-fit: cover herdado, sem barras laterais) e damos à área uma
+   proporção retrato. max-height limita a altura p/ o menu seguir visível/rolável. */
+.bed__img-wrap--expanded {
+  height: auto;
+  aspect-ratio: 3 / 4;
+  max-height: min(60vh, 520px);
+}
+
+.bed__img-wrap--expanded .bed__video {
+  object-position: center;
 }
 
 /* Botão que envolve a imagem — reset visual; serve de área de clique p/ ampliar. */
@@ -73,6 +87,12 @@
   object-fit: cover;
   object-position: center top;
   display: block;
+}
+
+/* Vídeo do produto: comporta-se como GIF (autoplay/loop, sem som).
+   pointer-events: none impede pausar/abrir/menu de contexto. */
+.bed__video {
+  pointer-events: none;
 }
 
 /* Header */
@@ -121,6 +141,40 @@
 
 @media (hover: hover) and (pointer: fine) {
   .bed__close:hover { background: #fff; color: #000; }
+}
+
+/* Botão p/ aumentar/diminuir o vídeo — pílula com setinha no rodapé da mídia */
+.bed__media-toggle {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #1a1a1a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.bed__media-toggle-icon {
+  transition: transform 0.2s ease;
+}
+
+.bed__media-toggle-icon--up {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bed__media-toggle:hover { background: #fff; }
 }
 
 /* Scrollable body */

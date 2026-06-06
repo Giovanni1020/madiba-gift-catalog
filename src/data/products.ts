@@ -9,6 +9,8 @@ export interface Product {
   price: number;           // em centavos BRL, ex: 7990 = R$79,90
   category: Category;
   image: string;           // caminho relativo a /public, ex: "/images/produto.jpg"
+  video?: string;          // caminho relativo a /public, ex: "/vids/produto.mp4". Quando presente, substitui a imagem no diálogo (autoplay/loop, sem controles). image vira o poster/fallback.
+  lazyVideo?: boolean;     // true = carrega sob demanda (preload "metadata"); false/ausente = carrega imediatamente (preload "auto")
   featured?: boolean;
   inStock?: boolean;
   maxChocolates?: number;    // buquês: controla a seção de chocolates (0/ausente = sem chocolate)
@@ -108,6 +110,8 @@ export const PRODUCTS: Product[] = [
     price: 12490,
     category: "buques",
     image: "/images/buque-5-rosas-importadas.jpeg",
+    video: "/vids/buque-5-rosas-importadas.mp4",
+    lazyVideo: false,
     featured: true,
     maxChocolates: 5,
   },
@@ -136,6 +140,8 @@ export const PRODUCTS: Product[] = [
     price: 9990,
     category: "buques",
     image: "/images/buque-3-rosas-importadas-1-girassol.jpeg",
+    video: "/vids/buque-medelin.mp4",
+    lazyVideo: false,
     maxChocolates: 5,
   },
 
