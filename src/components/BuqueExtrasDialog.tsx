@@ -164,12 +164,6 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
     onClose();
   };
 
-  const handleSkip = () => {
-    if (!product) return;
-    addBuque(product, EMPTY_EXTRAS);
-    onClose();
-  };
-
   if (!product) return null;
 
   const extrasCost = extrasTotal(extras);
@@ -197,6 +191,11 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
           </button>
+          <button className="bed__close" onClick={onDismiss} aria-label="Fechar">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+            </svg>
+          </button>
         </div>
 
         {/* Header */}
@@ -210,11 +209,6 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
               </p>
             )}
           </div>
-          <button className="bed__close" onClick={onDismiss} aria-label="Fechar">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-            </svg>
-          </button>
         </div>
 
         {/* Body */}
@@ -342,7 +336,6 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
             <span className="bed__summary-total">{formatPrice(product.price + extrasCost)}</span>
           </div>
           <button className="bed__add-btn" onClick={handleAdd}>Adicionar ao carrinho</button>
-          <button className="bed__skip-btn" onClick={handleSkip}>Adicionar sem extras</button>
         </div>
       </div>
 
