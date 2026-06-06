@@ -19,9 +19,9 @@ import "./BuqueExtrasDialog.css";
 // ─── Plaquinha image carousel ─────────────────────────────────────────────────
 
 const PLAQUINHA_IMAGES = [
-  { src: "/images/plaquinhas1.png", alt: "Plaquinhas — página 1" },
-  { src: "/images/plaquinhas2.png", alt: "Plaquinhas — página 2" },
-  { src: "/images/plaquinhas3.png", alt: "Plaquinhas — página 3" },
+  { src: "/images/plaquinhas1.jpg", alt: "Plaquinhas — página 1" },
+  { src: "/images/plaquinhas2.jpg", alt: "Plaquinhas — página 2" },
+  { src: "/images/plaquinhas3.jpg", alt: "Plaquinhas — página 3" },
 ];
 
 interface CarouselProps {
@@ -266,7 +266,7 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
 
             {/* Reference image */}
             <div className="bed__ref-img-wrap">
-              <img src="/images/baloes.png" alt="Opções de balão" className="bed__ref-img" />
+              <img src="/images/baloes.jpg" alt="Opções de balão" className="bed__ref-img" />
             </div>
 
             <div className="bed__select-row">
@@ -338,7 +338,7 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
 
               {/* Reference image */}
               <div className="bed__ref-img-wrap">
-                <img src="/images/chocolates.png" alt="Opções de chocolate" className="bed__ref-img" />
+                <img src="/images/chocolates.jpg" alt="Opções de chocolate" className="bed__ref-img" />
               </div>
 
               <p className="bed__section-hint">
