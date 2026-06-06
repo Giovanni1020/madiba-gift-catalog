@@ -203,6 +203,14 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
     else if (dy >= DRAG_THRESHOLD) setMediaExpanded(true);
   };
 
+  // Mesmos handlers na mídia e no header (o título é a alça mais intuitiva).
+  const mediaDragHandlers = {
+    onPointerDown: handleMediaPointerDown,
+    onPointerMove: handleMediaPointerMove,
+    onPointerUp: handleMediaPointerUp,
+    onPointerCancel: () => { dragRef.current = null; },
+  };
+
   if (!product) return null;
 
   const extrasCost = extrasTotal(extras);
@@ -219,10 +227,7 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
             Arraste vertical ↑/↓ minimiza/expande a área (estilo vídeo). */}
         <div
           className={`bed__img-wrap${mediaExpanded ? " bed__img-wrap--expanded" : ""}`}
-          onPointerDown={handleMediaPointerDown}
-          onPointerMove={handleMediaPointerMove}
-          onPointerUp={handleMediaPointerUp}
-          onPointerCancel={() => { dragRef.current = null; }}
+          {...mediaDragHandlers}
         >
           {product.video && !videoFailed ? (
             <video
@@ -282,8 +287,8 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
           </button>
         </div>
 
-        {/* Header */}
-        <div className="bed__header">
+        {/* Header — também serve de alça de arraste para expandir/minimizar a mídia */}
+        <div className="bed__header bed__header--drag" {...mediaDragHandlers}>
           <div>
             <p className="bed__label">Adicionais para</p>
             <h2 className="bed__title" id="bed-title">{product.name}</h2>

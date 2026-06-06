@@ -110,6 +110,14 @@
   flex-shrink: 0;
 }
 
+/* O header funciona como alça de arraste (↑ minimiza / ↓ expande a mídia):
+   sem seleção de texto e sem rolagem do navegador durante o gesto. */
+.bed__header--drag {
+  touch-action: none;
+  user-select: none;
+  cursor: ns-resize;
+}
+
 .bed__label {
   font-size: 0.75rem;
   text-transform: uppercase;
