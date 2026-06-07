@@ -42,25 +42,32 @@
 }
 
 /* Product image */
+/* A área de mídia tem proporção retrato (formato celular); o tamanho é controlado
+   por max-height — minimizada (220px) ou expandida. Animamos max-height (e não
+   height: auto, que não é interpolável) para o expandir/minimizar ficar suave,
+   tanto no arraste quanto no clique da setinha. */
 .bed__img-wrap {
   position: relative;
   width: 100%;
-  height: 220px;
+  aspect-ratio: 3 / 4;
+  max-height: 220px;
   overflow: hidden;
   flex-shrink: 0;
   background: var(--color-surface-tint);
-  transition: height 0.25s ease;
+  transition: max-height 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
   /* Arraste vertical controla o tamanho — não deixar o navegador rolar/gesticular. */
   touch-action: none;
 }
 
-/* Mídia expandida: vídeos são em retrato (formato celular), então preenchemos a
-   largura (object-fit: cover herdado, sem barras laterais) e damos à área uma
-   proporção retrato. max-height limita a altura p/ o menu seguir visível/rolável. */
 .bed__img-wrap--expanded {
-  height: auto;
-  aspect-ratio: 3 / 4;
   max-height: min(60vh, 520px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bed__img-wrap,
+  .bed__media-toggle-icon {
+    transition: none;
+  }
 }
 
 .bed__img-wrap--expanded .bed__video,
