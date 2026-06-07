@@ -95,6 +95,13 @@ function PlaquinhaCarousel({ current, onChange }: CarouselProps) {
 
 interface Props {
   product: Product | null;
+  // Navegação entre itens (ADR-0004): vizinhos na lista filtrada (null nas
+  // pontas → sem seta) e seletor para trocar o produto aberto.
+  prevProduct?: Product | null;
+  nextProduct?: Product | null;
+  onSelect?: (p: Product) => void;
+  index?: number; // posição na lista filtrada (0-based); -1/ausente esconde o contador
+  total?: number;
   onClose: () => void; // fecha sem mexer no histórico (após adicionar; o cart reusa o overlay)
   onDismiss: () => void; // descarta o overlay no "voltar"/X/fora/Esc
 }
@@ -114,6 +121,11 @@ const EMPTY_EXTRAS: BuqueExtras = {
 
 export default function BuqueExtrasDialog({
   product,
+  prevProduct,
+  nextProduct,
+  onSelect,
+  index,
+  total,
   onClose,
   onDismiss,
 }: Props) {
@@ -129,8 +141,10 @@ export default function BuqueExtrasDialog({
   const [mediaExpanded, setMediaExpanded] = useState(true);
   // Gesto de arraste vertical na mídia (estilo vídeo). Guarda o Y inicial e se
   // houve movimento real, para distinguir arraste de toque (toque amplia a imagem).
-  const dragRef = useRef<{ startY: number } | null>(null);
+  const dragRef = useRef<{ startX: number; startY: number } | null>(null);
   const didDragRef = useRef(false);
+  // Tap vs swipe horizontal no backdrop (ADR-0004): tap fecha, swipe troca item.
+  const backdropRef = useRef<{ startX: number; startY: number } | null>(null);
 
   // When the page changes, clear the plaquinha selection if it's not on the new page
   const handlePlaquinhaPage = (page: number) => {
@@ -147,22 +161,26 @@ export default function BuqueExtrasDialog({
   const isOpen = product !== null;
 
   useEffect(() => {
-    if (isOpen) {
-      setExtras(EMPTY_EXTRAS);
-      setPlaquinhaPage(0);
-      setZoom(null);
-      setVideoFailed(false);
-      setMediaExpanded(true); // abre sempre com a mídia em tamanho cheio
+    if (!isOpen) return;
+    setExtras(EMPTY_EXTRAS);
+    setPlaquinhaPage(0);
+    setZoom(null);
+    setVideoFailed(false);
+    setMediaExpanded(true); // abre sempre com a mídia em tamanho cheio
 
-      setTimeout(() => {
-        setMediaExpanded(false); // automaticamente minimiza a mídia depois de um tempo, para mostrar o menu (mas deixa o vídeo expandido por mais tempo, pra dar tempo de assistir).
-      }, 5000);
-    }
+    // Minimiza a mídia após um tempo p/ revelar o menu. O timer é guardado e
+    // limpo no cleanup → ao trocar de item (ADR-0004) ele REINICIA em vez de
+    // acumular (senão um timer antigo minimizava a mídia do novo item cedo demais).
+    const t = setTimeout(() => setMediaExpanded(false), 5000);
+    return () => clearTimeout(t);
   }, [product?.id, isOpen]);
 
   // ViewContent (funil): visualização do produto ao abrir/trocar o diálogo.
+  // Debounce (ADR-0004): ao varrer itens rápido (setas/swipe), só dispara para
+  // o item em que o usuário "assenta", evitando floodar a Meta.
   useEffect(() => {
-    if (product) {
+    if (!product) return;
+    const t = setTimeout(() => {
       track("ViewContent", {
         content_ids: [product.id],
         content_name: product.name,
@@ -171,7 +189,8 @@ export default function BuqueExtrasDialog({
         value: product.price / 100,
         currency: "BRL",
       });
-    }
+    }, 400);
+    return () => clearTimeout(t);
   }, [product]);
 
   useEffect(() => {
@@ -184,6 +203,27 @@ export default function BuqueExtrasDialog({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [onDismiss, zoom]);
+
+  // Setas ←/→ trocam de produto (ADR-0004). Ignora quando o foco está num
+  // controle de formulário (senão sequestra a troca de opção do <select>) e
+  // quando a imagem ampliada está aberta.
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      if (zoom) return;
+      const tag = (document.activeElement?.tagName ?? "").toUpperCase();
+      if (tag === "SELECT" || tag === "INPUT" || tag === "TEXTAREA") return;
+      if (e.key === "ArrowLeft" && prevProduct && onSelect) {
+        e.preventDefault();
+        onSelect(prevProduct);
+      } else if (e.key === "ArrowRight" && nextProduct && onSelect) {
+        e.preventDefault();
+        onSelect(nextProduct);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [prevProduct, nextProduct, onSelect, zoom]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -219,22 +259,26 @@ export default function BuqueExtrasDialog({
     onClose();
   };
 
-  // ── Arraste vertical da mídia: ↑ minimiza, ↓ expande ──────────────────────
-  const DRAG_THRESHOLD = 30; // px p/ confirmar a troca de estado
+  // ── Gestos da mídia: ↑/↓ redimensiona, ←/→ troca de item (ADR-0004) ────────
+  const DRAG_THRESHOLD = 30; // px p/ confirmar a troca de estado (vertical)
   const DRAG_TAP_SLOP = 8; // px abaixo disso ainda conta como toque
+  const SWIPE_THRESHOLD = 45; // px horizontais p/ confirmar a troca de item
 
   const handleMediaPointerDown = (e: React.PointerEvent) => {
-    // O "X" trata o próprio clique e não inicia arraste. A setinha pode iniciar
-    // arraste (e ainda funciona como clique — o guard de didDrag evita o duplo).
+    // O "X" e as setas de navegação tratam o próprio clique e não iniciam
+    // arraste. A setinha de tamanho pode iniciar arraste (e ainda funciona como
+    // clique — o guard de didDrag evita o duplo).
     const target = e.target as HTMLElement;
-    if (target.closest(".bed__close")) return;
-    dragRef.current = { startY: e.clientY };
+    if (target.closest(".bed__close") || target.closest(".bed__nav")) return;
+    dragRef.current = { startX: e.clientX, startY: e.clientY };
     didDragRef.current = false;
   };
 
   const handleMediaPointerMove = (e: React.PointerEvent) => {
     if (!dragRef.current) return;
-    if (Math.abs(e.clientY - dragRef.current.startY) > DRAG_TAP_SLOP) {
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    if (Math.abs(dx) > DRAG_TAP_SLOP || Math.abs(dy) > DRAG_TAP_SLOP) {
       didDragRef.current = true;
     }
   };
@@ -243,7 +287,14 @@ export default function BuqueExtrasDialog({
     const start = dragRef.current;
     dragRef.current = null;
     if (!start) return;
+    const dx = e.clientX - start.startX;
     const dy = e.clientY - start.startY;
+    // Eixo dominante decide: horizontal troca de item; vertical redimensiona.
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) >= SWIPE_THRESHOLD) {
+      if (dx < 0 && nextProduct && onSelect) onSelect(nextProduct);
+      else if (dx > 0 && prevProduct && onSelect) onSelect(prevProduct);
+      return;
+    }
     if (dy <= -DRAG_THRESHOLD) setMediaExpanded(false);
     else if (dy >= DRAG_THRESHOLD) setMediaExpanded(true);
   };
@@ -258,6 +309,25 @@ export default function BuqueExtrasDialog({
     },
   };
 
+  // Backdrop (ADR-0004): swipe horizontal troca de item; tap fecha o diálogo.
+  const handleBackdropPointerDown = (e: React.PointerEvent) => {
+    backdropRef.current = { startX: e.clientX, startY: e.clientY };
+  };
+  const handleBackdropPointerUp = (e: React.PointerEvent) => {
+    const start = backdropRef.current;
+    backdropRef.current = null;
+    if (!start) return;
+    const dx = e.clientX - start.startX;
+    const dy = e.clientY - start.startY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) >= SWIPE_THRESHOLD) {
+      if (dx < 0 && nextProduct && onSelect) onSelect(nextProduct);
+      else if (dx > 0 && prevProduct && onSelect) onSelect(prevProduct);
+      return;
+    }
+    // Só conta como "clicar fora" se foi um tap (sem arraste real).
+    if (Math.abs(dx) < DRAG_TAP_SLOP && Math.abs(dy) < DRAG_TAP_SLOP) onDismiss();
+  };
+
   if (!product) return null;
 
   const extrasCost = extrasTotal(extras);
@@ -266,7 +336,12 @@ export default function BuqueExtrasDialog({
 
   return (
     <>
-      <div className="bed-backdrop" onClick={onDismiss} aria-hidden="true" />
+      <div
+        className="bed-backdrop"
+        onPointerDown={handleBackdropPointerDown}
+        onPointerUp={handleBackdropPointerUp}
+        aria-hidden="true"
+      />
 
       <div
         className="bed"
@@ -274,6 +349,9 @@ export default function BuqueExtrasDialog({
         aria-modal="true"
         aria-labelledby="bed-title"
       >
+        {/* Conteúdo do item — `key` por id re-dispara o fade rápido e reseta o
+            scroll do corpo ao trocar de produto (ADR-0004). */}
+        <div className="bed__content" key={product.id}>
         {/* Product media — vídeo (autoplay/loop, tipo GIF) ou imagem (clicar amplia).
             Arraste vertical ↑/↓ minimiza/expande a área (estilo vídeo). */}
         <div
@@ -366,11 +444,55 @@ export default function BuqueExtrasDialog({
               />
             </svg>
           </button>
+
+          {/* Navegação entre itens (ADR-0004) — setas nas bordas da mídia; somem
+              nas pontas (prev/next null). Distintas das setas do carrossel de
+              plaquinha, que ficam no corpo. */}
+          {prevProduct && onSelect && (
+            <button
+              type="button"
+              className="bed__nav bed__nav--prev"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect(prevProduct);
+              }}
+              aria-label={`Ver anterior: ${prevProduct.name}`}
+            >
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+          {nextProduct && onSelect && (
+            <button
+              type="button"
+              className="bed__nav bed__nav--next"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect(nextProduct);
+              }}
+              aria-label={`Ver próximo: ${nextProduct.name}`}
+            >
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+          {typeof index === "number" &&
+            index >= 0 &&
+            typeof total === "number" &&
+            total > 1 && (
+              <span className="bed__counter" aria-hidden="true">
+                {index + 1} / {total}
+              </span>
+            )}
         </div>
 
         {/* Header — também serve de alça de arraste para expandir/minimizar a mídia */}
         <div className="bed__header bed__header--drag" {...mediaDragHandlers}>
-          <div>
+          <div aria-live="polite">
             <p className="bed__label">Adicionais para</p>
             <h2 className="bed__title" id="bed-title">
               {product.name}
@@ -569,6 +691,8 @@ export default function BuqueExtrasDialog({
             Adicionar ao carrinho
           </button>
         </div>
+        </div>
+        {/* /.bed__content */}
       </div>
 
       {/* Imagem ampliada sobre o diálogo */}

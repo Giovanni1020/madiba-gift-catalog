@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CartProvider } from "./context/CartContext";
-import { Product } from "./data/products";
+import { PRODUCTS, Product } from "./data/products";
 import Header from "./components/Header";
 import FilterBar from "./components/FilterBar";
 import ProductGrid from "./components/ProductGrid";
@@ -17,7 +17,13 @@ import "./App.css";
 
 function CatalogPage() {
   const filter = useFilter();
-  const [extrasProduct, setExtrasProduct] = useState<Product | null>(null);
+  const { openItemId, setOpenItemId } = filter;
+  // Produto aberto vem do estado espelhado na URL (ADR-0004): fonte única, sem
+  // clobber com os filtros (o useFilter é o único escritor da URL — ADR-0001).
+  const extrasProduct =
+    openItemId != null
+      ? PRODUCTS.find((p) => p.id === openItemId) ?? null
+      : null;
   // Checkout é VIEW, não rota (ADR-0001): pushState ao entrar; o "voltar" do
   // celular dispara popstate e fecha o checkout em vez de sair do site.
   const [view, setView] = useState<"catalogo" | "checkout">("catalogo");
@@ -33,23 +39,56 @@ function CatalogPage() {
   }, []);
 
   // Diálogo de extras = overlay (mesmo tratamento de histórico do cart/checkout).
-  const openExtras = useCallback((product: Product) => {
-    pushOverlayOnce();
-    setExtrasProduct(product);
-  }, []);
-  const dismissExtras = useCallback(() => {
-    popOverlayOr(() => setExtrasProduct(null));
-  }, []);
+  const openExtras = useCallback(
+    (product: Product) => {
+      pushOverlayOnce();
+      setOpenItemId(product.id);
+    },
+    [setOpenItemId],
+  );
+  const dismissExtras = useCallback(
+    () => popOverlayOr(() => setOpenItemId(null)),
+    [setOpenItemId],
+  );
+  // Trocar de item dentro do diálogo (setas/swipe): só muda o id → replaceState
+  // via useFilter, sem empilhar histórico. Estável p/ não re-assinar o teclado.
+  const selectProduct = useCallback(
+    (p: Product) => setOpenItemId(p.id),
+    [setOpenItemId],
+  );
 
   // "Voltar" do celular (popstate) fecha qualquer overlay aberto → catálogo.
   useEffect(() => {
     const onPop = () => {
       setView("catalogo");
-      setExtrasProduct(null);
+      setOpenItemId(null);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
-  }, []);
+  }, [setOpenItemId]);
+
+  // Reabrir via ?item= (reload/link, ADR-0004): no mount, se o id da URL existe,
+  // garante a entrada de overlay pra o "voltar" fechar o diálogo; id inexistente
+  // → limpa. Lê o id inicial via ref pra ser um efeito de mount (sem re-disparar).
+  const mountItemRef = useRef(openItemId);
+  useEffect(() => {
+    const id = mountItemRef.current;
+    if (id == null) return;
+    if (PRODUCTS.some((p) => p.id === id)) pushOverlayOnce();
+    else setOpenItemId(null);
+  }, [setOpenItemId]);
+
+  // Navegação entre itens dentro do diálogo (ADR-0004): percorre a lista
+  // filtrada. Nas pontas o vizinho é null → a seta some (sem loop).
+  const visible = filter.filtered;
+  const extrasIndex = extrasProduct
+    ? visible.findIndex((p) => p.id === extrasProduct.id)
+    : -1;
+  const prevProduct = extrasIndex > 0 ? visible[extrasIndex - 1] : null;
+  const nextProduct =
+    extrasIndex >= 0 && extrasIndex < visible.length - 1
+      ? visible[extrasIndex + 1]
+      : null;
 
   if (view === "checkout") {
     return (
@@ -87,7 +126,12 @@ function CatalogPage() {
       <CartDrawer onCheckout={openCheckout} />
       <BuqueExtrasDialog
         product={extrasProduct}
-        onClose={() => setExtrasProduct(null)}
+        prevProduct={prevProduct}
+        nextProduct={nextProduct}
+        index={extrasIndex}
+        total={visible.length}
+        onSelect={selectProduct}
+        onClose={() => setOpenItemId(null)}
         onDismiss={dismissExtras}
       />
     </div>

@@ -18,6 +18,7 @@
 | [adr/0001-filtros-na-url.md](adr/0001-filtros-na-url.md) | Filtros como estado de navegação na URL. |
 | [adr/0002-estado-e-persistencia-do-carrinho.md](adr/0002-estado-e-persistencia-do-carrinho.md) | Carrinho: Context+reducer; `sessionStorage`; `localStorage` opt-in p/ dados do cliente. |
 | [adr/0003-rastreamento-meta-pixel.md](adr/0003-rastreamento-meta-pixel.md) | Meta Pixel: browser-only (sem CAPI), consentimento opt-in, funil completo de eventos. |
+| [adr/0004-navegacao-entre-itens-no-dialogo.md](adr/0004-navegacao-entre-itens-no-dialogo.md) | Diálogo de item navega a lista filtrada (swipe/setas); `?item=` na URL via `replaceState`. |
 | [matriz-mental.md](matriz-mental.md) | Trilha de estudo — tópicos marcados para pesquisar depois. |
 
 ## Convenções

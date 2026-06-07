@@ -64,15 +64,32 @@ export function parseFilters(search: string): Filters {
   };
 }
 
+// Lê o `item` (id do produto aberto no diálogo — ADR-0004). Validação defensiva:
+// só id inteiro positivo; qualquer outra coisa -> null. A EXISTÊNCIA do produto
+// é checada por quem usa (App), contra a lista de produtos.
+export function parseOpenItem(search: string): number | null {
+  const raw = new URLSearchParams(search).get("item");
+  if (!raw) return null;
+  const id = Number(raw);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
 // Filters -> query string CANÔNICA (omite defaults; "" quando tudo padrão).
 // Ser canônica é o que faz serialize(parse(url)) auto-limpar a URL.
-export function serializeFilters(f: Filters): string {
+export function serializeFilters(
+  f: Filters,
+  openItemId: number | null = null,
+): string {
   const p = new URLSearchParams();
   if (f.category !== "todos") p.set("categoria", f.category);
   if (f.priceRange !== "all") p.set("preco", PRICE_TO_URL[f.priceRange]);
   if (f.sortOrder !== "default") p.set("ordem", SORT_TO_URL[f.sortOrder]);
   const q = f.search.trim();
   if (q) p.set("q", q);
+  // `item` (ADR-0004): produto aberto no diálogo. Não é filtro, mas mora na
+  // mesma query pra o link ser compartilhável e sobreviver a reload. Vem por
+  // último (cosmético) e é omitido quando não há diálogo aberto.
+  if (openItemId != null) p.set("item", String(openItemId));
   const s = p.toString();
   return s ? `?${s}` : "";
 }
