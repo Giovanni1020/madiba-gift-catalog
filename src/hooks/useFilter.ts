@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PRODUCTS, Product } from "../data/products";
-import { parseFilters, serializeFilters } from "./filterParams";
+import { parseFilters, parseOpenItem, serializeFilters } from "./filterParams";
 import type { Filters, PriceRange, SortOrder } from "./filterParams";
 
 // Re-export para consumidores existentes (ex.: FilterBar) não mudarem o import.
@@ -33,16 +33,22 @@ export function useFilter() {
   const [filters, setFilters] = useState<Filters>(() =>
     parseFilters(window.location.search),
   );
+  // Produto aberto no diálogo, espelhado em `?item=` (ADR-0004). Não é filtro,
+  // mas mora aqui pra manter um ÚNICO escritor da URL (ADR-0001) — assim a
+  // auto-limpeza não apaga o item e o link fica compartilhável.
+  const [openItemId, setOpenItemId] = useState<number | null>(() =>
+    parseOpenItem(window.location.search),
+  );
 
   // Sincroniza a URL com o estado. serializeFilters é canônica (omite defaults
   // e tokens inválidos), então isto também AUTO-LIMPA uma URL inicial "suja".
   useEffect(() => {
-    const qs = serializeFilters(filters);
+    const qs = serializeFilters(filters, openItemId);
     if (qs !== window.location.search) {
       const url = window.location.pathname + qs + window.location.hash;
       window.history.replaceState(window.history.state, "", url);
     }
-  }, [filters]);
+  }, [filters, openItemId]);
 
   const setCategory = useCallback(
     (category: Filters["category"]) => setFilters((f) => ({ ...f, category })),
@@ -91,6 +97,9 @@ export function useFilter() {
     setSortOrder,
     search: filters.search,
     setSearch,
+    // estado do diálogo espelhado na URL (ADR-0004)
+    openItemId,
+    setOpenItemId,
     // derived
     filtered,
     total: filtered.length,

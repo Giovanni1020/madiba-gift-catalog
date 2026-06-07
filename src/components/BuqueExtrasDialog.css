@@ -6,6 +6,8 @@
   z-index: 300;
   backdrop-filter: blur(3px);
   animation: bedFadeIn 0.2s ease;
+  /* Swipe horizontal navega itens (ADR-0004) — sem gesto/scroll do navegador. */
+  touch-action: none;
 }
 
 @keyframes bedFadeIn {
@@ -41,6 +43,21 @@
   to   { opacity: 1; transform: translate(-50%, -50%); }
 }
 
+/* Wrapper do conteúdo do item — fade rápido ao trocar de produto (ADR-0004,
+   sem slide). Mantém o layout em coluna do .bed (mídia/header/corpo/rodapé). */
+.bed__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  animation: bedContentFade 0.14s ease;
+}
+
+@keyframes bedContentFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* Product image */
 /* A área de mídia anima entre duas alturas explícitas — minimizada (220px) e
    expandida (min(60vh, 520px)). Animar `height` entre valores em pixels é
@@ -70,6 +87,7 @@
   .bed__media-toggle-icon {
     transition: none;
   }
+  .bed__content { animation: none; }
 }
 
 .bed__img-wrap--expanded .bed__video,
@@ -202,6 +220,52 @@
 
 @media (hover: hover) and (pointer: fine) {
   .bed__media-toggle:hover { background: #fff; }
+}
+
+/* Navegação entre itens — setas nas bordas verticais da mídia (ADR-0004).
+   Distintas das setas do carrossel de plaquinha (que vivem no corpo). */
+.bed__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  color: #1a1a1a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  transition: background 0.15s;
+  touch-action: none;
+}
+
+.bed__nav--prev { left: 10px; }
+.bed__nav--next { right: 10px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .bed__nav:hover { background: #fff; }
+}
+
+/* Contador de posição na lista filtrada (ADR-0004) */
+.bed__counter {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  pointer-events: none;
 }
 
 /* Scrollable body */

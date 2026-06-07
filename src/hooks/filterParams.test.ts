@@ -1,5 +1,10 @@
 import { test, expect } from "@jest/globals";
-import { parseFilters, serializeFilters, DEFAULT_FILTERS } from "./filterParams";
+import {
+  parseFilters,
+  parseOpenItem,
+  serializeFilters,
+  DEFAULT_FILTERS,
+} from "./filterParams";
 
 test("parse: query vazia -> defaults", () => {
   expect(parseFilters("")).toEqual(DEFAULT_FILTERS);
@@ -42,4 +47,21 @@ test("round-trip: serialize(parse(x)) é canônico e idempotente (base da auto-l
   const limpo = serializeFilters(parseFilters(sujo));
   expect(limpo).toBe("?preco=alto"); // tira categoria inválida e param desconhecido
   expect(serializeFilters(parseFilters(limpo))).toBe(limpo);
+});
+
+test("parseOpenItem: id válido / inválido / ausente (validação defensiva)", () => {
+  expect(parseOpenItem("?item=4")).toBe(4);
+  expect(parseOpenItem("?categoria=cestas&item=13")).toBe(13);
+  expect(parseOpenItem("")).toBeNull();
+  expect(parseOpenItem("?item=abc")).toBeNull();
+  expect(parseOpenItem("?item=-1")).toBeNull();
+  expect(parseOpenItem("?item=0")).toBeNull();
+});
+
+test("serialize: inclui item por último; omite quando null", () => {
+  expect(serializeFilters(DEFAULT_FILTERS, 4)).toBe("?item=4");
+  expect(serializeFilters({ ...DEFAULT_FILTERS, category: "cestas" }, 13)).toBe(
+    "?categoria=cestas&item=13",
+  );
+  expect(serializeFilters(DEFAULT_FILTERS, null)).toBe("");
 });
