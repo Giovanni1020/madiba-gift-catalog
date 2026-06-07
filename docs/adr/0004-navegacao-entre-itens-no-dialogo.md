@@ -1,0 +1,98 @@
+# ADR-0004 — Navegação entre itens dentro do diálogo (swipe/setas) + `?item=` na URL
+
+- **Status:** Aceito — 2026-06-07
+- **Contexto do projeto:** SPA em Create React App (React 18.2, TS 4.9), **sem router** e
+  **sem lib de estado**. Jornada majoritariamente mobile (ver [aparelhos-suportados.md](../aparelhos-suportados.md)).
+
+## Contexto
+
+Hoje, para olhar outro produto, o cliente precisa **fechar o `BuqueExtrasDialog` e abrir
+outro card**. Isso quebra o ritmo de navegação — o catálogo tem ~20 itens e a jornada é de
+"vitrine". Queremos um movimento **estilo reels**: trocar de item **dentro do diálogo já
+aberto**, por **swipe horizontal** (mobile) e **setas ←/→** (desktop), sem fechar/reabrir.
+
+Restrições que o código atual impõe (e que viram trade-off):
+
+- O diálogo só conhece **um** `product` ([`BuqueExtrasDialog.tsx:96`](../../src/components/BuqueExtrasDialog.tsx)); o `App`
+  passa `extrasProduct` solto ([`App.tsx:88`](../../src/App.tsx)). Navegar exige conhecer a **lista** e o **índice**.
+- Já existe um gesto de arraste **vertical** na mídia e no header (↑ minimiza / ↓ expande —
+  [`BuqueExtrasDialog.tsx:222-259`](../../src/components/BuqueExtrasDialog.tsx)). O gesto novo é **horizontal** e precisa conviver.
+- O `useFilter` reescreve a query string e **limpa params desconhecidos** ([ADR-0001](0001-filtros-na-url.md)) — um
+  `?item=` ingênuo seria **apagado** na próxima mudança de filtro.
+
+## Decisão
+
+**D1 — Contrato.** O diálogo deixa de ser "burro de 1 produto": o `App` (dono de
+`filter.filtered`) passa a **lista** e o **produto atual**, mais `onPrev`/`onNext` (ou
+`onNavigate`) e `hasPrev`/`hasNext`. O índice é calculado no `App`, não no diálogo.
+
+**D2 — Lista percorrida.** É a **lista filtrada/ordenada atual** (`filter.filtered`). O
+`CustomBuqueCard` é injetado só na grade ([`ProductGrid.tsx:38`](../../src/components/ProductGrid.tsx)) e **não** entra na sequência.
+
+**D3 — Interação.** Swipe **horizontal** na **área da mídia** e no **backdrop** (perdoa
+toques fora do modal). O **eixo dominante** decide: `|dx| > |dy|` → troca de item; vertical
+segue minimizando/expandindo a mídia. No backdrop, **tap** (sem movimento) fecha como hoje;
+**swipe** navega. No teclado, **←/→** trocam de item, **ignorando** quando o foco está em
+`<select>`/`<input>`/`<textarea>` (senão sequestram a troca de opção do balão/plaquinha).
+
+**D4 — Transição.** **Fade rápido** entre itens (sem slide — o corpo do diálogo é pesado).
+`prefers-reduced-motion` → sem fade.
+
+**D5 — Pontas.** **Parar** no primeiro/último (sem loop). Seta da ponta fica
+escondida/desabilitada.
+
+**D6 — Estado + URL.** O produto aberto continua **efêmero** no React, **espelhado** na URL
+como `?item=<id>` via **`replaceState`** (entra na URL, **não empilha** histórico — coerente
+com a ADR-0001). Benefício: **link compartilhável do produto** (ótimo pro WhatsApp) e
+**sobrevive a reload**. Para não ser apagado pela auto-limpeza dos filtros, `item` vira um
+**param conhecido** do pipeline de `filterParams`.
+
+**D7 — Adicionais ao trocar.** **Descartados** — reaproveita o reset por `product.id` que já
+existe ([`BuqueExtrasDialog.tsx:149-161`](../../src/components/BuqueExtrasDialog.tsx)). Navegar é "olhar"; configurar vem depois.
+
+## Consequências
+
+**Positivas**
+- Navegação fluida; some a fricção de fechar/reabrir — é o objetivo de UX.
+- Link compartilhável + sobrevive a reload, sem adicionar router (alinha ADR-0001).
+- Reaproveita o reset de estado e o `ViewContent` já dispara por troca de produto
+  ([`BuqueExtrasDialog.tsx:164-175`](../../src/components/BuqueExtrasDialog.tsx)).
+- Zero dependência nova (CSS + History API + pointer events).
+
+**Negativas / custos**
+- Perde adicionais em andamento ao trocar (decisão consciente — D7).
+- Acopla o diálogo à lista: contrato maior do que "1 produto".
+- `?item=` vira **segundo escritor** da URL junto com os filtros → coordenação obrigatória
+  em `filterParams` (risco de clobber).
+- Dois eixos de gesto na mesma superfície → desambiguação por eixo (mais lógica de ponteiro).
+- Setas de teclado exigem guard de foco para não brigar com os `<select>`.
+
+## Alternativas consideradas
+
+- **Visualizador/reels separado em tela cheia:** reescreve UI e amplia escopo; o valor está
+  em navegar o **diálogo que já existe**. Rejeitada.
+- **Estado puramente efêmero (sem URL):** mais simples, mas perde share/reload — e o catálogo
+  vive de mandar **o item** no WhatsApp. Rejeitada em favor do `?item=` com `replaceState`.
+- **Slide real estilo reels:** custo de perf no diálogo pesado; o fade entrega o essencial.
+  Reavaliar se a navegação parecer "seca".
+- **Loop nas pontas:** mais "infinito", porém desorientador num catálogo finito. Rejeitada.
+- **Preservar rascunho de adicionais por item:** estado por item, complexidade alta para
+  ganho incerto. Adiada.
+
+## Notas de implementação
+
+- **`App`:** passa `products = filter.filtered` + `product` atual; deriva prev/next; expõe
+  `onNavigate`. Mantém o overlay único do histórico ([`overlayHistory.ts`](../../src/overlayHistory.ts)) — navegar **não**
+  mexe no histórico, só no `?item=` via `replaceState`.
+- **Seed no mount:** ler `?item=` e abrir o diálogo no produto correspondente **se** existir
+  na lista atual; id inválido/ausente → ignora (defensivo, igual à auto-limpeza do ADR-0001).
+- **`filterParams.ts`:** incluir `item` como param **preservado** no serialize/parse, para a
+  mudança de filtro não apagá-lo.
+- **Gesto:** estender os pointer handlers existentes ([`BuqueExtrasDialog.tsx:226-259`](../../src/components/BuqueExtrasDialog.tsx)) para
+  medir `dx` também; eixo dominante decide navegar vs. redimensionar a mídia.
+- **Teclado:** no `keydown`, pular quando `document.activeElement` for `SELECT`/`INPUT`/
+  `TEXTAREA`; ←/→ chamam prev/next. Molde: o handler de `Esc` já existente.
+- **`ViewContent`:** **debounce** (~300–500 ms) para não floodar a Meta no swipe rápido.
+- **Reset de scroll** do `bed__body` ao trocar de item (não cair no meio do formulário).
+- **A11y:** `aria-live` anuncia o novo produto; foco volta a um ponto estável (ex.: título)
+  na troca.
