@@ -188,6 +188,8 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
   cursor: pointer;
   transition: background 0.15s;
+  /* Permite iniciar o arraste pela própria setinha sem gesto do navegador. */
+  touch-action: none;
 }
 
 .bed__media-toggle-icon {

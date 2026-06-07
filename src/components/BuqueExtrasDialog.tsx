@@ -180,9 +180,10 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
   const DRAG_TAP_SLOP = 8;   // px abaixo disso ainda conta como toque
 
   const handleMediaPointerDown = (e: React.PointerEvent) => {
-    // Botões de controle (fechar/alternar) tratam o próprio clique.
+    // O "X" trata o próprio clique e não inicia arraste. A setinha pode iniciar
+    // arraste (e ainda funciona como clique — o guard de didDrag evita o duplo).
     const target = e.target as HTMLElement;
-    if (target.closest(".bed__close") || target.closest(".bed__media-toggle")) return;
+    if (target.closest(".bed__close")) return;
     dragRef.current = { startY: e.clientY };
     didDragRef.current = false;
   };
@@ -274,7 +275,11 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
           <button
             type="button"
             className="bed__media-toggle"
-            onClick={() => setMediaExpanded((v) => !v)}
+            onClick={() => {
+              // Se foi arraste (já ajustou o tamanho), não alterna de novo.
+              if (didDragRef.current) { didDragRef.current = false; return; }
+              setMediaExpanded((v) => !v);
+            }}
             aria-label={`${mediaExpanded ? "Diminuir" : "Aumentar"} ${product.video && !videoFailed ? "vídeo" : "imagem"}`}
             aria-expanded={mediaExpanded}
           >
