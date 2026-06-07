@@ -1,0 +1,57 @@
+/* Card "Buquê customizado" — variação do .card usada como CTA de contato.
+   Reaproveita a estrutura/escala do ProductCard; só sinaliza que é "especial"
+   (borda tracejada + tint da marca) e troca o rodapé preço+botão pelo botão de
+   contato em largura cheia. */
+
+.card--custom {
+  border-style: dashed;
+  border-color: var(--brand-pink);
+  background: linear-gradient(180deg, #fff, var(--brand-pink-soft));
+}
+
+/* Arte central no lugar da foto: ícone de flor sobre o tint rosa da marca. */
+.card__custom-art {
+  background: var(--brand-pink-soft);
+}
+
+/* Sem preço para alinhar ao lado → o botão ocupa a largura toda. */
+.card__footer--custom {
+  justify-content: stretch;
+}
+
+.card__contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--brand-pink-dark);
+  background: var(--brand-pink-dark);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card__contact-btn:hover {
+    background: var(--brand-pink-darker);
+    border-color: var(--brand-pink-darker);
+  }
+}
+
+.card__contact-btn:focus-visible {
+  outline: 2px solid var(--brand-pink);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .card__contact-btn {
+    min-height: 44px; /* alvo de toque */
+  }
+}
