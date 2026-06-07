@@ -522,7 +522,7 @@
 .bed__add-btn {
   width: 100%;
   padding: 12px;
-  background: var(--color-text);
+  background: var(--brand-pink-dark);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -533,7 +533,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .bed__add-btn:hover { background: var(--brand-pink-dark); }
+  .bed__add-btn:hover { background: var(--brand-pink-darker); }
 }
 
 /* Aviso de exclusividade balão/plaquinha (cestas) */

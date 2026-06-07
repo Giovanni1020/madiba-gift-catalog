@@ -2,6 +2,7 @@
   /* ── Brand palette (extracted from madibaIcon.png) ── */
   --brand-pink:        #EA75AA;  /* hot pink do logo */
   --brand-pink-dark:   #C55088;  /* fundo com texto branco — contraste AA */
+  --brand-pink-darker: #AF4577;  /* hover de CTA rosa sólido */
   --brand-pink-soft:   #FDE8F3;  /* hover areas, tints */
   --brand-green:       #96B487;  /* sage green do logo */
   --brand-green-dark:  #6E9063;
