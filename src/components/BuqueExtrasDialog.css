@@ -42,29 +42,31 @@
 }
 
 /* Product image */
-/* A área de mídia tem proporção retrato (formato celular); o tamanho é controlado
-   por max-height — minimizada (220px) ou expandida. Animamos max-height (e não
-   height: auto, que não é interpolável) para o expandir/minimizar ficar suave,
-   tanto no arraste quanto no clique da setinha. */
+/* A área de mídia anima entre duas alturas explícitas — minimizada (220px) e
+   expandida (min(60vh, 520px)). Animar `height` entre valores em pixels é
+   interpolável e estável (sem o recálculo de fim de transição que o par
+   aspect-ratio + max-height causava — o "flick"). object-fit: cover preenche a
+   área em qualquer altura. Vale tanto no arraste quanto no clique da setinha. */
 .bed__img-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
-  max-height: 220px;
+  height: 220px;
   overflow: hidden;
   flex-shrink: 0;
   background: var(--color-surface-tint);
-  transition: max-height 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: height 0.36s cubic-bezier(0.33, 1, 0.68, 1);
   /* Arraste vertical controla o tamanho — não deixar o navegador rolar/gesticular. */
   touch-action: none;
 }
 
 .bed__img-wrap--expanded {
-  max-height: min(60vh, 520px);
+  height: min(60vh, 520px);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bed__img-wrap,
+  .bed__img,
+  .bed__video,
   .bed__media-toggle-icon {
     transition: none;
   }
@@ -99,12 +101,15 @@
   object-position: center top;
   display: block;
   touch-action: none;
+  /* Acompanha o redimensionamento: o foco desliza de "topo" p/ "centro". */
+  transition: object-position 0.36s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 /* Vídeo do produto: comporta-se como GIF (autoplay/loop, sem som).
    pointer-events: none impede pausar/abrir/menu de contexto. */
 .bed__video {
   pointer-events: none;
+  transition: object-position 0.36s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 /* Header */
