@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Product,
   BuqueExtras,
@@ -93,8 +93,13 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
   const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
   // Se o vídeo do produto falhar ao carregar, cai de volta para a imagem.
   const [videoFailed, setVideoFailed] = useState(false);
-  // Expande a área de mídia para ver o vídeo inteiro (empurra o menu p/ baixo).
-  const [mediaExpanded, setMediaExpanded] = useState(false);
+  // Expande a área de mídia (imagem ou vídeo) para vê-la inteira — empurra o
+  // menu p/ baixo. Começa expandida; arrastar p/ cima minimiza, p/ baixo expande.
+  const [mediaExpanded, setMediaExpanded] = useState(true);
+  // Gesto de arraste vertical na mídia (estilo vídeo). Guarda o Y inicial e se
+  // houve movimento real, para distinguir arraste de toque (toque amplia a imagem).
+  const dragRef = useRef<{ startY: number } | null>(null);
+  const didDragRef = useRef(false);
 
   // When the page changes, clear the plaquinha selection if it's not on the new page
   const handlePlaquinhaPage = (page: number) => {
@@ -115,7 +120,7 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
       setPlaquinhaPage(0);
       setZoom(null);
       setVideoFailed(false);
-      setMediaExpanded(!!product?.video); // abre já com o vídeo em full
+      setMediaExpanded(true); // abre sempre com a mídia em tamanho cheio
     }
   }, [product?.id, isOpen]);
 
@@ -170,6 +175,42 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
     onClose();
   };
 
+  // ── Arraste vertical da mídia: ↑ minimiza, ↓ expande ──────────────────────
+  const DRAG_THRESHOLD = 30; // px p/ confirmar a troca de estado
+  const DRAG_TAP_SLOP = 8;   // px abaixo disso ainda conta como toque
+
+  const handleMediaPointerDown = (e: React.PointerEvent) => {
+    // Botões de controle (fechar/alternar) tratam o próprio clique.
+    const target = e.target as HTMLElement;
+    if (target.closest(".bed__close") || target.closest(".bed__media-toggle")) return;
+    dragRef.current = { startY: e.clientY };
+    didDragRef.current = false;
+  };
+
+  const handleMediaPointerMove = (e: React.PointerEvent) => {
+    if (!dragRef.current) return;
+    if (Math.abs(e.clientY - dragRef.current.startY) > DRAG_TAP_SLOP) {
+      didDragRef.current = true;
+    }
+  };
+
+  const handleMediaPointerUp = (e: React.PointerEvent) => {
+    const start = dragRef.current;
+    dragRef.current = null;
+    if (!start) return;
+    const dy = e.clientY - start.startY;
+    if (dy <= -DRAG_THRESHOLD) setMediaExpanded(false);
+    else if (dy >= DRAG_THRESHOLD) setMediaExpanded(true);
+  };
+
+  // Mesmos handlers na mídia e no header (o título é a alça mais intuitiva).
+  const mediaDragHandlers = {
+    onPointerDown: handleMediaPointerDown,
+    onPointerMove: handleMediaPointerMove,
+    onPointerUp: handleMediaPointerUp,
+    onPointerCancel: () => { dragRef.current = null; },
+  };
+
   if (!product) return null;
 
   const extrasCost = extrasTotal(extras);
@@ -182,8 +223,12 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
 
       <div className="bed" role="dialog" aria-modal="true" aria-labelledby="bed-title">
 
-        {/* Product media — vídeo (autoplay/loop, tipo GIF) ou imagem (clicar amplia) */}
-        <div className={`bed__img-wrap${product.video && !videoFailed && mediaExpanded ? " bed__img-wrap--expanded" : ""}`}>
+        {/* Product media — vídeo (autoplay/loop, tipo GIF) ou imagem (clicar amplia).
+            Arraste vertical ↑/↓ minimiza/expande a área (estilo vídeo). */}
+        <div
+          className={`bed__img-wrap${mediaExpanded ? " bed__img-wrap--expanded" : ""}`}
+          {...mediaDragHandlers}
+        >
           {product.video && !videoFailed ? (
             <video
               className="bed__img bed__video"
@@ -206,7 +251,11 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
               type="button"
               className="bed__img-btn"
               aria-label={`Ampliar imagem de ${product.name}`}
-              onClick={() => setZoom({ src: product.image, alt: product.name })}
+              onClick={() => {
+                // Se foi arraste (redimensionou), não abre o zoom.
+                if (didDragRef.current) { didDragRef.current = false; return; }
+                setZoom({ src: product.image, alt: product.name });
+              }}
             >
               <img
                 src={product.image}
@@ -222,26 +271,24 @@ export default function BuqueExtrasDialog({ product, onClose, onDismiss }: Props
             </svg>
           </button>
 
-          {product.video && !videoFailed && (
-            <button
-              type="button"
-              className="bed__media-toggle"
-              onClick={() => setMediaExpanded((v) => !v)}
-              aria-label={mediaExpanded ? "Diminuir vídeo" : "Aumentar vídeo"}
-              aria-expanded={mediaExpanded}
+          <button
+            type="button"
+            className="bed__media-toggle"
+            onClick={() => setMediaExpanded((v) => !v)}
+            aria-label={`${mediaExpanded ? "Diminuir" : "Aumentar"} ${product.video && !videoFailed ? "vídeo" : "imagem"}`}
+            aria-expanded={mediaExpanded}
+          >
+            <svg
+              className={`bed__media-toggle-icon${mediaExpanded ? " bed__media-toggle-icon--up" : ""}`}
+              width="18" height="18" viewBox="0 0 16 16" fill="none"
             >
-              <svg
-                className={`bed__media-toggle-icon${mediaExpanded ? " bed__media-toggle-icon--up" : ""}`}
-                width="18" height="18" viewBox="0 0 16 16" fill="none"
-              >
-                <path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          )}
+              <path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </div>
 
-        {/* Header */}
-        <div className="bed__header">
+        {/* Header — também serve de alça de arraste para expandir/minimizar a mídia */}
+        <div className="bed__header bed__header--drag" {...mediaDragHandlers}>
           <div>
             <p className="bed__label">Adicionais para</p>
             <h2 className="bed__title" id="bed-title">{product.name}</h2>
