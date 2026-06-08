@@ -339,6 +339,50 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
           </>
         )}
 
+        {/* ── Dia e horário da retirada (só quando retirada) ── */}
+        {form.tipo === "retirada" && (
+          <>
+            <label className="checkout__field">
+              <span className="checkout__label">Dia da retirada *</span>
+              <input
+                type="date"
+                className="checkout__input"
+                value={form.data}
+                min={minData}
+                max={maxData}
+                // A mensagem nativa de validação (data fora do intervalo) sai no
+                // idioma do navegador. Sobrescrevemos em PT-BR via onInvalid e
+                // limpamos no onChange pra revalidar a cada digitação.
+                onInvalid={(e) =>
+                  e.currentTarget.setCustomValidity(
+                    `Escolha uma data entre ${brDate(minData)} e ${brDate(maxData)}.`,
+                  )
+                }
+                onChange={(e) => {
+                  e.currentTarget.setCustomValidity("");
+                  form.setData(e.target.value);
+                }}
+              />
+            </label>
+
+            <label className="checkout__field">
+              <span className="checkout__label">Horário de retirada *</span>
+              <select
+                className="checkout__input"
+                value={form.horario}
+                onChange={(e) => form.setHorario(e.target.value)}
+              >
+                <option value="">— Escolha um horário —</option>
+                {HORARIOS.map((h) => (
+                  <option key={h} value={h}>
+                    {h}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </>
+        )}
+
         <button
           type="submit"
           className="checkout__submit"

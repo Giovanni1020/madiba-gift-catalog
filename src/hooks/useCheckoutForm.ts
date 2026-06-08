@@ -33,9 +33,9 @@ export interface CheckoutForm {
   setBairro: (v: string) => void;
   recebe: string; // nome de quem recebe (só entrega)
   setRecebe: (v: string) => void;
-  data: string; // dia desejado da entrega, ISO yyyy-mm-dd (só entrega)
+  data: string; // dia desejado (entrega ou retirada), ISO yyyy-mm-dd
   setData: (v: string) => void;
-  horario: string; // janela de entrega (só entrega)
+  horario: string; // janela de entrega ou retirada
   setHorario: (v: string) => void;
   // derivados
   telefoneOk: boolean;
@@ -53,8 +53,8 @@ export function useCheckoutForm(): CheckoutForm {
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
   const [recebe, setRecebe] = useState("");
-  const [data, setData] = useState(""); // escolha obrigatória (só entrega)
-  const [horario, setHorario] = useState(""); // escolha obrigatória (só entrega)
+  const [data, setData] = useState(""); // escolha obrigatória (entrega e retirada)
+  const [horario, setHorario] = useState(""); // escolha obrigatória (entrega e retirada)
 
   const setTelefone = (raw: string) => setTelefoneRaw(normalizePhone(raw));
   // Complemento é opcional e de texto livre — só limita o tamanho (50 chars).
@@ -64,15 +64,15 @@ export function useCheckoutForm(): CheckoutForm {
   const telefoneOk = telefone.length === 10 || telefone.length === 11;
   // Complemento NÃO entra na validação (opcional). Endereço exige rua, número,
   // bairro, quem recebe e horário.
+  // Dia e horário são exigidos nos dois fluxos (entrega e retirada).
+  const agendaOk = data.trim().length > 0 && horario.trim().length > 0;
   const enderecoOk =
     tipo === "retirada" ||
     (rua.trim().length > 0 &&
       numero.trim().length > 0 &&
       bairro.trim().length > 0 &&
-      recebe.trim().length > 0 &&
-      data.trim().length > 0 &&
-      horario.trim().length > 0);
-  const valido = nomeOk && telefoneOk && enderecoOk;
+      recebe.trim().length > 0);
+  const valido = nomeOk && telefoneOk && agendaOk && enderecoOk;
 
   const build = () => {
     if (!valido) return null;
@@ -91,7 +91,7 @@ export function useCheckoutForm(): CheckoutForm {
               complemento: complemento.trim(),
             },
           }
-        : { tipo: "retirada" };
+        : { tipo: "retirada", data, horario };
     return { cliente, entrega, pagamento };
   };
 

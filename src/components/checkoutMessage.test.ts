@@ -90,12 +90,13 @@ test("retirada não imprime endereço; buquê sem extras não imprime adicionais
     total: 12490,
     cliente: { nome: "João", telefone: "5133334444" },
     pagamento: "pix",
-    entrega: { tipo: "retirada" },
+    entrega: { tipo: "retirada", data: "2026-06-12", horario: "15h às 16h" },
   });
 
   expect(msg).not.toContain("Endereço:");
   expect(msg).not.toContain("+ ");
-  expect(msg).toContain("Forma: Retirada");
+  // retirada também leva dia e horário, sem bloco de endereço/quem recebe
+  expect(msg).toContain("Forma: Retirada\nDia: 12/06/2026\nHorário: 15h às 16h");
   // pagamento aparece colado abaixo do total (fecho do *Total* + \n, sem linha
   // em branco); evita asserir o valor por causa do NBSP da moeda no toLocaleString
   expect(msg).toContain("*\nPagamento: Pix\n");

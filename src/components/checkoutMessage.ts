@@ -67,9 +67,10 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
     const enderecoPartes = [e.rua, e.numero, e.bairro];
     if (e.complemento) enderecoPartes.push(e.complemento); // só quando preenchido
     entregaLinhas.push(`Endereço: ${enderecoPartes.join(", ")}`);
-    entregaLinhas.push(`Dia: ${dataFmt(pedido.entrega.data)}`);
-    entregaLinhas.push(`Horário: ${pedido.entrega.horario}`);
   }
+  // Dia e horário valem para os dois fluxos (entrega e retirada).
+  entregaLinhas.push(`Dia: ${dataFmt(pedido.entrega.data)}`);
+  entregaLinhas.push(`Horário: ${pedido.entrega.horario}`);
 
   // Itens, total, entrega (bloco) e cliente separados por linha em branco (\n\n).
   const secoes = [
