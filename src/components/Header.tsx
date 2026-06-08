@@ -8,17 +8,14 @@ export default function Header() {
       style={{ '--header-bg-pattern': `url(${process.env.PUBLIC_URL}/images/succulentas-pattern.png)` } as React.CSSProperties}
     >
       <div className="header__inner">
-        <a href="/" className="header__brand" aria-label="Gifted — início">
-          <span className="header__mark" aria-hidden="true">
-            <img
-              src={"./images/madibaIcon.png"}
-              alt="Madiba logo"
-              width="48"
-              height="48"
-            />
-          </span>
-          <span className="header__wordmark">Catálogo de presentes</span>
-        </a>
+        <img
+          className="header__logo"
+          src={`${process.env.PUBLIC_URL}/images/madiba-logo.svg`}
+          alt="Madiba Garden"
+          width="336"
+          height="192"
+        />
+        <span className="header__tagline">Catálogo de presentes</span>
       </div>
     </header>
   );
