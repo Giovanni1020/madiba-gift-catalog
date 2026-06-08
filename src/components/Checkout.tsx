@@ -29,6 +29,27 @@ function formatBRL(cents: number): string {
 // Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h).
 const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`);
 
+// "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
+// em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
+// Separado por tipo: entrega e retirada têm restrições independentes.
+const HORARIOS_INVALIDOS: Record<"entrega" | "retirada", Record<string, string[]>> = {
+  // Ex.: loja sem disponibilidade no começo do dia em 12/06/2026 (só entrega).
+  entrega: {
+    "2026-06-12": ["9h às 10h", "10h às 11h"],
+  },
+  // Retirada mantém a lógica, mas sem horários inválidos por enquanto.
+  retirada: {},
+};
+
+// Horário está bloqueado para esse tipo, nessa data?
+function horarioInvalido(
+  tipo: "entrega" | "retirada",
+  dataIso: string,
+  horario: string,
+): boolean {
+  return (HORARIOS_INVALIDOS[tipo][dataIso] ?? []).includes(horario);
+}
+
 // Data em ISO local (yyyy-mm-dd) — sem usar toISOString (que converte p/ UTC e
 // pode "voltar um dia" perto da meia-noite). offsetDias=0 → hoje; 30 → daqui a 30 dias.
 function isoLocalDate(offsetDias: number): string {
@@ -84,6 +105,14 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
     };
     // re-checa quando a altura muda (itens add/remove, toggle entrega/retirada)
   }, [items.length, form.tipo]);
+
+  // Se o horário já escolhido virar inválido ao trocar a data, limpa a seleção
+  // (o usuário escolhe outro). A option segue na lista, só não selecionável.
+  useEffect(() => {
+    if (form.horario && horarioInvalido(form.tipo, form.data, form.horario)) {
+      form.setHorario("");
+    }
+  }, [form.tipo, form.data, form.horario, form.setHorario]);
 
   function handleSubmit() {
     const r = form.build();
@@ -329,11 +358,15 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 onChange={(e) => form.setHorario(e.target.value)}
               >
                 <option value="">— Escolha um horário —</option>
-                {HORARIOS.map((h) => (
-                  <option key={h} value={h}>
-                    {h}
-                  </option>
-                ))}
+                {HORARIOS.map((h) => {
+                  const bloqueado = horarioInvalido("entrega", form.data, h);
+                  return (
+                    <option key={h} value={h} disabled={bloqueado}>
+                      {h}
+                      {bloqueado ? " (indisponível)" : ""}
+                    </option>
+                  );
+                })}
               </select>
             </label>
           </>
@@ -373,11 +406,15 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 onChange={(e) => form.setHorario(e.target.value)}
               >
                 <option value="">— Escolha um horário —</option>
-                {HORARIOS.map((h) => (
-                  <option key={h} value={h}>
-                    {h}
-                  </option>
-                ))}
+                {HORARIOS.map((h) => {
+                  const bloqueado = horarioInvalido("retirada", form.data, h);
+                  return (
+                    <option key={h} value={h} disabled={bloqueado}>
+                      {h}
+                      {bloqueado ? " (indisponível)" : ""}
+                    </option>
+                  );
+                })}
               </select>
             </label>
           </>
