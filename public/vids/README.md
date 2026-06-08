@@ -27,3 +27,14 @@ o usuário não pausa, não abre e não há som.
 - **Curto e leve:** alguns segundos em loop. Otimize o bitrate para a web.
 - O campo `image` continua sendo usado como **poster** (frame inicial) e como **fallback**
   caso o vídeo não carregue.
+
+## Cache em produção (Vercel)
+
+`/vids/` é servido com `Cache-Control: public, max-age=31536000, immutable` (ver
+[`vercel.json`](../../vercel.json)). Sem isso o navegador re-baixava o `.mp4` a cada abertura
+do diálogo: o `<video>` faz range-requests (`206 Partial Content`) que o default da Vercel
+(`max-age=0, must-revalidate`) não cacheia bem. (Card #42 no Trello.)
+
+⚠️ **Para atualizar um vídeo:** como é `immutable`, trocar o arquivo mantendo o **mesmo
+nome** não atualiza para quem já tem o cache. **Renomeie o arquivo** (ex.: `…-v2.mp4`) e
+ajuste o campo `video` em `src/data/products.ts` — cache-busting por nome.
