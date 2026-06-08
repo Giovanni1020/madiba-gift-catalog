@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { STORE_PHONE } from "../config";
 import { buildWhatsAppUrl } from "./checkoutMessage";
 import "./ProductCard.css";
@@ -13,22 +13,33 @@ const WHATSAPP_MESSAGE =
 
 export default function CustomBuqueCard() {
   const href = buildWhatsAppUrl(STORE_PHONE, WHATSAPP_MESSAGE);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <article className="card card--custom">
       <div className="card__img-wrap">
-        <div
-          className="card__img-placeholder card__custom-art"
-          aria-hidden="true"
-        >
-          <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
-            <rect width="40" height="40" rx="8" fill="#FDE8F3" />
-            <path
-              d="M20 10c-2 0-3.5 1.5-3.5 3.5 0 .8.27 1.53.72 2.1L12 15.75V18h2v9h12v-9h2v-2.25l-5.22-.15A3.5 3.5 0 0 0 23.5 13.5C23.5 11.5 22 10 20 10Zm0 2c.83 0 1.5.67 1.5 1.5S20.83 15 20 15s-1.5-.67-1.5-1.5S19.17 12 20 12Zm-6 8h5v5.5h-5V20Zm6 0h5v5.5h-5V20Z"
-              fill="#c2567a"
-            />
-          </svg>
-        </div>
+        {imgError ? (
+          <div
+            className="card__img-placeholder card__custom-art"
+            aria-hidden="true"
+          >
+            <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
+              <rect width="40" height="40" rx="8" fill="#FDE8F3" />
+              <path
+                d="M20 10c-2 0-3.5 1.5-3.5 3.5 0 .8.27 1.53.72 2.1L12 15.75V18h2v9h12v-9h2v-2.25l-5.22-.15A3.5 3.5 0 0 0 23.5 13.5C23.5 11.5 22 10 20 10Zm0 2c.83 0 1.5.67 1.5 1.5S20.83 15 20 15s-1.5-.67-1.5-1.5S19.17 12 20 12Zm-6 8h5v5.5h-5V20Zm6 0h5v5.5h-5V20Z"
+                fill="#c2567a"
+              />
+            </svg>
+          </div>
+        ) : (
+          <img
+            src="/images/buque-custom-exemplo.jpeg"
+            alt="Exemplo de buquê customizado"
+            className="card__img"
+            onError={() => setImgError(true)}
+            loading="lazy"
+          />
+        )}
       </div>
 
       <div className="card__body">
