@@ -21,6 +21,9 @@
   --color-text:        #1A1A1A;
   --color-text-muted:  #888888;
   --color-text-subtle: #B0A8A2;
+
+  /* ── Layout ── */
+  --header-h: 84px;     /* altura do header; a FilterBar sticky ancora nela */
 }
 
 *, *::before, *::after {

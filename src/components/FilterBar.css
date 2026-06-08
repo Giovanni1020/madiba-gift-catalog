@@ -1,7 +1,7 @@
-/* Sticky wrapper — sits just below the header (60px tall) */
+/* Sticky wrapper — sits just below the header (altura em var --header-h) */
 .filterbar-sticky {
   position: sticky;
-  top: 60px;
+  top: var(--header-h);
   z-index: 90;
   background: var(--color-bg);
   box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.12);

@@ -7,15 +7,17 @@
   overflow: hidden;
 }
 
-/* URL injetada via CSS variable em Header.tsx usando process.env.PUBLIC_URL */
+/* Pattern de suculentas — URL injetada via CSS var em Header.tsx (PUBLIC_URL).
+   O PNG tem fundo branco opaco (= cor do header), então a opacidade controla só
+   a intensidade das linhas pastel. A 0.1 sumia; ~0.6 deixa o motivo visível. */
 .header::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: var(--header-bg-pattern);
-  background-size: 220px;
+  background-size: 200px;
   background-repeat: repeat;
-  opacity: 0.08;
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -24,39 +26,35 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 2rem;
-  height: 60px;
+  height: var(--header-h);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
 }
 
-.header__brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
+/* O SVG é transparente; a altura é o que controla a legibilidade do wordmark. */
+.header__logo {
+  display: block;
+  width: auto;
+  height: 64px;
 }
 
-.header__mark {
-  display: flex;
-  align-items: center;
-}
-
-.header__wordmark {
-  font-size: 1.15rem;
-  font-weight: 600;
+/* Descritor ao lado do logo, separado por um divisor leve. */
+.header__tagline {
+  font-size: 1.05rem;
   color: var(--color-text);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
+  padding-left: 14px;
+  border-left: 1px solid var(--color-border);
 }
 
-.header__nav {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.header__nav a {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color 0.15s;
+@media (max-width: 640px) {
+  .header__inner {
+    padding: 0 1rem;
+    gap: 10px;
+  }
+  .header__tagline {
+    font-size: 0.9rem;
+    padding-left: 10px;
+  }
 }
