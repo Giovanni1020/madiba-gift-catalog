@@ -25,6 +25,8 @@ export interface CheckoutForm {
   setTelefone: (raw: string) => void;
   complemento: string; // opcional, texto livre até 50 chars
   setComplemento: (v: string) => void;
+  cidade: string;
+  setCidade: (v: string) => void;
   rua: string;
   setRua: (v: string) => void;
   numero: string;
@@ -49,6 +51,7 @@ export function useCheckoutForm(): CheckoutForm {
   const [nome, setNome] = useState("");
   const [telefone, setTelefoneRaw] = useState("");
   const [complemento, setComplementoRaw] = useState("");
+  const [cidade, setCidade] = useState("");
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
@@ -68,7 +71,8 @@ export function useCheckoutForm(): CheckoutForm {
   const agendaOk = data.trim().length > 0 && horario.trim().length > 0;
   const enderecoOk =
     tipo === "retirada" ||
-    (rua.trim().length > 0 &&
+    (cidade.trim().length > 0 &&
+      rua.trim().length > 0 &&
       numero.trim().length > 0 &&
       bairro.trim().length > 0 &&
       recebe.trim().length > 0);
@@ -85,6 +89,7 @@ export function useCheckoutForm(): CheckoutForm {
             data,
             horario,
             endereco: {
+              cidade: cidade.trim(),
               rua: rua.trim(),
               numero: numero.trim(),
               bairro: bairro.trim(),
@@ -101,6 +106,7 @@ export function useCheckoutForm(): CheckoutForm {
     nome, setNome,
     telefone, setTelefone,
     complemento, setComplemento,
+    cidade, setCidade,
     rua, setRua,
     numero, setNumero,
     bairro, setBairro,

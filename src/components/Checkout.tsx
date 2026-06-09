@@ -280,6 +280,17 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             </p>
 
             <label className="checkout__field">
+              <span className="checkout__label">Cidade *</span>
+              <input
+                className="checkout__input"
+                value={form.cidade}
+                onChange={(e) => form.setCidade(e.target.value)}
+                placeholder="Cidade"
+                autoComplete="address-level2"
+              />
+            </label>
+
+            <label className="checkout__field">
               <span className="checkout__label">Rua *</span>
               <input
                 className="checkout__input"
