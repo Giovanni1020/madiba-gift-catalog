@@ -5,6 +5,7 @@
 // "ramificar em entrega.tipo" com segurança de tipos (ver escopo-v1.md).
 
 export interface Endereco {
+  cidade: string;
   rua: string;
   numero: string; // string de propósito: aceita "123A", "s/n"
   bairro: string;
