@@ -491,6 +491,14 @@
 
 .bed__choc-row:last-child { border-bottom: none; }
 
+/* Esgotado: linha esmaecida e nome riscado */
+.bed__choc-row--unavailable {
+  opacity: 0.55;
+}
+.bed__choc-row--unavailable .bed__choc-name {
+  text-decoration: line-through;
+}
+
 .bed__choc-info {
   display: flex;
   align-items: center;

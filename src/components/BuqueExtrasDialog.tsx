@@ -637,6 +637,19 @@ export default function BuqueExtrasDialog({
               {CHOCOLATE_OPTIONS.map((choc) => {
                 const qty = extras.chocolates[choc.id] ?? 0;
                 const canAdd = totalChocSelected < maxChoc;
+                if (choc.unavailable) {
+                  return (
+                    <div
+                      key={choc.id}
+                      className="bed__choc-row bed__choc-row--unavailable"
+                    >
+                      <div className="bed__choc-info">
+                        <span className="bed__choc-name">{choc.name}</span>
+                        <span className="bed__choc-price">Indisponível</span>
+                      </div>
+                    </div>
+                  );
+                }
                 return (
                   <div key={choc.id} className="bed__choc-row">
                     <div className="bed__choc-info">
