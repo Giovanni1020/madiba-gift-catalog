@@ -60,6 +60,30 @@ function isoLocalDate(offsetDias: number): string {
   return `${d.getFullYear()}-${mm}-${dd}`;
 }
 
+// Antecedência mínima de 1h30 para o DIA DE HOJE: um horário cujo início esteja a
+// menos de 1h30 do agora não pode ser escolhido (ex.: às 8h, a janela "9h às 10h"
+// já saiu; às 13h, "9h às 10h" idem). Em datas futuras não há corte por hora.
+const ANTECEDENCIA_MIN_MS = 90 * 60 * 1000;
+
+function horarioCedoDemais(dataIso: string, horario: string): boolean {
+  if (dataIso !== isoLocalDate(0)) return false; // só corta quando a data é hoje
+  const inicioHora = parseInt(horario, 10); // "9h às 10h" → 9
+  if (Number.isNaN(inicioHora)) return false;
+  const inicioSlot = new Date();
+  inicioSlot.setHours(inicioHora, 0, 0, 0);
+  return inicioSlot.getTime() - Date.now() < ANTECEDENCIA_MIN_MS;
+}
+
+// Bloqueio efetivo = restrição predefinida da data OU antecedência mínima de hoje.
+// Ponto único de verdade, usado na lista e no efeito que limpa a seleção.
+function horarioBloqueado(
+  tipo: "entrega" | "retirada",
+  dataIso: string,
+  horario: string,
+): boolean {
+  return horarioInvalido(tipo, dataIso, horario) || horarioCedoDemais(dataIso, horario);
+}
+
 // ISO (yyyy-mm-dd) → dd/mm/aaaa, só pra exibir na mensagem de validação.
 function brDate(iso: string): string {
   const [y, m, d] = iso.split("-");
@@ -109,7 +133,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   // Se o horário já escolhido virar inválido ao trocar a data, limpa a seleção
   // (o usuário escolhe outro). A option segue na lista, só não selecionável.
   useEffect(() => {
-    if (form.horario && horarioInvalido(form.tipo, form.data, form.horario)) {
+    if (form.horario && horarioBloqueado(form.tipo, form.data, form.horario)) {
       form.setHorario("");
     }
   }, [form.tipo, form.data, form.horario, form.setHorario]);
@@ -370,7 +394,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
               >
                 <option value="">— Escolha um horário —</option>
                 {HORARIOS.map((h) => {
-                  const bloqueado = horarioInvalido("entrega", form.data, h);
+                  const bloqueado = horarioBloqueado("entrega", form.data, h);
                   return (
                     <option key={h} value={h} disabled={bloqueado}>
                       {h}
@@ -418,7 +442,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
               >
                 <option value="">— Escolha um horário —</option>
                 {HORARIOS.map((h) => {
-                  const bloqueado = horarioInvalido("retirada", form.data, h);
+                  const bloqueado = horarioBloqueado("retirada", form.data, h);
                   return (
                     <option key={h} value={h} disabled={bloqueado}>
                       {h}
