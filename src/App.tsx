@@ -10,6 +10,7 @@ import SocialFab from "./components/SocialFab";
 import BuqueExtrasDialog from "./components/BuqueExtrasDialog";
 import Checkout from "./components/Checkout";
 import ConsentBanner from "./components/ConsentBanner";
+import MediaPreloader from "./components/MediaPreloader";
 import { useFilter } from "./hooks/useFilter";
 import { useCheckoutForm } from "./hooks/useCheckoutForm";
 import { pushOverlayOnce, popOverlayOr } from "./overlayHistory";
@@ -141,6 +142,9 @@ function CatalogPage() {
 export default function App() {
   return (
     <CartProvider>
+      {/* Pré-carrega em background os vídeos dos destaques (irmão de CatalogPage
+          p/ sobreviver à troca catálogo↔checkout, que desmonta o catálogo). */}
+      <MediaPreloader />
       <CatalogPage />
       {/* Banner LGPD: liga o Meta Pixel só após consentimento (opt-in). */}
       <ConsentBanner />
