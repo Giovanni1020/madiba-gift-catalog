@@ -26,8 +26,8 @@ function formatBRL(cents: number): string {
   });
 }
 
-// Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h).
-const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`);
+// Janelas de entrega: 1 em 1 hora, das 8h às 18h (8h às 9h … 17h às 18h).
+const HORARIOS = Array.from({ length: 10 }, (_, i) => `${8 + i}h às ${9 + i}h`);
 
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
 // em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
@@ -35,7 +35,7 @@ const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`)
 const HORARIOS_INVALIDOS: Record<"entrega" | "retirada", Record<string, string[]>> = {
   // Ex.: loja sem disponibilidade no começo do dia em 12/06/2026 (só entrega).
   entrega: {
-    "2026-06-12": ["9h às 10h", "10h às 11h"],
+    "2026-06-12": ["10h às 11h"],
   },
   // Retirada mantém a lógica, mas sem horários inválidos por enquanto.
   retirada: {},
