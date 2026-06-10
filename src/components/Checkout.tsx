@@ -32,10 +32,13 @@ const HORARIOS = Array.from({ length: 10 }, (_, i) => `${8 + i}h às ${9 + i}h`)
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
 // em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
 // Separado por tipo: entrega e retirada têm restrições independentes.
-const HORARIOS_INVALIDOS: Record<"entrega" | "retirada", Record<string, string[]>> = {
+const HORARIOS_INVALIDOS: Record<
+  "entrega" | "retirada",
+  Record<string, string[]>
+> = {
   // Ex.: loja sem disponibilidade no começo do dia em 12/06/2026 (só entrega).
   entrega: {
-    "2026-06-12": ["10h às 11h"],
+    "2026-06-12": ["8h às 9h", "9h às 10h", "10h às 11h", "11h às 12h"],
   },
   // Retirada mantém a lógica, mas sem horários inválidos por enquanto.
   retirada: {},
@@ -81,7 +84,10 @@ function horarioBloqueado(
   dataIso: string,
   horario: string,
 ): boolean {
-  return horarioInvalido(tipo, dataIso, horario) || horarioCedoDemais(dataIso, horario);
+  return (
+    horarioInvalido(tipo, dataIso, horario) ||
+    horarioCedoDemais(dataIso, horario)
+  );
 }
 
 // ISO (yyyy-mm-dd) → dd/mm/aaaa, só pra exibir na mensagem de validação.
@@ -118,7 +124,9 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   useEffect(() => {
     const check = () => {
       const doc = document.documentElement;
-      setMaisAbaixo(doc.scrollHeight - window.scrollY - window.innerHeight > 24);
+      setMaisAbaixo(
+        doc.scrollHeight - window.scrollY - window.innerHeight > 24,
+      );
     };
     check();
     window.addEventListener("scroll", check, { passive: true });
@@ -300,7 +308,8 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             </label>
 
             <p className="checkout__note">
-              📍 Entregas somente no RS, consulte taxa de entrega na finalização no whatsapp.
+              📍 Entregas somente no RS, consulte taxa de entrega na finalização
+              no whatsapp.
             </p>
 
             <label className="checkout__field">
@@ -383,7 +392,8 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             </label>
 
             <p className="checkout__note">
-              ⏰ A entrega ocorre dentro de um período de aproximadamente 2 horas — a loja confirma o horário exato.
+              ⏰ A entrega ocorre dentro de um período de aproximadamente 2
+              horas — a loja confirma o horário exato.
             </p>
             <label className="checkout__field">
               <span className="checkout__label">Horário de entrega *</span>
