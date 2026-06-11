@@ -96,6 +96,15 @@ function brDate(iso: string): string {
   return `${d}/${m}/${y}`;
 }
 
+// A loja não entrega/retira aos domingos. O <input type="date"> não desabilita
+// dias da semana, então bloqueamos no onChange (mensagem PT-BR + limpa a data).
+// Parse manual pra evitar o UTC do new Date("yyyy-mm-dd") (getDay erraria o dia).
+function isDomingo(iso: string): boolean {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return false;
+  return new Date(y, m - 1, d).getDay() === 0; // 0 = domingo
+}
+
 interface CheckoutProps {
   form: CheckoutForm;
   onClose: () => void;
@@ -104,6 +113,10 @@ interface CheckoutProps {
 
 export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   const { items, totalCount, totalPrice } = useCart();
+
+  // Domingo selecionado? Derivado da data (persiste no re-render) — usado pra
+  // marcar o campo (borda vermelha) e mostrar a mensagem fixa abaixo dele.
+  const dataEhDomingo = isDomingo(form.data);
 
   // Janela de escolha do dia: de hoje até 30 dias à frente.
   const [minData] = useState(() => isoLocalDate(0));
@@ -145,6 +158,23 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       form.setHorario("");
     }
   }, [form.tipo, form.data, form.horario, form.setHorario]);
+
+  // Troca de data compartilhada por entrega e retirada. Mantemos a data escolhida
+  // no campo (o input nativo é tudo-ou-nada: limpar pra "tirar só o dia" zeraria
+  // mês/ano também). Se for domingo, marcamos o campo como inválido — a mensagem
+  // PT-BR sai pelo onInvalid (que sabe o tipo) e o reportValidity mostra o balão.
+  // Enquanto inválido, o <form> não envia (validação nativa barra o submit).
+  function handleDataChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.currentTarget;
+    const valor = input.value;
+    form.setData(valor);
+    if (isDomingo(valor)) {
+      input.setCustomValidity("domingo"); // texto real vem do onInvalid
+      input.reportValidity();
+    } else {
+      input.setCustomValidity("");
+    }
+  }
 
   function handleSubmit() {
     const r = form.build();
@@ -372,23 +402,29 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
               <span className="checkout__label">Dia da entrega *</span>
               <input
                 type="date"
-                className="checkout__input"
+                className={`checkout__input${dataEhDomingo ? " is-invalid" : ""}`}
                 value={form.data}
                 min={minData}
                 max={maxData}
+                aria-invalid={dataEhDomingo}
                 // A mensagem nativa de validação (data fora do intervalo) sai no
                 // idioma do navegador. Sobrescrevemos em PT-BR via onInvalid e
-                // limpamos no onChange pra revalidar a cada digitação.
+                // limpamos no onChange pra revalidar a cada digitação. Domingo é
+                // bloqueado no handler (o input nativo não desabilita dias da semana).
                 onInvalid={(e) =>
                   e.currentTarget.setCustomValidity(
-                    `Escolha uma data entre ${brDate(minData)} e ${brDate(maxData)}.`,
+                    isDomingo(e.currentTarget.value)
+                      ? "Não fazemos entregas em Domingos."
+                      : `Escolha uma data entre ${brDate(minData)} e ${brDate(maxData)}.`,
                   )
                 }
-                onChange={(e) => {
-                  e.currentTarget.setCustomValidity("");
-                  form.setData(e.target.value);
-                }}
+                onChange={handleDataChange}
               />
+              {dataEhDomingo && (
+                <span className="checkout__error">
+                  Não fazemos entregas em Domingos.
+                </span>
+              )}
             </label>
 
             <p className="checkout__note">
@@ -424,23 +460,29 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
               <span className="checkout__label">Dia da retirada *</span>
               <input
                 type="date"
-                className="checkout__input"
+                className={`checkout__input${dataEhDomingo ? " is-invalid" : ""}`}
                 value={form.data}
                 min={minData}
                 max={maxData}
+                aria-invalid={dataEhDomingo}
                 // A mensagem nativa de validação (data fora do intervalo) sai no
                 // idioma do navegador. Sobrescrevemos em PT-BR via onInvalid e
-                // limpamos no onChange pra revalidar a cada digitação.
+                // limpamos no onChange pra revalidar a cada digitação. Domingo é
+                // bloqueado no handler (o input nativo não desabilita dias da semana).
                 onInvalid={(e) =>
                   e.currentTarget.setCustomValidity(
-                    `Escolha uma data entre ${brDate(minData)} e ${brDate(maxData)}.`,
+                    isDomingo(e.currentTarget.value)
+                      ? "Não fazemos retiradas em Domingos."
+                      : `Escolha uma data entre ${brDate(minData)} e ${brDate(maxData)}.`,
                   )
                 }
-                onChange={(e) => {
-                  e.currentTarget.setCustomValidity("");
-                  form.setData(e.target.value);
-                }}
+                onChange={handleDataChange}
               />
+              {dataEhDomingo && (
+                <span className="checkout__error">
+                  Não fazemos retiradas em Domingos.
+                </span>
+              )}
             </label>
 
             <label className="checkout__field">

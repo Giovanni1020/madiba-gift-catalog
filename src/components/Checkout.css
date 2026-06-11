@@ -150,9 +150,19 @@ input.checkout__input[type="date"] {
   border-color: #c2185b;
 }
 
+/* Campo com erro (ex.: domingo selecionado): borda vermelha forte e fundo suave,
+   persiste enquanto a data inválida estiver no campo. */
+.checkout__input.is-invalid,
+.checkout__input.is-invalid:focus {
+  border-color: #d32f2f;
+  border-width: 2px;
+  background: #fdecea;
+}
+
 .checkout__error {
   font-size: 0.75rem;
   color: #c2185b;
+  font-weight: 600;
 }
 
 .checkout__submit {
