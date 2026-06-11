@@ -90,7 +90,7 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
           <span className="card__badge card__badge--featured">Popular</span>
         )}
         {!inStock && (
-          <span className="card__badge card__badge--oos">Indisponível</span>
+          <span className="card__badge card__badge--oos">Esgotado</span>
         )}
       </div>
 
@@ -110,7 +110,7 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
               handleAdd();
             }}
           >
-            {inStock ? "Adicionar" : "Indisponível"}
+            {inStock ? "Adicionar" : "Esgotado"}
           </button>
         </div>
       </div>
