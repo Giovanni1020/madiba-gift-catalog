@@ -65,7 +65,7 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
   if (pedido.entrega.tipo === "entrega") {
     const e = pedido.entrega.endereco;
     entregaLinhas.push(`Quem recebe: ${pedido.entrega.recebe}`);
-    const enderecoPartes = [e.cidade, e.rua, e.numero, e.bairro];
+    const enderecoPartes = [e.rua, e.numero, e.bairro, e.cidade];
     if (e.complemento) enderecoPartes.push(e.complemento); // só quando preenchido
     entregaLinhas.push(`Endereço: ${enderecoPartes.join(", ")}`);
   }
