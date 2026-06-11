@@ -64,6 +64,7 @@ export type PlaquinhaOption = typeof PLAQUINHA_OPTIONS[number];
 export interface BuqueExtras {
   balao: BalaoOption | null;       // null = not selected
   plaquinha: PlaquinhaOption | null;
+  cartao: boolean;                 // cartão (grátis) — só adiciona ou remove
   chocolates: Partial<Record<ChocolateOption, number>>;
 }
 
