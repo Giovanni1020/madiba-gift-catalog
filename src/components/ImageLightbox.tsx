@@ -44,7 +44,16 @@ export default function ImageLightbox({ image, onDismiss }: Props) {
       aria-label={`Imagem ampliada: ${image.alt}`}
       onClick={onDismiss}
     >
-      <button className="lightbox__close" onClick={onDismiss} aria-label="Fechar imagem">
+      <button
+        className="lightbox__close"
+        // O clique no X não deve borbulhar para o fundo (que também fecha) —
+        // senão o onDismiss dispara duas vezes.
+        onClick={(e) => {
+          e.stopPropagation();
+          onDismiss();
+        }}
+        aria-label="Fechar imagem"
+      >
         <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
           <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
         </svg>

@@ -61,6 +61,10 @@ function CatalogPage() {
   // "Voltar" do celular (popstate) fecha qualquer overlay aberto → catálogo.
   useEffect(() => {
     const onPop = () => {
+      // Se ainda resta um overlay no histórico, o "voltar" desfez um overlay
+      // ANINHADO (ex.: imagem ampliada sobre o diálogo) — quem o abriu cuida de
+      // fechá-lo; não derrube o diálogo/checkout de baixo.
+      if (window.history.state?.overlay) return;
       setView("catalogo");
       setOpenItemId(null);
     };

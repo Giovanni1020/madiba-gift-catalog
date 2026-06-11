@@ -112,7 +112,17 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
           <ul className="cart-drawer__list">
             {items.map(({ product, quantity, extras }, index) => {
               // Build extras lines
-              const extraLines: { label: string; price: number }[] = [];
+              const extraLines: {
+                label: string;
+                price: number;
+                free?: boolean;
+              }[] = [];
+              if (extras?.cartao)
+                extraLines.push({
+                  label: "💌 Com cartão",
+                  price: 0,
+                  free: true,
+                });
               if (extras?.balao)
                 extraLines.push({
                   label: `🎈 Balão — ${extras.balao}`,
@@ -160,7 +170,7 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                             className="cart-item__extra-line"
                           >
                             <span>{line.label}</span>
-                            <span>{formatPrice(line.price)}</span>
+                            <span>{line.free ? "Grátis" : formatPrice(line.price)}</span>
                           </li>
                         ))}
                       </ul>

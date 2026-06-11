@@ -357,6 +357,7 @@
 .plaq-carousel__img--active {
   opacity: 1;
   pointer-events: auto;
+  cursor: zoom-in;
 }
 
 .plaq-carousel__arrow {
@@ -427,6 +428,19 @@
   border-radius: 8px;
 }
 
+/* Imagem de referência clicável (amplia no lightbox) — reset de <button> */
+.bed__ref-img-btn {
+  padding: 0;
+  border: none;
+  cursor: zoom-in;
+  display: block;
+}
+
+.bed__ref-img-btn:focus-visible {
+  outline: 2px solid var(--brand-pink);
+  outline-offset: 2px;
+}
+
 /* Dropdown select row */
 .bed__select-row {
   display: flex;
@@ -477,6 +491,33 @@
     background: #fee8ec;
     border-color: #e00530;
     color: #e00530;
+  }
+}
+
+/* Cartão — botão de adicionar/remover (grátis), ocupa a linha como o select */
+.bed__cartao-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s;
+}
+
+.bed__cartao-btn--active {
+  border-color: var(--brand-pink);
+  background: #fdeef3;
+  color: var(--brand-pink-darker);
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bed__cartao-btn:hover {
+    border-color: var(--brand-pink);
   }
 }
 

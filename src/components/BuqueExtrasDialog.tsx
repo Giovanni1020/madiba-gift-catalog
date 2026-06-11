@@ -24,12 +24,38 @@ const PLAQUINHA_IMAGES = [
   { src: "/images/plaquinhas3.jpg", alt: "Plaquinhas — página 3" },
 ];
 
+type ZoomImage = { src: string; alt: string };
+
+// Imagem de referência de um adicional (balão, cartão, chocolates). Clicar
+// amplia num lightbox, igual à imagem do produto sem vídeo.
+function RefImage({
+  src,
+  alt,
+  onZoom,
+}: {
+  src: string;
+  alt: string;
+  onZoom: (img: ZoomImage) => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="bed__ref-img-wrap bed__ref-img-btn"
+      onClick={() => onZoom({ src, alt })}
+      aria-label={`Ampliar imagem: ${alt}`}
+    >
+      <img src={src} alt={alt} className="bed__ref-img" />
+    </button>
+  );
+}
+
 interface CarouselProps {
   current: number;
   onChange: (i: number) => void;
+  onZoom: (img: ZoomImage) => void;
 }
 
-function PlaquinhaCarousel({ current, onChange }: CarouselProps) {
+function PlaquinhaCarousel({ current, onChange, onZoom }: CarouselProps) {
   const total = PLAQUINHA_IMAGES.length;
   const prev = () => onChange((current - 1 + total) % total);
   const next = () => onChange((current + 1) % total);
@@ -59,6 +85,7 @@ function PlaquinhaCarousel({ current, onChange }: CarouselProps) {
             src={img.src}
             alt={img.alt}
             className={`plaq-carousel__img${i === current ? " plaq-carousel__img--active" : ""}`}
+            onClick={() => i === current && onZoom({ src: img.src, alt: img.alt })}
           />
         ))}
       </div>
@@ -116,6 +143,7 @@ function formatPrice(cents: number): string {
 const EMPTY_EXTRAS: BuqueExtras = {
   balao: null,
   plaquinha: null,
+  cartao: false,
   chocolates: {},
 };
 
@@ -133,7 +161,30 @@ export default function BuqueExtrasDialog({
   const [extras, setExtras] = useState<BuqueExtras>(EMPTY_EXTRAS);
   const [plaquinhaPage, setPlaquinhaPage] = useState(0);
   // Imagem ampliada do produto (lightbox sobre o diálogo).
-  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+  const [zoom, setZoom] = useState<ZoomImage | null>(null);
+
+  // O lightbox é um overlay ANINHADO sobre o diálogo: ganha a própria entrada de
+  // histórico, para o "voltar" do celular fechar SÓ a imagem (o diálogo continua
+  // aberto). O handler global de popstate (App) ignora o pop que volta ao nível
+  // do diálogo (ainda há `overlay` no estado), e o listener abaixo zera o zoom.
+  const openZoom = useCallback((img: ZoomImage) => {
+    window.history.pushState({ overlay: true, zoom: true }, "");
+    setZoom(img);
+  }, []);
+  const closeZoom = useCallback(() => {
+    // Fecha por X / fundo / Esc: desfaz a entrada de histórico do zoom (o pop
+    // dispara o popstate abaixo, que zera o estado). Sem a entrada, zera direto.
+    if (window.history.state?.zoom) window.history.back();
+    else setZoom(null);
+  }, []);
+
+  useEffect(() => {
+    // "Voltar" do celular com o zoom aberto: fecha só a imagem. Inofensivo quando
+    // o zoom já está fechado (o pop que fecha o diálogo também passa por aqui).
+    const onPop = () => setZoom(null);
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   // Se o vídeo do produto falhar ao carregar, cai de volta para a imagem.
   const [videoFailed, setVideoFailed] = useState(false);
   // Expande a área de mídia (imagem ou vídeo) para vê-la inteira — empurra o
@@ -386,7 +437,7 @@ export default function BuqueExtrasDialog({
                   didDragRef.current = false;
                   return;
                 }
-                setZoom({ src: product.image, alt: product.name });
+                openZoom({ src: product.image, alt: product.name });
               }}
             >
               <img
@@ -507,6 +558,37 @@ export default function BuqueExtrasDialog({
 
         {/* Body */}
         <div className="bed__body">
+          {/* ── Cartão (grátis — só adiciona ou remove); primeiro da lista ── */}
+          <div className="bed__section">
+            <div className="bed__section-header">
+              <h3 className="bed__section-title">Cartão</h3>
+              <span className="bed__section-price">Grátis</span>
+            </div>
+
+            {/* Reference image */}
+            <RefImage src="/images/cartao.jpeg" alt="Cartão" onZoom={openZoom} />
+
+            <div className="bed__select-row">
+              <button
+                type="button"
+                className={`bed__cartao-btn${extras.cartao ? " bed__cartao-btn--active" : ""}`}
+                onClick={() => setExtras((p) => ({ ...p, cartao: !p.cartao }))}
+                aria-pressed={extras.cartao}
+              >
+                {extras.cartao ? "Cartão adicionado ✓" : "Adicionar cartão"}
+              </button>
+              {extras.cartao && (
+                <button
+                  className="bed__clear-btn"
+                  onClick={() => setExtras((p) => ({ ...p, cartao: false }))}
+                  aria-label="Remover cartão"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* ── Balão (escondido se a cesta já vem com balão) ───────────── */}
           {showBalao && (
             <div className="bed__section">
@@ -518,13 +600,11 @@ export default function BuqueExtrasDialog({
               </div>
 
               {/* Reference image */}
-              <div className="bed__ref-img-wrap">
-                <img
-                  src="/images/baloes.jpg"
-                  alt="Opções de balão"
-                  className="bed__ref-img"
-                />
-              </div>
+              <RefImage
+                src="/images/baloes.jpg"
+                alt="Opções de balão"
+                onZoom={openZoom}
+              />
 
               <div className="bed__select-row">
                 <select
@@ -574,6 +654,7 @@ export default function BuqueExtrasDialog({
             <PlaquinhaCarousel
               current={plaquinhaPage}
               onChange={handlePlaquinhaPage}
+              onZoom={openZoom}
             />
 
             <div className="bed__select-row">
@@ -621,13 +702,11 @@ export default function BuqueExtrasDialog({
               </div>
 
               {/* Reference image */}
-              <div className="bed__ref-img-wrap">
-                <img
-                  src="/images/chocolates.jpg"
-                  alt="Opções de chocolate"
-                  className="bed__ref-img"
-                />
-              </div>
+              <RefImage
+                src="/images/chocolates.jpg"
+                alt="Opções de chocolate"
+                onZoom={openZoom}
+              />
 
               <p className="bed__section-hint">
                 Escolha até {maxChoc} chocolate{maxChoc !== 1 ? "s" : ""} para
@@ -709,7 +788,7 @@ export default function BuqueExtrasDialog({
       </div>
 
       {/* Imagem ampliada sobre o diálogo */}
-      <ImageLightbox image={zoom} onDismiss={() => setZoom(null)} />
+      <ImageLightbox image={zoom} onDismiss={closeZoom} />
     </>
   );
 }

@@ -48,6 +48,7 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
     if (ex) {
       if (ex.balao) linhas.push(`    + Balão: ${ex.balao}`);
       if (ex.plaquinha) linhas.push(`    + Plaquinha: ${ex.plaquinha}`);
+      if (ex.cartao) linhas.push(`    + Com cartão`);
       CHOCOLATE_OPTIONS.forEach((c) => {
         const q = ex.chocolates[c.id] ?? 0;
         if (q > 0) linhas.push(`    + ${c.name} x${q}`);

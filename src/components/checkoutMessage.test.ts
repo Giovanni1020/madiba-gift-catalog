@@ -27,7 +27,7 @@ test("separa itens e seções com linha em branco", () => {
       {
         product: buque,
         quantity: 2,
-        extras: { balao: "Te Amo", plaquinha: null, chocolates: { ferrero: 2 } },
+        extras: { balao: "Te Amo", plaquinha: null, cartao: false, chocolates: { ferrero: 2 } },
       },
       { product: box, quantity: 1 },
     ],
@@ -60,7 +60,7 @@ test("endereço sem complemento não acrescenta vírgula extra", () => {
       {
         product: box,
         quantity: 1,
-        extras: { balao: null, plaquinha: null, chocolates: {} },
+        extras: { balao: null, plaquinha: null, cartao: false, chocolates: {} },
       },
     ],
     total: 18990,
@@ -84,7 +84,7 @@ test("retirada não imprime endereço; buquê sem extras não imprime adicionais
       {
         product: buque,
         quantity: 1,
-        extras: { balao: null, plaquinha: null, chocolates: {} },
+        extras: { balao: null, plaquinha: null, cartao: false, chocolates: {} },
       },
     ],
     total: 12490,
