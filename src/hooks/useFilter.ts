@@ -74,7 +74,6 @@ export function useFilter() {
       if (filters.category !== "todos" && p.category !== filters.category)
         return false;
       if (!matchesPrice(p.price, filters.priceRange)) return false;
-      if (p.inStock === false) return false;
       if (
         query &&
         !p.name.toLowerCase().includes(query) &&
