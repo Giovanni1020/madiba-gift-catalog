@@ -153,6 +153,7 @@ export const PRODUCTS: Product[] = [
     price: 4990,
     category: "buques",
     image: "/images/buque-1-girassol-luxo.jpeg",
+    inStock: false,
     maxChocolates: 3,
   },
   {
@@ -318,6 +319,7 @@ export const PRODUCTS: Product[] = [
     price: 24990,
     category: "cestas",
     image: "/images/box-6.jpeg",
+    inStock: false,
     exclusiveExtras: true,
     includesBalao: true,
   },

@@ -38,7 +38,14 @@ const HORARIOS_INVALIDOS: Record<
 > = {
   // Ex.: loja sem disponibilidade no começo do dia em 12/06/2026 (só entrega).
   entrega: {
-    "2026-06-12": ["8h às 9h", "9h às 10h", "10h às 11h", "11h às 12h"],
+    "2026-06-12": [
+      "8h às 9h",
+      "9h às 10h",
+      "10h às 11h",
+      "11h às 12h",
+      "12h às 13h",
+      "17h às 18h",
+    ],
   },
   // Retirada mantém a lógica, mas sem horários inválidos por enquanto.
   retirada: {},
