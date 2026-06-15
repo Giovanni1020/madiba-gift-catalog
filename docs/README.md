@@ -3,7 +3,7 @@
 > Pasta **canônica e sempre atualizada**. É a **fonte de verdade** do projeto.
 > Em qualquer sessão/janela nova, **comece por aqui.**
 
-> **Status:** v1.0 **no ar** → <https://madiba-garden.vercel.app>. Deploy de produção a partir da branch `production` (ver [branches-e-deploy.md](branches-e-deploy.md)).
+> **Status:** v1.0 **encerrada** (no ar → <https://madiba-garden.vercel.app>); desenvolvimento ativo na **[v1.1](escopo-v1.1.md)** (feedback + polimento). Deploy de produção a partir da branch `production` (ver [branches-e-deploy.md](branches-e-deploy.md)).
 
 ## Índice
 
@@ -11,7 +11,8 @@
 |---|---|
 | [como-trabalhamos.md](como-trabalhamos.md) | Papel do Claude + dinâmica de trabalho (Grill Me, PT-BR, economia de contexto, governança). **Leia antes de pedir código.** |
 | [trello-padrao.md](trello-padrao.md) | Padrão de card do Trello (tipos, estrutura da descrição, checklist de aceite). Formato do card; o processo é dono do `como-trabalhamos.md`. |
-| [escopo-v1.md](escopo-v1.md) | Escopo fechado do v1, spec do helper do WhatsApp, e o que fica pro v1.1+. |
+| [escopo-v1.md](escopo-v1.md) | Escopo fechado do v1, spec do helper do WhatsApp, e o que fica pro v1.1+. **v1.0 encerrada.** |
+| [escopo-v1.1.md](escopo-v1.1.md) | Escopo da **v1.1**: release de feedback + polimento (sem major feature fixa), backlog herdado e o que já entrou. |
 | [aparelhos-suportados.md](aparelhos-suportados.md) | Lista canônica de aparelhos/viewports que todo CSS deve suportar (mobile prioridade máxima). **Base do responsivo.** |
 | [branches-e-deploy.md](branches-e-deploy.md) | Estratégia de branches (feature → main → production) e a regra: **produção só com permissão humana**. |
 | [meta-pixel.md](meta-pixel.md) | Rastreamento via Meta Pixel: configuração (`REACT_APP_FB_PIXEL_ID`), consentimento (LGPD), eventos × ações e como validar. |

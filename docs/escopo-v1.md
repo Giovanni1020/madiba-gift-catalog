@@ -3,8 +3,9 @@
 > Objetivo do v1: **deploy rápido** de uma versão base que cataloga os itens existentes e
 > direciona o pedido formatado para o WhatsApp do atendente. Sem pagamento online.
 
-## Status — v1.0 no ar ✅ (2026-06-02)
+## Status — v1.0 encerrada ✅ (no ar desde 2026-06-02; fechada em 2026-06-15)
 
+- **Escopo congelado.** A evolução do produto segue na **[v1.1](escopo-v1.1.md)** — release de feedback e polimento.
 - **Produção:** <https://madiba-garden.vercel.app>
 - **Hospedagem:** Vercel (Create React App; deploy automático a cada push na `main`, preview por PR).
 - **WhatsApp da loja:** `STORE_PHONE` em `src/config.ts` (`555186103494`, confirmado).
@@ -23,6 +24,7 @@
   - Entrega → campos **quem recebe, CEP, rua, número, bairro, horário de entrega** (sem complemento).
   - Retirada → sem endereço.
 - **"Lembrar meus dados"** opt-in (`localStorage`) — ver [ADR-0002](adr/0002-estado-e-persistencia-do-carrinho.md).
+  ⚠️ **Planejado no v1, não entregue na 1.0** → repassado para a **[v1.1](escopo-v1.1.md)** (decisão consciente, 2026-06-15).
 - **Finalizar → abre o WhatsApp** (`wa.me`) com a mensagem formatada.
 
 ## Helper do WhatsApp (`src/components/checkoutMessage.ts`)
@@ -80,6 +82,8 @@ Cliente: Maria — (51) 98508-2700
 O formatador **ramifica em `entrega.tipo`**: imprime o bloco de endereço só quando `entrega`.
 
 ## Fora do escopo (v1.1+)
+
+> Backlog vivo e priorização da próxima versão: **[escopo-v1.1.md](escopo-v1.1.md)** + board do Trello.
 
 - **Mapa** (pin/geocoding) para o endereço; zonas/rotas de entrega.
 - **Router** / múltiplas rotas (ex.: `/produto/:id`, `/categoria/...`).
