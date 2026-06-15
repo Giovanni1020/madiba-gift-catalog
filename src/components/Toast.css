@@ -1,0 +1,75 @@
+/* Toast: aviso transitório centralizado, logo ACIMA dos FABs. z-index 2000 fica
+   acima do catálogo, FABs (150), drawer/diálogo (200–310) e lightbox (400);
+   abaixo do banner LGPD (3000).
+   Posição: os FABs ficam a bottom:20px e têm 56px de altura. Para o vão entre
+   eles e o toast espelhar o vão entre eles e a base da tela (20px), o toast fica
+   a 20 + 56 + 20 = 96px da base (+ safe-area). */
+.toast-viewport {
+  position: fixed;
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  width: max-content;
+  max-width: min(92vw, 440px);
+  pointer-events: none; /* só o card do toast captura clique */
+}
+
+/* Toast claro: superfície branca + acento verde + texto escuro garante contraste
+   AA (texto escuro sobre branco), em vez de verde sólido com texto branco. */
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-left: 4px solid var(--brand-green-dark);
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  pointer-events: auto;
+  animation: toast-in 220ms ease-out;
+}
+
+.toast__icon {
+  flex: none;
+  color: var(--brand-green-dark);
+  font-weight: 700;
+}
+
+.toast__msg {
+  flex: 1;
+}
+
+.toast__close {
+  flex: none;
+  background: transparent;
+  border: 0;
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.toast__close:hover {
+  color: var(--color-text);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

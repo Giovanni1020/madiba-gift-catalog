@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CartProvider } from "./context/CartContext";
+import { ToastProvider } from "./context/ToastContext";
 import { PRODUCTS, Product } from "./data/products";
 import Header from "./components/Header";
 import FilterBar from "./components/FilterBar";
@@ -146,12 +147,16 @@ function CatalogPage() {
 export default function App() {
   return (
     <CartProvider>
-      {/* Pré-carrega em background os vídeos dos destaques (irmão de CatalogPage
-          p/ sobreviver à troca catálogo↔checkout, que desmonta o catálogo). */}
-      <MediaPreloader />
-      <CatalogPage />
-      {/* Banner LGPD: liga o Meta Pixel só após consentimento (opt-in). */}
-      <ConsentBanner />
+      {/* ToastProvider acima de CatalogPage: o aviso vive fora da troca de view
+          (catálogo↔checkout) e sobrevive ao retorno pós-envio do pedido. */}
+      <ToastProvider>
+        {/* Pré-carrega em background os vídeos dos destaques (irmão de CatalogPage
+            p/ sobreviver à troca catálogo↔checkout, que desmonta o catálogo). */}
+        <MediaPreloader />
+        <CatalogPage />
+        {/* Banner LGPD: liga o Meta Pixel só após consentimento (opt-in). */}
+        <ConsentBanner />
+      </ToastProvider>
     </CartProvider>
   );
 }
