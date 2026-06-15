@@ -2,7 +2,7 @@
 // fluxo que redireciona pro WhatsApp (sempre passa pelo checkout antes).
 
 import type { CartItem } from "../context/CartContext";
-import { CHOCOLATE_OPTIONS, extrasTotal } from "../data/products";
+import { CHOCOLATE_OPTIONS, extrasTotal, basePrice } from "../data/products";
 import type { Cliente, Entrega, Pagamento } from "../types/order";
 
 function brl(cents: number): string {
@@ -42,9 +42,14 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
   const blocos = pedido.itens.map((item) => {
     const ex = item.extras; // const local → narrowing persiste dentro do forEach
     const adicional = ex ? extrasTotal(ex) : 0;
-    const linhaTotal = item.quantity * (item.product.price + adicional);
+    const linhaTotal =
+      item.quantity * (basePrice(item.product, item.variant) + adicional);
 
-    const linhas = [`- ${item.quantity}x ${item.product.name} — ${brl(linhaTotal)}`];
+    // Nome inclui a variante escolhida (ex.: "Buquê Girassol (4 girassóis)").
+    const nome = item.variant
+      ? `${item.product.name} (${item.variant.label})`
+      : item.product.name;
+    const linhas = [`- ${item.quantity}x ${nome} — ${brl(linhaTotal)}`];
     if (ex) {
       if (ex.balao) linhas.push(`    + Balão: ${ex.balao}`);
       if (ex.plaquinha) linhas.push(`    + Plaquinha: ${ex.plaquinha}`);

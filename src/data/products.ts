@@ -2,21 +2,32 @@
 
 export type Category = "buques" | "buques-cetim" | "cestas";
 
+// Variante de um produto (ADR-0005): opção mutuamente exclusiva escolhida no diálogo.
+// Carrega preço ABSOLUTO (não delta) e pode sobrepor a imagem e o nº de chocolates.
+export interface ProductVariant {
+  id: string; // estável, ex: "3-girassois"
+  label: string; // rótulo exibido, ex: "3 girassóis"
+  price: number; // em centavos BRL — preço absoluto desta variante
+  image?: string; // opcional: sobrepõe a mídia no diálogo (poster/zoom). Dado futuro.
+  maxChocolates?: number; // opcional: sobrepõe o maxChocolates do produto
+}
+
 export interface Product {
   id: number;
   name: string;
   description: string;
-  price: number; // em centavos BRL, ex: 7990 = R$79,90
+  price: number; // em centavos BRL, ex: 7990 = R$79,90. Com `variants`, é o "a partir de" (menor variante).
   category: Category;
   image: string; // caminho relativo a /public, ex: "/images/produto.jpg"
   video?: string; // caminho relativo a /public, ex: "/vids/produto.mp4". Quando presente, substitui a imagem no diálogo (autoplay/loop, sem controles). image vira o poster/fallback.
   lazyVideo?: boolean; // true = carrega sob demanda (preload "metadata"); false/ausente = carrega imediatamente (preload "auto")
   featured?: boolean;
   inStock?: boolean;
-  maxChocolates?: number; // buquês: controla a seção de chocolates (0/ausente = sem chocolate)
+  maxChocolates?: number; // buquês: controla a seção de chocolates (0/ausente = sem chocolate). Com `variants`, é o default sobreposto pela variante.
   note?: string; // observação visível no card (ex.: pelúcia pode variar)
   exclusiveExtras?: boolean; // cestas: balão e plaquinha são mutuamente exclusivos
-  includesBalao?: boolean; // já vem com balão → não oferecer balão como adicional
+  hideBalao?: boolean; // não oferecer balão como adicional (cesta que já vem com balão, ou item sem opção de balão)
+  variants?: ProductVariant[]; // opções por produto (ADR-0005); quando presente, o cliente escolhe uma no diálogo
 }
 
 // ─── Extras ──────────────────────────────────────────────────────────────────
@@ -110,6 +121,23 @@ export function extrasTotal(extras: BuqueExtras): number {
   );
 }
 
+// ─── Preço por variante (ADR-0005) ─────────────────────────────────────────────
+// Ponto único de verdade do preço-base: a variante escolhida sobrepõe o do produto.
+// Usar SEMPRE em vez de `product.price` (carrinho, checkout, mensagem, diálogo),
+// senão o total diverge quando há variantes.
+export function basePrice(
+  product: Product,
+  variant?: ProductVariant | null,
+): number {
+  return variant?.price ?? product.price;
+}
+
+// Preço "a partir de" para o card: a menor variante, ou o próprio price quando não há.
+export function priceFrom(product: Product): number {
+  if (!product.variants?.length) return product.price;
+  return Math.min(...product.variants.map((v) => v.price));
+}
+
 // ─── Category labels ──────────────────────────────────────────────────────────
 
 export const CATEGORY_LABELS: Record<Category, string> = {
@@ -153,7 +181,6 @@ export const PRODUCTS: Product[] = [
     price: 4990,
     category: "buques",
     image: "/images/buque-1-girassol-luxo.jpeg",
-    inStock: false,
     maxChocolates: 3,
   },
   {
@@ -171,13 +198,38 @@ export const PRODUCTS: Product[] = [
     name: "Buquê Medelin",
     description:
       "Buquê com 3 rosas vermelhas importadas e 1 girassol, solidago, baby breath, embrulho preto e dourado.",
-    inStock: false,
+    featured: true,
     price: 9990,
     category: "buques",
     image: "/images/buque-3-rosas-importadas-1-girassol.jpeg",
     video: "/vids/buque-medelin.mp4",
     lazyVideo: false,
     maxChocolates: 5,
+  },
+  {
+    id: 21,
+    name: "Buquê Girassol",
+    description:
+      "Buquê de girassóis com baby breath e folhagem, embrulho temático com laço.",
+    price: 4990, // "a partir de" = menor variante (2 girassóis)
+    category: "buques",
+    image: "/images/buque-girassol.jpeg",
+    maxChocolates: 4, // default/fallback; cada variante sobrepõe
+    variants: [
+      { id: "2-girassois", label: "2 girassóis", price: 4990, maxChocolates: 4 },
+      { id: "3-girassois", label: "3 girassóis", price: 7490, maxChocolates: 6 },
+      { id: "4-girassois", label: "4 girassóis", price: 9990, maxChocolates: 8 },
+    ],
+  },
+  {
+    id: 22,
+    name: "Cartão Buquê",
+    description:
+      "Cartão em formato de buquê com mensagem, embrulho temático com laço.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-cartao.jpeg",
+    hideBalao: true, // adicional: apenas plaquinha (sem balão e sem chocolate)
   },
 
   // ── Buquês de rosa de cetim com chocolates inclusos ────────────────────────
@@ -225,6 +277,22 @@ export const PRODUCTS: Product[] = [
     price: 4990,
     category: "buques-cetim",
     image: "/images/buque-cetim-7-rafaello.jpeg",
+  },
+  {
+    id: 23,
+    name: "Buquê Angel",
+    description: "Buquê Angel de rosas de cetim, embrulho temático com laço.",
+    price: 6990,
+    category: "buques-cetim",
+    image: "/images/buque-angel.jpeg",
+  },
+  {
+    id: 24,
+    name: "Buquê Stitch",
+    description: "Buquê Stitch de rosas de cetim, embrulho temático com laço.",
+    price: 6990,
+    category: "buques-cetim",
+    image: "/images/buque-stitch.jpeg",
   },
 
   // ── Cestas ───────────────────────────────────────────────────────────────
@@ -283,7 +351,7 @@ export const PRODUCTS: Product[] = [
     category: "cestas",
     image: "/images/cesta-encanto.jpeg",
     exclusiveExtras: true,
-    includesBalao: true,
+    hideBalao: true,
   },
   {
     id: 16,
@@ -295,7 +363,7 @@ export const PRODUCTS: Product[] = [
     category: "cestas",
     image: "/images/box-voce-e-especial.jpeg",
     exclusiveExtras: true,
-    includesBalao: true,
+    hideBalao: true,
   },
   {
     id: 17,
@@ -308,7 +376,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/box-5.jpeg",
     inStock: false,
     exclusiveExtras: true,
-    includesBalao: true,
+    hideBalao: true,
   },
   {
     id: 18,
@@ -321,7 +389,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/box-6.jpeg",
     inStock: false,
     exclusiveExtras: true,
-    includesBalao: true,
+    hideBalao: true,
   },
   {
     id: 19,
@@ -340,6 +408,6 @@ export const PRODUCTS: Product[] = [
     category: "cestas",
     image: "/images/box-com-carinho.jpeg",
     exclusiveExtras: true,
-    includesBalao: true,
+    hideBalao: true,
   },
 ];

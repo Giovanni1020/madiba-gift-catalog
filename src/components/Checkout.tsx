@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
-import { extrasTotal } from "../data/products";
+import { extrasTotal, basePrice } from "../data/products";
 import { CheckoutForm } from "../hooks/useCheckoutForm";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "./checkoutMessage";
 import { track } from "../lib/analytics/metaPixel";
@@ -38,16 +38,7 @@ const HORARIOS_INVALIDOS: Record<
   Record<string, string[]>
 > = {
   // Ex.: loja sem disponibilidade no começo do dia em 12/06/2026 (só entrega).
-  entrega: {
-    "2026-06-12": [
-      "8h às 9h",
-      "9h às 10h",
-      "10h às 11h",
-      "11h às 12h",
-      "12h às 13h",
-      "17h às 18h",
-    ],
-  },
+  entrega: {},
   // Retirada mantém a lógica, mas sem horários inválidos por enquanto.
   retirada: {},
 };
@@ -204,7 +195,10 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
     });
     // A aba do WhatsApp pode abrir em background/demorar: reforça o próximo passo
     // ao voltar pro catálogo. Duração maior por ser uma instrução, não só "ok".
-    showToast("Pedido enviado! Prossiga no WhatsApp para confirmar com a loja.", 7000);
+    showToast(
+      "Pedido enviado! Prossiga no WhatsApp para confirmar com a loja.",
+      7000,
+    );
     onSent();
   }
 
@@ -226,11 +220,12 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
         <ul className="checkout__items">
           {items.map((item, i) => {
             const extras = item.extras ? extrasTotal(item.extras) : 0;
-            const unit = item.product.price + extras;
+            const unit = basePrice(item.product, item.variant) + extras;
             return (
               <li key={i} className="checkout__item">
                 <span className="checkout__item-name">
                   {item.quantity}× {item.product.name}
+                  {item.variant && ` (${item.variant.label})`}
                   {extras > 0 && (
                     <em className="checkout__item-extras"> + adicionais</em>
                   )}

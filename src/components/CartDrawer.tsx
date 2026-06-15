@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import { CHOCOLATE_OPTIONS, EXTRAS_PRICES } from "../data/products";
+import { CHOCOLATE_OPTIONS, EXTRAS_PRICES, basePrice } from "../data/products";
 import "./CartDrawer.css";
 
 function formatPrice(cents: number): string {
@@ -110,7 +110,7 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
           </div>
         ) : (
           <ul className="cart-drawer__list">
-            {items.map(({ product, quantity, extras }, index) => {
+            {items.map(({ product, quantity, variant, extras }, index) => {
               // Build extras lines
               const extraLines: {
                 label: string;
@@ -157,8 +157,11 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
 
                   <div className="cart-item__info">
                     <p className="cart-item__name">{product.name}</p>
+                    {variant && (
+                      <p className="cart-item__variant">{variant.label}</p>
+                    )}
                     <p className="cart-item__price">
-                      {formatPrice(product.price)}
+                      {formatPrice(basePrice(product, variant))}
                     </p>
 
                     {/* Extras sub-lines */}

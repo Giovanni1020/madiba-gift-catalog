@@ -134,6 +134,12 @@
   padding-right: 24px;
 }
 
+.cart-item__variant {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin: 0 0 4px;
+}
+
 .cart-item__price {
   font-size: 0.8125rem;
   color: var(--color-text-muted);

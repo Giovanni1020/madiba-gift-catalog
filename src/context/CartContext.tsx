@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { Product, BuqueExtras, extrasTotal } from "../data/products";
+import {
+  Product,
+  ProductVariant,
+  BuqueExtras,
+  extrasTotal,
+  basePrice,
+} from "../data/products";
 import { pushOverlayOnce, popOverlayOr } from "../overlayHistory";
 import { track } from "../lib/analytics/metaPixel";
 
@@ -8,6 +14,7 @@ import { track } from "../lib/analytics/metaPixel";
 export interface CartItem {
   product: Product;
   quantity: number;
+  variant?: ProductVariant; // only present when the product has variants (ADR-0005)
   extras?: BuqueExtras;   // only present for buquês
 }
 
@@ -20,8 +27,12 @@ interface CartContextValue {
   closeCart: () => void;
   // For regular products (arranjos, chocolates)
   addItem: (product: Product) => void;
-  // For buquês — always adds as a new line (each buquê+extras combo is its own entry)
-  addBuque: (product: Product, extras: BuqueExtras) => void;
+  // For buquês — always adds as a new line (each buquê+variante+extras combo is its own entry)
+  addBuque: (
+    product: Product,
+    extras: BuqueExtras,
+    variant?: ProductVariant,
+  ) => void;
   removeItem: (index: number) => void;
   updateQuantity: (index: number, qty: number) => void;
   clearCart: () => void;
@@ -70,19 +81,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(true);
   }, []);
 
-  const addBuque = useCallback((product: Product, extras: BuqueExtras) => {
-    setItems((prev) => [...prev, { product, quantity: 1, extras }]);
-    track("AddToCart", {
-      content_ids: [product.id],
-      content_name: product.name,
-      content_type: "product",
-      content_category: product.category,
-      value: (product.price + extrasTotal(extras)) / 100,
-      currency: "BRL",
-    });
-    pushOverlayOnce();
-    setIsOpen(true);
-  }, []);
+  const addBuque = useCallback(
+    (product: Product, extras: BuqueExtras, variant?: ProductVariant) => {
+      setItems((prev) => [...prev, { product, quantity: 1, variant, extras }]);
+      track("AddToCart", {
+        content_ids: [product.id],
+        content_name: product.name,
+        content_type: "product",
+        content_category: product.category,
+        value: (basePrice(product, variant) + extrasTotal(extras)) / 100,
+        currency: "BRL",
+      });
+      pushOverlayOnce();
+      setIsOpen(true);
+    },
+    [],
+  );
 
   const removeItem = useCallback((index: number) => {
     setItems((prev) => prev.filter((_, i) => i !== index));
@@ -102,7 +116,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const totalCount = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce((sum, i) => {
-    const base = i.product.price * i.quantity;
+    const base = basePrice(i.product, i.variant) * i.quantity;
     const extra = i.extras ? extrasTotal(i.extras) * i.quantity : 0;
     return sum + base + extra;
   }, 0);

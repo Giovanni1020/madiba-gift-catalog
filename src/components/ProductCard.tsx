@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Product, CATEGORY_LABELS } from "../data/products";
+import { Product, CATEGORY_LABELS, priceFrom } from "../data/products";
 import { useCart } from "../context/CartContext";
 import "./ProductCard.css";
 
@@ -21,13 +21,16 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
   const {
     name,
     description,
-    price,
     category,
     image,
     featured,
     inStock = true,
     note,
+    variants,
   } = product;
+  // Com variantes, o card mostra "a partir de" + a menor variante (ADR-0005).
+  const hasVariants = !!variants?.length;
+  const displayPrice = priceFrom(product);
 
   const handleAdd = () => {
     if (
@@ -100,7 +103,12 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
         <p className="card__desc">{description}</p>
         {note && <p className="card__note">{note}</p>}
         <div className="card__footer">
-          <span className="card__price">{formatPrice(price)}</span>
+          <span className="card__price">
+            {hasVariants && (
+              <span className="card__price-from">a partir de </span>
+            )}
+            {formatPrice(displayPrice)}
+          </span>
           <button
             className="card__btn"
             disabled={!inStock}
