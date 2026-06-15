@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import { extrasTotal } from "../data/products";
 import { CheckoutForm } from "../hooks/useCheckoutForm";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "./checkoutMessage";
@@ -120,6 +121,7 @@ interface CheckoutProps {
 
 export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   const { items, totalCount, totalPrice } = useCart();
+  const { showToast } = useToast();
 
   // Domingo selecionado? Derivado da data (persiste no re-render) — usado pra
   // marcar o campo (borda vermelha) e mostrar a mensagem fixa abaixo dele.
@@ -200,6 +202,9 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       currency: "BRL",
       num_items: totalCount,
     });
+    // A aba do WhatsApp pode abrir em background/demorar: reforça o próximo passo
+    // ao voltar pro catálogo. Duração maior por ser uma instrução, não só "ok".
+    showToast("Pedido enviado! Prossiga no WhatsApp para confirmar com a loja.", 7000);
     onSent();
   }
 
