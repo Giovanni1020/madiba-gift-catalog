@@ -153,7 +153,6 @@ export const PRODUCTS: Product[] = [
     price: 4990,
     category: "buques",
     image: "/images/buque-1-girassol-luxo.jpeg",
-    inStock: false,
     maxChocolates: 3,
   },
   {
@@ -171,7 +170,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê Medelin",
     description:
       "Buquê com 3 rosas vermelhas importadas e 1 girassol, solidago, baby breath, embrulho preto e dourado.",
-    inStock: false,
+    featured: true,
     price: 9990,
     category: "buques",
     image: "/images/buque-3-rosas-importadas-1-girassol.jpeg",
