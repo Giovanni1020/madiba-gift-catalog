@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Product,
+  ProductVariant,
   BuqueExtras,
   ChocolateOption,
   CHOCOLATE_OPTIONS,
@@ -10,6 +11,7 @@ import {
   PlaquinhaOption,
   EXTRAS_PRICES,
   extrasTotal,
+  basePrice,
 } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { track } from "../lib/analytics/metaPixel";
@@ -159,6 +161,10 @@ export default function BuqueExtrasDialog({
 }: Props) {
   const { addBuque } = useCart();
   const [extras, setExtras] = useState<BuqueExtras>(EMPTY_EXTRAS);
+  // Variante escolhida (ADR-0005): default na 1ª (menor). null quando o produto não tem.
+  const [variant, setVariant] = useState<ProductVariant | null>(
+    product?.variants?.[0] ?? null,
+  );
   const [plaquinhaPage, setPlaquinhaPage] = useState(0);
   // Imagem ampliada do produto (lightbox sobre o diálogo).
   const [zoom, setZoom] = useState<ZoomImage | null>(null);
@@ -214,6 +220,7 @@ export default function BuqueExtrasDialog({
   useEffect(() => {
     if (!isOpen) return;
     setExtras(EMPTY_EXTRAS);
+    setVariant(product?.variants?.[0] ?? null); // volta à variante default ao abrir/trocar
     setPlaquinhaPage(0);
     setZoom(null);
     setVideoFailed(false);
@@ -283,7 +290,8 @@ export default function BuqueExtrasDialog({
     };
   }, [isOpen]);
 
-  const maxChoc = product?.maxChocolates ?? 0;
+  // maxChocolates da variante sobrepõe o do produto (ADR-0005).
+  const maxChoc = (variant?.maxChocolates ?? product?.maxChocolates) ?? 0;
   const totalChocSelected = Object.values(extras.chocolates).reduce(
     (s, n) => s + (n ?? 0),
     0,
@@ -304,9 +312,23 @@ export default function BuqueExtrasDialog({
     [totalChocSelected, maxChoc],
   );
 
+  // Trocar de variante (ADR-0005): preserva balão/plaquinha/cartão; só zera os
+  // chocolates quando a seleção atual passa do limite da nova variante.
+  const handleVariant = (v: ProductVariant) => {
+    setVariant(v);
+    const newMax = v.maxChocolates ?? product?.maxChocolates ?? 0;
+    setExtras((prev) => {
+      const total = Object.values(prev.chocolates).reduce(
+        (s, n) => s + (n ?? 0),
+        0,
+      );
+      return total > newMax ? { ...prev, chocolates: {} } : prev;
+    });
+  };
+
   const handleAdd = () => {
     if (!product) return;
-    addBuque(product, extras);
+    addBuque(product, extras, variant ?? undefined);
     onClose();
   };
 
@@ -382,7 +404,9 @@ export default function BuqueExtrasDialog({
   if (!product) return null;
 
   const extrasCost = extrasTotal(extras);
-  const showBalao = !product.includesBalao; // cesta que já vem com balão não oferece outro
+  const price = basePrice(product, variant); // preço-base da variante escolhida (ADR-0005)
+  const media = variant?.image ?? product.image; // variante pode trocar a mídia
+  const showBalao = !product.hideBalao; // item que não oferece balão como adicional
   const exclusive = !!product.exclusiveExtras; // cestas: balão XOR plaquinha
 
   return (
@@ -413,7 +437,7 @@ export default function BuqueExtrasDialog({
             <video
               className="bed__img bed__video"
               src={product.video}
-              poster={product.image}
+              poster={media}
               autoPlay
               loop
               muted
@@ -437,11 +461,11 @@ export default function BuqueExtrasDialog({
                   didDragRef.current = false;
                   return;
                 }
-                openZoom({ src: product.image, alt: product.name });
+                openZoom({ src: media, alt: product.name });
               }}
             >
               <img
-                src={product.image}
+                src={media}
                 alt={product.name}
                 className="bed__img"
                 onError={(e) => {
@@ -558,6 +582,39 @@ export default function BuqueExtrasDialog({
 
         {/* Body */}
         <div className="bed__body">
+          {/* ── Opção / variante (só quando o produto tem variantes — ADR-0005) ── */}
+          {product.variants?.length ? (
+            <div className="bed__section">
+              <div className="bed__section-header">
+                <h3 className="bed__section-title">Opção</h3>
+              </div>
+              <div
+                className="bed__variants"
+                role="radiogroup"
+                aria-label="Opção do produto"
+              >
+                {product.variants.map((v) => {
+                  const active = variant?.id === v.id;
+                  return (
+                    <button
+                      key={v.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      className={`bed__variant${active ? " bed__variant--active" : ""}`}
+                      onClick={() => handleVariant(v)}
+                    >
+                      <span className="bed__variant-label">{v.label}</span>
+                      <span className="bed__variant-price">
+                        {formatPrice(v.price)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
           {/* ── Cartão (grátis — só adiciona ou remove); primeiro da lista ── */}
           <div className="bed__section">
             <div className="bed__section-header">
@@ -767,7 +824,7 @@ export default function BuqueExtrasDialog({
         <div className="bed__footer">
           <div className="bed__summary">
             <span className="bed__summary-label">
-              {formatPrice(product.price)}
+              {formatPrice(price)}
               {extrasCost > 0 && (
                 <span className="bed__summary-extras">
                   {" "}
@@ -776,7 +833,7 @@ export default function BuqueExtrasDialog({
               )}
             </span>
             <span className="bed__summary-total">
-              {formatPrice(product.price + extrasCost)}
+              {formatPrice(price + extrasCost)}
             </span>
           </div>
           <button className="bed__add-btn" onClick={handleAdd}>

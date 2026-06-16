@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
-import { extrasTotal } from "../data/products";
+import { extrasTotal, basePrice } from "../data/products";
 import { CheckoutForm } from "../hooks/useCheckoutForm";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "./checkoutMessage";
 import { track } from "../lib/analytics/metaPixel";
@@ -195,7 +195,10 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
     });
     // A aba do WhatsApp pode abrir em background/demorar: reforça o próximo passo
     // ao voltar pro catálogo. Duração maior por ser uma instrução, não só "ok".
-    showToast("Pedido enviado! Prossiga no WhatsApp para confirmar com a loja.", 7000);
+    showToast(
+      "Pedido enviado! Prossiga no WhatsApp para confirmar com a loja.",
+      7000,
+    );
     onSent();
   }
 
@@ -217,11 +220,12 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
         <ul className="checkout__items">
           {items.map((item, i) => {
             const extras = item.extras ? extrasTotal(item.extras) : 0;
-            const unit = item.product.price + extras;
+            const unit = basePrice(item.product, item.variant) + extras;
             return (
               <li key={i} className="checkout__item">
                 <span className="checkout__item-name">
                   {item.quantity}× {item.product.name}
+                  {item.variant && ` (${item.variant.label})`}
                   {extras > 0 && (
                     <em className="checkout__item-extras"> + adicionais</em>
                   )}

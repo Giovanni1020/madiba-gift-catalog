@@ -23,6 +23,9 @@ e entra por **PR para `main`**. **Produção só com permissão humana explícit
 ## Já entregue na 1.1
 
 - **Toast de "pedido enviado"** no checkout (acessível: `role="status"` / `aria-live="polite"`) — card #44.
+- **Variantes de produto** — mecanismo de opções por produto (preço/imagem/`maxChocolates` por
+  variante), escolha no diálogo, helper `basePrice`. Decisão em
+  [ADR-0005](adr/0005-variantes-de-produto.md). Disparador: Buquê Girassol (3 e 4 girassóis).
 
 ## Backlog herdado (candidatos da 1.1)
 

@@ -521,6 +521,56 @@
   }
 }
 
+/* Variantes (ADR-0005): opções mutuamente exclusivas em botões segmentados */
+.bed__variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bed__variant {
+  flex: 1 1 0;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s;
+}
+
+.bed__variant--active {
+  border-color: var(--brand-pink);
+  background: #fdeef3;
+  color: var(--brand-pink-darker);
+}
+
+.bed__variant-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.bed__variant-price {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.bed__variant--active .bed__variant-price {
+  color: var(--brand-pink-darker);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bed__variant:hover {
+    border-color: var(--brand-pink);
+  }
+}
+
 /* Chocolate rows */
 .bed__choc-row {
   display: flex;
