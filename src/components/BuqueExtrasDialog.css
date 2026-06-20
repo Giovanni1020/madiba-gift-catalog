@@ -494,31 +494,104 @@
   }
 }
 
-/* Cartão — botão de adicionar/remover (grátis), ocupa a linha como o select */
-.bed__cartao-btn {
-  flex: 1;
+/* Cartão (grátis) — opções segmentadas (em branco / com mensagem), mesmo
+   estilo das variantes, mas fixas (sem preço). Sem seleção default/forçada. */
+.bed__cartao-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bed__cartao-opt {
+  flex: 1 1 0;
+  min-width: 120px;
   padding: 9px 12px;
   border: 1px solid var(--color-border-input);
   border-radius: 8px;
-  font-size: 0.875rem;
-  color: var(--color-text);
   background: var(--color-surface);
+  color: var(--color-text);
   cursor: pointer;
   outline: none;
   transition: all 0.15s;
 }
 
-.bed__cartao-btn--active {
+.bed__cartao-opt--active {
   border-color: var(--brand-pink);
   background: #fdeef3;
   color: var(--brand-pink-darker);
+}
+
+.bed__cartao-opt-label {
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .bed__cartao-btn:hover {
+  .bed__cartao-opt:hover {
     border-color: var(--brand-pink);
   }
+}
+
+/* Campo da mensagem pré-escrita do cartão */
+.bed__cartao-msg {
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  resize: vertical;
+  outline: none;
+  transition: all 0.15s;
+}
+
+.bed__cartao-msg:focus {
+  border-color: var(--brand-pink);
+}
+
+/* Estourou o limite: borda vermelha momentânea (acompanha o aviso). */
+.bed__cartao-msg--limit,
+.bed__cartao-msg--limit:focus {
+  border-color: #d23f3f;
+}
+
+.bed__cartao-msg-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  min-height: 1rem;
+}
+
+/* Limpar à esquerda; o contador fica à direita (margin-left: auto). */
+.bed__cartao-msg-clear {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.75rem;
+  color: var(--brand-pink-darker);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.bed__cartao-msg-clear:disabled {
+  color: var(--color-text-subtle);
+  cursor: default;
+  text-decoration: none;
+}
+
+.bed__cartao-msg-warn {
+  font-size: 0.75rem;
+  color: #d23f3f;
+}
+
+.bed__cartao-msg-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--color-text-subtle);
 }
 
 /* Variantes (ADR-0005): opções mutuamente exclusivas em botões segmentados */

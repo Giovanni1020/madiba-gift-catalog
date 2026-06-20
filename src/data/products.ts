@@ -97,10 +97,15 @@ export const PLAQUINHA_OPTIONS_BY_PAGE = [
 export const PLAQUINHA_OPTIONS = PLAQUINHA_OPTIONS_BY_PAGE.flat();
 export type PlaquinhaOption = (typeof PLAQUINHA_OPTIONS)[number];
 
+// Cartão (grátis): "branco" = o cliente escreve a mensagem; "pre_escrito" =
+// cartão padrão já escrito (sem texto do cliente).
+export type CartaoTipo = "branco" | "pre_escrito";
+
 export interface BuqueExtras {
   balao: BalaoOption | null; // null = not selected
   plaquinha: PlaquinhaOption | null;
-  cartao: boolean; // cartão (grátis) — só adiciona ou remove
+  cartao: CartaoTipo | null; // null = sem cartão; "branco" ou "pre_escrito"
+  cartaoMensagem?: string; // texto escrito pelo cliente (quando cartao === "branco")
   chocolates: Partial<Record<ChocolateOption, number>>;
 }
 

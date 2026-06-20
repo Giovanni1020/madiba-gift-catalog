@@ -27,7 +27,7 @@ test("separa itens e seções com linha em branco", () => {
       {
         product: buque,
         quantity: 2,
-        extras: { balao: "Te Amo", plaquinha: null, cartao: false, chocolates: { ferrero: 2 } },
+        extras: { balao: "Te Amo", plaquinha: null, cartao: null, chocolates: { ferrero: 2 } },
       },
       { product: box, quantity: 1 },
     ],
@@ -60,7 +60,7 @@ test("endereço sem complemento não acrescenta vírgula extra", () => {
       {
         product: box,
         quantity: 1,
-        extras: { balao: null, plaquinha: null, cartao: false, chocolates: {} },
+        extras: { balao: null, plaquinha: null, cartao: null, chocolates: {} },
       },
     ],
     total: 18990,
@@ -84,7 +84,7 @@ test("retirada não imprime endereço; buquê sem extras não imprime adicionais
       {
         product: buque,
         quantity: 1,
-        extras: { balao: null, plaquinha: null, cartao: false, chocolates: {} },
+        extras: { balao: null, plaquinha: null, cartao: null, chocolates: {} },
       },
     ],
     total: 12490,
@@ -100,6 +100,61 @@ test("retirada não imprime endereço; buquê sem extras não imprime adicionais
   // pagamento aparece colado abaixo do total (fecho do *Total* + \n, sem linha
   // em branco); evita asserir o valor por causa do NBSP da moeda no toLocaleString
   expect(msg).toContain("*\nPagamento: Pix\n");
+});
+
+test("cartão em branco inclui a mensagem do cliente; pré-escrito só o marcador", () => {
+  const msg = buildWhatsAppMessage({
+    itens: [
+      {
+        product: buque,
+        quantity: 1,
+        extras: {
+          balao: null,
+          plaquinha: null,
+          cartao: "branco",
+          cartaoMensagem: "  Feliz aniversário!  ",
+          chocolates: {},
+        },
+      },
+      {
+        product: box,
+        quantity: 1,
+        extras: { balao: null, plaquinha: null, cartao: "pre_escrito", chocolates: {} },
+      },
+    ],
+    total: 31480,
+    cliente: { nome: "Ana", telefone: "5133334444" },
+    pagamento: "pix",
+    entrega: { tipo: "retirada", data: "2026-06-12", horario: "15h às 16h" },
+  });
+
+  expect(msg).toContain("+ Cartão em branco: Feliz aniversário!");
+  expect(msg).toContain("+ Cartão pré-escrito");
+});
+
+test("cartão em branco sem texto cai no marcador sem dois-pontos", () => {
+  const msg = buildWhatsAppMessage({
+    itens: [
+      {
+        product: buque,
+        quantity: 1,
+        extras: {
+          balao: null,
+          plaquinha: null,
+          cartao: "branco",
+          cartaoMensagem: "   ",
+          chocolates: {},
+        },
+      },
+    ],
+    total: 12490,
+    cliente: { nome: "João", telefone: "5133334444" },
+    pagamento: "pix",
+    entrega: { tipo: "retirada", data: "2026-06-12", horario: "15h às 16h" },
+  });
+
+  expect(msg).toContain("+ Cartão em branco");
+  expect(msg).not.toContain("+ Cartão em branco:");
 });
 
 test("buildWhatsAppUrl encoda a mensagem (\\n -> %0A)", () => {
