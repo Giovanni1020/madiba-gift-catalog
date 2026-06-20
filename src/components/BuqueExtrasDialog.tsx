@@ -145,9 +145,17 @@ function formatPrice(cents: number): string {
 const EMPTY_EXTRAS: BuqueExtras = {
   balao: null,
   plaquinha: null,
-  cartao: false,
+  cartao: null,
+  cartaoMensagem: "",
   chocolates: {},
 };
+
+// Texto do cartão "em branco": limite curto e sem emoji (cabe no cartão físico).
+const CARTAO_MSG_MAX = 50;
+// Barra emojis/pictogramas, bandeiras (regional indicators), seletor de variação
+// e ZWJ (junta sequências de emoji). Mantém letras acentuadas e pontuação.
+const EMOJI_RE =
+  /[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}]/gu;
 
 export default function BuqueExtrasDialog({
   product,
@@ -166,6 +174,9 @@ export default function BuqueExtrasDialog({
     product?.variants?.[0] ?? null,
   );
   const [plaquinhaPage, setPlaquinhaPage] = useState(0);
+  // Aviso momentâneo (borda vermelha + texto) ao bater o limite do cartão.
+  const [cartaoLimitHit, setCartaoLimitHit] = useState(false);
+  const cartaoLimitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Imagem ampliada do produto (lightbox sobre o diálogo).
   const [zoom, setZoom] = useState<ZoomImage | null>(null);
 
@@ -325,6 +336,26 @@ export default function BuqueExtrasDialog({
       return total > newMax ? { ...prev, chocolates: {} } : prev;
     });
   };
+
+  // Texto do cartão: remove emoji e corta em CARTAO_MSG_MAX. Estourar o limite
+  // (ou colar algo maior) acende o aviso vermelho por ~1,5s.
+  const handleCartaoMensagem = useCallback((raw: string) => {
+    const clean = raw.replace(EMOJI_RE, "");
+    const clipped = clean.slice(0, CARTAO_MSG_MAX);
+    if (clean.length > CARTAO_MSG_MAX) {
+      setCartaoLimitHit(true);
+      if (cartaoLimitTimer.current) clearTimeout(cartaoLimitTimer.current);
+      cartaoLimitTimer.current = setTimeout(() => setCartaoLimitHit(false), 1500);
+    }
+    setExtras((p) => ({ ...p, cartaoMensagem: clipped }));
+  }, []);
+
+  // Limpa o timer do aviso ao desmontar (evita setState após unmount).
+  useEffect(() => {
+    return () => {
+      if (cartaoLimitTimer.current) clearTimeout(cartaoLimitTimer.current);
+    };
+  }, []);
 
   const handleAdd = () => {
     if (!product) return;
@@ -625,25 +656,72 @@ export default function BuqueExtrasDialog({
             {/* Reference image */}
             <RefImage src="/images/cartao.jpeg" alt="Cartão" onZoom={openZoom} />
 
-            <div className="bed__select-row">
-              <button
-                type="button"
-                className={`bed__cartao-btn${extras.cartao ? " bed__cartao-btn--active" : ""}`}
-                onClick={() => setExtras((p) => ({ ...p, cartao: !p.cartao }))}
-                aria-pressed={extras.cartao}
-              >
-                {extras.cartao ? "Cartão adicionado ✓" : "Adicionar cartão"}
-              </button>
-              {extras.cartao && (
-                <button
-                  className="bed__clear-btn"
-                  onClick={() => setExtras((p) => ({ ...p, cartao: false }))}
-                  aria-label="Remover cartão"
-                >
-                  ✕
-                </button>
-              )}
+            {/* Tipo de cartão — botões segmentados (estilo das variantes). Sem
+                default e sem seleção forçada: clicar no ativo desmarca. */}
+            <div
+              className="bed__cartao-opts"
+              role="radiogroup"
+              aria-label="Tipo de cartão"
+            >
+              {(
+                [
+                  { id: "branco", label: "Cartão em branco" },
+                  { id: "pre_escrito", label: "Cartão pré-escrito" },
+                ] as const
+              ).map((opt) => {
+                const active = extras.cartao === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={`bed__cartao-opt${active ? " bed__cartao-opt--active" : ""}`}
+                    onClick={() =>
+                      setExtras((p) => ({
+                        ...p,
+                        cartao: active ? null : opt.id,
+                      }))
+                    }
+                  >
+                    <span className="bed__cartao-opt-label">{opt.label}</span>
+                  </button>
+                );
+              })}
             </div>
+
+            {/* Mensagem escrita pelo cliente (opcional) — vai junto no WhatsApp.
+                Até 50 caracteres, sem emoji. */}
+            {extras.cartao === "branco" && (
+              <>
+                <textarea
+                  className={`bed__cartao-msg${cartaoLimitHit ? " bed__cartao-msg--limit" : ""}`}
+                  value={extras.cartaoMensagem ?? ""}
+                  onChange={(e) => handleCartaoMensagem(e.target.value)}
+                  placeholder="Escreva a mensagem do cartão (opcional)"
+                  rows={3}
+                  aria-describedby="bed-cartao-msg-foot"
+                />
+                <div className="bed__cartao-msg-foot" id="bed-cartao-msg-foot">
+                  <button
+                    type="button"
+                    className="bed__cartao-msg-clear"
+                    onClick={() => handleCartaoMensagem("")}
+                    disabled={!(extras.cartaoMensagem ?? "").length}
+                  >
+                    Limpar
+                  </button>
+                  {cartaoLimitHit && (
+                    <span className="bed__cartao-msg-warn" role="alert">
+                      Limite de {CARTAO_MSG_MAX} caracteres
+                    </span>
+                  )}
+                  <span className="bed__cartao-msg-count">
+                    {(extras.cartaoMensagem ?? "").length}/{CARTAO_MSG_MAX}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* ── Balão (escondido se a cesta já vem com balão) ───────────── */}
