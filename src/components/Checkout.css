@@ -203,3 +203,98 @@ input.checkout__input[type="date"] {
 @media (prefers-reduced-motion: reduce) {
   .checkout__scroll-hint { animation: none; }
 }
+
+/* ── Modal de confirmação de envio do pedido ──────────────────────────────────
+   Backdrop em tela cheia (acima de tudo) com a caixa centralizada. Aparece após
+   o envio ao WhatsApp e fica até o cliente decidir voltar — assim, mesmo que ele
+   tenha voltado antes de ver a aba do WhatsApp abrir, vê a confirmação e o botão
+   pra reabrir. */
+.checkout-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  animation: checkout-confirm-fade 0.2s ease;
+}
+
+@keyframes checkout-confirm-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.checkout-confirm__box {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 22px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.checkout-confirm__icon {
+  font-size: 2.6rem;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.checkout-confirm__title {
+  margin: 0 0 24px;
+  font-size: 1.2rem;
+  color: #1b5e20;
+}
+
+.checkout-confirm__text {
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.45;
+}
+
+.checkout-confirm__warn {
+  margin: 0 0 18px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #7a5b00;
+  background: #fff7e0;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.checkout-confirm__primary {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #25d366;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.checkout-confirm__secondary {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  color: #666;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkout-confirm { animation: none; }
+}

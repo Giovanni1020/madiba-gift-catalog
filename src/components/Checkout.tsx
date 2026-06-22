@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
-import { useToast } from "../context/ToastContext";
 import { extrasTotal, basePrice } from "../data/products";
 import { CheckoutForm } from "../hooks/useCheckoutForm";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "./checkoutMessage";
@@ -112,7 +111,11 @@ interface CheckoutProps {
 
 export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
   const { items, totalCount, totalPrice } = useCart();
-  const { showToast } = useToast();
+
+  // URL do WhatsApp do pedido recém-enviado. Enquanto setada, mostra o modal de
+  // confirmação (o pedido só fecha de verdade ao enviar a msg lá); guarda a URL
+  // pra o botão "abrir novamente" funcionar sem reconstruir a mensagem.
+  const [pedidoEnviadoUrl, setPedidoEnviadoUrl] = useState<string | null>(null);
 
   // Domingo selecionado? Derivado da data (persiste no re-render) — usado pra
   // marcar o campo (borda vermelha) e mostrar a mensagem fixa abaixo dele.
@@ -186,20 +189,19 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       entrega: r.entrega,
       pagamento: r.pagamento,
     });
-    window.open(buildWhatsAppUrl(STORE_PHONE, msg), "_blank");
+    const url = buildWhatsAppUrl(STORE_PHONE, msg);
+    window.open(url, "_blank");
     // Lead (funil): fim do funil possível no site — a venda fecha no WhatsApp.
     track("Lead", {
       value: totalPrice / 100,
       currency: "BRL",
       num_items: totalCount,
     });
-    // A aba do WhatsApp pode abrir em background/demorar: reforça o próximo passo
-    // ao voltar pro catálogo. Duração maior por ser uma instrução, não só "ok".
-    showToast(
-      "Pedido enviado! Prossiga no WhatsApp para confirmar com a loja.",
-      7000,
-    );
-    onSent();
+    // A aba do WhatsApp pode abrir em background/demorar/ser bloqueada. Em vez de
+    // já voltar pro catálogo, abrimos um modal que confirma o envio e deixa o
+    // próximo passo explícito (o pedido só fecha ao ENVIAR a msg no WhatsApp),
+    // com botão pra reabrir caso o cliente não tenha sido redirecionado.
+    setPedidoEnviadoUrl(url);
   }
 
   return (
@@ -522,6 +524,53 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
           Enviar pelo WhatsApp
         </button>
       </form>
+
+      {pedidoEnviadoUrl && (
+        <div
+          className="checkout-confirm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="checkout-confirm-title"
+        >
+          <div className="checkout-confirm__box">
+            <div className="checkout-confirm__icon" aria-hidden="true">
+              ✅
+            </div>
+            <h3
+              id="checkout-confirm-title"
+              className="checkout-confirm__title"
+            >
+              Pedido enviado com sucesso!
+            </h3>
+            <p className="checkout-confirm__text">
+              Abrimos o <strong>WhatsApp</strong> para você finalizar o
+              atendimento com a loja.
+            </p>
+            <p className="checkout-confirm__warn">
+              ⚠️ Importante: seu pedido só é confirmado depois que você{" "}
+              <strong>enviar a mensagem</strong> no WhatsApp.
+            </p>
+            <a
+              className="checkout-confirm__primary"
+              href={pedidoEnviadoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Não abriu? Abrir o WhatsApp
+            </a>
+            <button
+              type="button"
+              className="checkout-confirm__secondary"
+              onClick={() => {
+                setPedidoEnviadoUrl(null);
+                onSent();
+              }}
+            >
+              Voltar ao catálogo
+            </button>
+          </div>
+        </div>
+      )}
 
       {maisAbaixo && (
         <div className="checkout__scroll-hint" aria-hidden="true">
