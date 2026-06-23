@@ -5,7 +5,6 @@ import {
   BuqueExtras,
   ChocolateOption,
   CHOCOLATE_OPTIONS,
-  BALAO_OPTIONS,
   PLAQUINHA_OPTIONS_BY_PAGE,
   BalaoOption,
   PlaquinhaOption,
@@ -18,12 +17,27 @@ import { track } from "../lib/analytics/metaPixel";
 import ImageLightbox from "./ImageLightbox";
 import "./BuqueExtrasDialog.css";
 
-// ─── Plaquinha image carousel ─────────────────────────────────────────────────
+// ─── Image carousel (plaquinha / balão) ───────────────────────────────────────
 
 const PLAQUINHA_IMAGES = [
   { src: "/images/plaquinhas1.jpg", alt: "Plaquinhas — página 1" },
   { src: "/images/plaquinhas2.jpg", alt: "Plaquinhas — página 2" },
   { src: "/images/plaquinhas3.jpg", alt: "Plaquinhas — página 3" },
+];
+
+// Balões disponíveis hoje — uma imagem por modelo. A tipagem (BALAO_OPTIONS)
+// continua maior: novos balões entram aqui sem mexer no tipo.
+const BALAO_IMAGES = [
+  { src: "/images/balao_te_amo.jpeg", alt: 'Balão "Te Amo"' },
+  { src: "/images/balao_com_carinho.jpeg", alt: 'Balão "Com Carinho"' },
+  { src: "/images/balao_parabens.jpeg", alt: 'Balão "Parabéns"' },
+];
+
+// Opções de balão exibidas no select — só os modelos com imagem acima.
+const BALAO_DISPLAY_OPTIONS: BalaoOption[] = [
+  "Te Amo",
+  "Com Carinho",
+  "Parabéns",
 ];
 
 type ZoomImage = { src: string; alt: string };
@@ -46,24 +60,34 @@ function RefImage({
       onClick={() => onZoom({ src, alt })}
       aria-label={`Ampliar imagem: ${alt}`}
     >
-      <img src={src} alt={alt} className="bed__ref-img" />
+      <img src={src} alt={alt} loading="lazy" className="bed__ref-img" />
     </button>
   );
 }
 
 interface CarouselProps {
+  images: { src: string; alt: string }[];
   current: number;
   onChange: (i: number) => void;
   onZoom: (img: ZoomImage) => void;
+  dotLabel?: (i: number) => string;
+  className?: string; // modificador opcional (ex.: área mais alta p/ balão)
 }
 
-function PlaquinhaCarousel({ current, onChange, onZoom }: CarouselProps) {
-  const total = PLAQUINHA_IMAGES.length;
+function ImageCarousel({
+  images,
+  current,
+  onChange,
+  onZoom,
+  dotLabel = (i) => `Ver imagem ${i + 1}`,
+  className = "",
+}: CarouselProps) {
+  const total = images.length;
   const prev = () => onChange((current - 1 + total) % total);
   const next = () => onChange((current + 1) % total);
 
   return (
-    <div className="plaq-carousel">
+    <div className={`plaq-carousel${className ? ` ${className}` : ""}`}>
       <button
         className="plaq-carousel__arrow plaq-carousel__arrow--prev"
         onClick={prev}
@@ -81,11 +105,12 @@ function PlaquinhaCarousel({ current, onChange, onZoom }: CarouselProps) {
       </button>
 
       <div className="plaq-carousel__img-wrap">
-        {PLAQUINHA_IMAGES.map((img, i) => (
+        {images.map((img, i) => (
           <img
             key={img.src}
             src={img.src}
             alt={img.alt}
+            loading="lazy"
             className={`plaq-carousel__img${i === current ? " plaq-carousel__img--active" : ""}`}
             onClick={() => i === current && onZoom({ src: img.src, alt: img.alt })}
           />
@@ -109,12 +134,12 @@ function PlaquinhaCarousel({ current, onChange, onZoom }: CarouselProps) {
       </button>
 
       <div className="plaq-carousel__dots">
-        {PLAQUINHA_IMAGES.map((_, i) => (
+        {images.map((_, i) => (
           <button
             key={i}
             className={`plaq-carousel__dot${i === current ? " plaq-carousel__dot--active" : ""}`}
             onClick={() => onChange(i)}
-            aria-label={`Ver página ${i + 1}`}
+            aria-label={dotLabel(i)}
           />
         ))}
       </div>
@@ -174,6 +199,7 @@ export default function BuqueExtrasDialog({
     product?.variants?.[0] ?? null,
   );
   const [plaquinhaPage, setPlaquinhaPage] = useState(0);
+  const [balaoPage, setBalaoPage] = useState(0);
   // Aviso momentâneo (borda vermelha + texto) ao bater o limite do cartão.
   const [cartaoLimitHit, setCartaoLimitHit] = useState(false);
   const cartaoLimitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -233,6 +259,7 @@ export default function BuqueExtrasDialog({
     setExtras(EMPTY_EXTRAS);
     setVariant(product?.variants?.[0] ?? null); // volta à variante default ao abrir/trocar
     setPlaquinhaPage(0);
+    setBalaoPage(0);
     setZoom(null);
     setVideoFailed(false);
     setMediaExpanded(true); // abre sempre com a mídia em tamanho cheio
@@ -734,11 +761,14 @@ export default function BuqueExtrasDialog({
                 </span>
               </div>
 
-              {/* Reference image */}
-              <RefImage
-                src="/images/baloes.jpg"
-                alt="Opções de balão"
+              {/* Carousel — controlled by balaoPage. Área mais alta que a da
+                  plaquinha: os balões são retratos e o 16/9 cortava o topo. */}
+              <ImageCarousel
+                images={BALAO_IMAGES}
+                current={balaoPage}
+                onChange={setBalaoPage}
                 onZoom={openZoom}
+                className="plaq-carousel--balao"
               />
 
               <div className="bed__select-row">
@@ -757,7 +787,7 @@ export default function BuqueExtrasDialog({
                   }}
                 >
                   <option value="">— Não quero balão —</option>
-                  {BALAO_OPTIONS.map((opt) => (
+                  {BALAO_DISPLAY_OPTIONS.map((opt) => (
                     <option key={opt} value={opt}>
                       {opt}
                     </option>
@@ -786,10 +816,12 @@ export default function BuqueExtrasDialog({
             </div>
 
             {/* Carousel — controlled by plaquinhaPage */}
-            <PlaquinhaCarousel
+            <ImageCarousel
+              images={PLAQUINHA_IMAGES}
               current={plaquinhaPage}
               onChange={handlePlaquinhaPage}
               onZoom={openZoom}
+              dotLabel={(i) => `Ver página ${i + 1}`}
             />
 
             <div className="bed__select-row">

@@ -80,6 +80,15 @@
   height: min(60vh, 520px);
 }
 
+/* Telas baixas (iPhone SE 667px e afins): a mídia colapsada ocupa menos altura,
+   deixando o drawer subir mais sobre a imagem p/ caber imagem + extras juntos.
+   Só afeta o estado minimizado — expandir (setinha/arraste) ainda revela tudo. */
+@media (max-height: 750px) {
+  .bed__img-wrap:not(.bed__img-wrap--expanded) {
+    height: 150px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bed__img-wrap,
   .bed__img,
@@ -340,6 +349,12 @@
   border-radius: 8px;
   overflow: hidden;
   background: var(--color-surface-tint);
+}
+
+/* Balão: foto em retrato — ~60% mais alta que o 16/9 padrão, p/ não cortar o
+   topo do balão (16/9 ≈ 1.778 → 1.778 / 1.15 / 1.15 / 1.10 / 1.10 ≈ 1.111). */
+.plaq-carousel--balao .plaq-carousel__img-wrap {
+  aspect-ratio: 16 / 14.4;
 }
 
 .plaq-carousel__img {
