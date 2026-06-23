@@ -243,6 +243,16 @@ export const PRODUCTS: Product[] = [
     ],
   },
   {
+    id: 25,
+    name: "Buquê 1 Girassol com Mosquitinho Azul",
+    description:
+      "Buquê com 1 girassol e mosquitinho azul, embrulho temático com laço.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-1-girassol-Mos-Azul.jpeg",
+    maxChocolates: 4,
+  },
+  {
     id: 22,
     name: "Cartão Buquê",
     description:
