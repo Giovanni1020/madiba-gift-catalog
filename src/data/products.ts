@@ -253,6 +253,26 @@ export const PRODUCTS: Product[] = [
     maxChocolates: 4,
   },
   {
+    id: 26,
+    name: "Buquê Astromélias Rosas",
+    description: "Buquê de astromélias rosas, embrulho temático com laço.",
+    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    price: 6490,
+    category: "buques",
+    image: "/images/buque_astromelias_rosa.jpeg",
+    maxChocolates: 3,
+  },
+  {
+    id: 27,
+    name: "Buquê Astromélias Laranjas",
+    description: "Buquê de astromélias laranjas, embrulho temático com laço.",
+    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    price: 6490,
+    category: "buques",
+    image: "/images/buque_astromelias_laranja.jpeg",
+    maxChocolates: 3,
+  },
+  {
     id: 22,
     name: "Cartão Buquê",
     description:
