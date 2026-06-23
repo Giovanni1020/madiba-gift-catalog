@@ -164,6 +164,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-3-rosas-cor-de-rosa.jpeg",
     maxChocolates: 3,
+    note: "Obs: pode haver pequenas variações de tonalidade",
   },
   {
     id: 4,
@@ -221,9 +222,24 @@ export const PRODUCTS: Product[] = [
     image: "/images/buque-girassol.jpeg",
     maxChocolates: 4, // default/fallback; cada variante sobrepõe
     variants: [
-      { id: "2-girassois", label: "2 girassóis", price: 4990, maxChocolates: 4 },
-      { id: "3-girassois", label: "3 girassóis", price: 7490, maxChocolates: 6 },
-      { id: "4-girassois", label: "4 girassóis", price: 9990, maxChocolates: 8 },
+      {
+        id: "2-girassois",
+        label: "2 girassóis",
+        price: 4990,
+        maxChocolates: 4,
+      },
+      {
+        id: "3-girassois",
+        label: "3 girassóis",
+        price: 7490,
+        maxChocolates: 6,
+      },
+      {
+        id: "4-girassois",
+        label: "4 girassóis",
+        price: 9990,
+        maxChocolates: 8,
+      },
     ],
   },
   {
