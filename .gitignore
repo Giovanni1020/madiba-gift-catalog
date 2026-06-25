@@ -29,5 +29,9 @@ Thumbs.db
 /typings
 testem.log
 
+# Editor (versiona só a config de projeto; ignora o resto do .vscode/)
+.vscode/*
+!.vscode/settings.json
+
 # Claude
 .claude/worktrees/
