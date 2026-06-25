@@ -15,7 +15,7 @@ import {
 import { useCart } from "../context/CartContext";
 import { track } from "../lib/analytics/metaPixel";
 import ImageLightbox from "./ImageLightbox";
-import "./BuqueExtrasDialog.css";
+import "./ExtrasDialog.css";
 
 // ─── Image carousel (plaquinha / balão) ───────────────────────────────────────
 
@@ -30,14 +30,16 @@ const PLAQUINHA_IMAGES = [
 const BALAO_IMAGES = [
   { src: "/images/balao_te_amo.jpeg", alt: 'Balão "Te Amo"' },
   { src: "/images/balao_com_carinho.jpeg", alt: 'Balão "Com Carinho"' },
-  { src: "/images/balao_parabens.jpeg", alt: 'Balão "Parabéns"' },
+  { src: "/images/balao_parabens_rosa.jpeg", alt: 'Balão "Parabéns (Rosa)"' },
+  { src: "/images/balao_parabens_vermelho.jpeg", alt: 'Balão "Parabéns (Verm.)"' },
 ];
 
 // Opções de balão exibidas no select — só os modelos com imagem acima.
 const BALAO_DISPLAY_OPTIONS: BalaoOption[] = [
   "Te Amo",
   "Com Carinho",
-  "Parabéns",
+  "Parabéns (Rosa)",
+  "Parabéns (Verm.)",
 ];
 
 type ZoomImage = { src: string; alt: string };
@@ -182,7 +184,7 @@ const CARTAO_MSG_MAX = 50;
 const EMOJI_RE =
   /[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{FE0F}\u{200D}]/gu;
 
-export default function BuqueExtrasDialog({
+export default function ExtrasDialog({
   product,
   prevProduct,
   nextProduct,

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { PRODUCTS } from "../data/products";
 
 // Pré-carrega em background os vídeos "eager" (lazyVideo !== true) logo após a
-// página pintar, em vez de só quando o BuqueExtrasDialog abre.
+// página pintar, em vez de só quando o ExtrasDialog abre.
 //
 // Usa <link rel="prefetch"> injetado no <head> — links não são renderizados, então
 // têm ZERO impacto de layout (uma abordagem anterior com <video> ocultos quebrava
