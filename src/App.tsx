@@ -8,7 +8,7 @@ import ProductGrid from "./components/ProductGrid";
 import CartDrawer from "./components/CartDrawer";
 import CartFab from "./components/CartFab";
 import SocialFab from "./components/SocialFab";
-import BuqueExtrasDialog from "./components/BuqueExtrasDialog";
+import ExtrasDialog from "./components/ExtrasDialog";
 import Checkout from "./components/Checkout";
 import ConsentBanner from "./components/ConsentBanner";
 import MediaPreloader from "./components/MediaPreloader";
@@ -130,7 +130,7 @@ function CatalogPage() {
       <CartFab />
       <SocialFab />
       <CartDrawer onCheckout={openCheckout} />
-      <BuqueExtrasDialog
+      <ExtrasDialog
         product={extrasProduct}
         prevProduct={prevProduct}
         nextProduct={nextProduct}

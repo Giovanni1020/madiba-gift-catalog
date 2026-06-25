@@ -1,6 +1,6 @@
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type Category = "buques" | "buques-cetim" | "cestas";
+export type Category = "buques" | "buques-cetim" | "cestas" | "doces";
 
 // Variante de um produto (ADR-0005): opção mutuamente exclusiva escolhida no diálogo.
 // Carrega preço ABSOLUTO (não delta) e pode sobrepor a imagem e o nº de chocolates.
@@ -56,9 +56,9 @@ export const CHOCOLATE_OPTIONS: ChocolateExtra[] = [
 export const BALAO_OPTIONS = [
   "Te Amo",
   "Com Carinho",
-  "Parabéns",
+  "Parabéns (Rosa)",
   "Com Carinho (rosa)",
-  "Parabéns (rosa)",
+  "Parabéns (Verm.)",
   "Te Amo Mãe",
 ] as const;
 export type BalaoOption = (typeof BALAO_OPTIONS)[number];
@@ -147,8 +147,9 @@ export function priceFrom(product: Product): number {
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   buques: "Buquês",
-  "buques-cetim": "Buquês Cetim",
+  "buques-cetim": "Buquês Doce",
   cestas: "Cestas",
+  doces: "Doces",
 };
 
 // ─── Products ────────────────────────────────────────────────────────────────
@@ -460,5 +461,31 @@ export const PRODUCTS: Product[] = [
     image: "/images/box-com-carinho.jpeg",
     exclusiveExtras: true,
     hideBalao: true,
+  },
+
+  // ── Doces ────────────────────────────────────────────────────────────────
+  {
+    id: 28,
+    name: "Ferrero Rocher 3 Unidades",
+    description: "Caixa com 3 Ferrero Rocher.",
+    price: 1990,
+    category: "doces",
+    image: "/images/ferrero_3U.jpeg",
+  },
+  {
+    id: 29,
+    name: "Ferrero Rocher 4 Unidades",
+    description: "Caixa com 4 Ferrero Rocher.",
+    price: 2490,
+    category: "doces",
+    image: "/images/ferrero_4U.jpeg",
+  },
+  {
+    id: 30,
+    name: "Ferrero Rocher 8 Unidades",
+    description: "Caixa com 8 Ferrero Rocher.",
+    price: 4990,
+    category: "doces",
+    image: "/images/ferrero_8U.jpeg",
   },
 ];
