@@ -467,6 +467,7 @@ export default function ExtrasDialog({
   const price = basePrice(product, variant); // preço-base da variante escolhida (ADR-0005)
   const media = variant?.image ?? product.image; // variante pode trocar a mídia
   const showBalao = !product.hideBalao; // item que não oferece balão como adicional
+  const showPlaquinha = !product.hidePlaquinha; // item que não oferece plaquinha como adicional
   const exclusive = !!product.exclusiveExtras; // cestas: balão XOR plaquinha
 
   return (
@@ -632,7 +633,7 @@ export default function ExtrasDialog({
             <h2 className="bed__title" id="bed-title">
               {product.name}
             </h2>
-            {exclusive && showBalao && (
+            {exclusive && showBalao && showPlaquinha && (
               <p className="bed__exclusive-hint">
                 Escolha balão <strong>ou</strong> plaquinha (não os dois).
               </p>
@@ -808,7 +809,8 @@ export default function ExtrasDialog({
             </div>
           )}
 
-          {/* ── Plaquinha ─────────────────────────────────────────────── */}
+          {/* ── Plaquinha (só quando o item oferece) ──────────────────── */}
+          {showPlaquinha && (
           <div className="bed__section">
             <div className="bed__section-header">
               <h3 className="bed__section-title">Plaquinha</h3>
@@ -859,6 +861,7 @@ export default function ExtrasDialog({
               )}
             </div>
           </div>
+          )}
 
           {/* ── Chocolates (só quando o buquê aceita: maxChocolates > 0) ── */}
           {maxChoc > 0 && (

@@ -27,6 +27,7 @@ export interface Product {
   note?: string; // observação visível no card (ex.: pelúcia pode variar)
   exclusiveExtras?: boolean; // cestas: balão e plaquinha são mutuamente exclusivos
   hideBalao?: boolean; // não oferecer balão como adicional (cesta que já vem com balão, ou item sem opção de balão)
+  hidePlaquinha?: boolean; // não oferecer plaquinha como adicional
   variants?: ProductVariant[]; // opções por produto (ADR-0005); quando presente, o cliente escolhe uma no diálogo
 }
 
@@ -274,6 +275,16 @@ export const PRODUCTS: Product[] = [
     maxChocolates: 3,
   },
   {
+    id: 34,
+    name: "Buquê Girassol Normal",
+    description: "Buquê com 1 girassol, embrulho temático com laço.",
+    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    price: 3000,
+    category: "buques",
+    image: "/images/buque-girassol-normal.jpeg",
+    maxChocolates: 3,
+  },
+  {
     id: 22,
     name: "Cartão Buquê",
     description:
@@ -451,6 +462,33 @@ export const PRODUCTS: Product[] = [
     category: "cestas",
     image: "/images/box-cafe-da-manha.jpeg",
     exclusiveExtras: true,
+  },
+  {
+    id: 31,
+    name: "Mini Cesta Café da Manhã",
+    description: "Contém: 30 itens de café da manhã.",
+    price: 6990,
+    category: "cestas",
+    image: "/images/mini-cesta-cafe-da-manha.jpeg",
+    hidePlaquinha: true,
+  },
+  {
+    id: 32,
+    name: "Box Mãe Amor Infinito",
+    description: "Contém: arranjo com 3 rosas, Ferrero Rocher c/8.",
+    price: 11490,
+    category: "cestas",
+    image: "/images/box-mae-amor-infinito.jpeg",
+    hidePlaquinha: true,
+  },
+  {
+    id: 33,
+    name: "Box Mulher Incrível",
+    description: "Contém: arranjo com 3 rosas, trufas 195g.",
+    price: 8990,
+    category: "cestas",
+    image: "/images/box-mulher-incrivel.jpeg",
+    hidePlaquinha: true,
   },
   {
     id: 20,
