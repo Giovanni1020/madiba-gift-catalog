@@ -342,6 +342,16 @@ export const PRODUCTS: Product[] = [
     image: "/images/buque-cetim-7-rafaello.jpeg",
   },
   {
+    id: 35,
+    name: "Buquê Amor Eterno",
+    description: "Contém: 1 balão Te Amo, 3 rosas de cetim, 8 Sonho de Valsa.",
+    price: 6990,
+    category: "buques-cetim",
+    image: "/images/buque-amor-eterno.jpeg",
+    hideBalao: true,
+    hidePlaquinha: true,
+  },
+  {
     id: 23,
     name: "Buquê Angel",
     description: "Buquê Angel de rosas de cetim, embrulho temático com laço.",
