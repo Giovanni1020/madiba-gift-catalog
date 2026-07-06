@@ -347,8 +347,9 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             </label>
 
             <p className="checkout__note">
-              📍 Entregas somente no RS, consulte taxa de entrega na finalização
-              no whatsapp.
+              📍 Entregas em Alvorada, Viamão, Porto Alegre e região
+              metropolitana. Consulte a disponibilidade para sua região no
+              WhatsApp.
             </p>
 
             <label className="checkout__field">
@@ -536,10 +537,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
             <div className="checkout-confirm__icon" aria-hidden="true">
               ✅
             </div>
-            <h3
-              id="checkout-confirm-title"
-              className="checkout-confirm__title"
-            >
+            <h3 id="checkout-confirm-title" className="checkout-confirm__title">
               Pedido enviado com sucesso!
             </h3>
             <p className="checkout-confirm__text">
