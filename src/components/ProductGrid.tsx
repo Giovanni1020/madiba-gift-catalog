@@ -2,6 +2,7 @@ import React from "react";
 import { Product } from "../data/products";
 import ProductCard from "./ProductCard";
 import CustomBuqueCard from "./CustomBuqueCard";
+import BuqueNoivaCard from "./BuqueNoivaCard";
 import "./ProductGrid.css";
 
 interface Props {
@@ -36,9 +37,14 @@ export default function ProductGrid({ products, onOpenExtras }: Props) {
             <ProductCard product={product} onOpenExtras={onOpenExtras} />
           </li>
           {i === lastBuqueIndex && (
-            <li className="grid__item">
-              <CustomBuqueCard />
-            </li>
+            <>
+              <li className="grid__item">
+                <CustomBuqueCard />
+              </li>
+              <li className="grid__item">
+                <BuqueNoivaCard />
+              </li>
+            </>
           )}
         </React.Fragment>
       ))}
