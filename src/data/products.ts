@@ -202,6 +202,16 @@ export const PRODUCTS: Product[] = [
     maxChocolates: 3,
   },
   {
+    id: 36,
+    name: "Buquê 10 Rosas Importadas",
+    description:
+      "Buquê com 10 rosas importadas, baby breath e folhagem, embrulho elegante com laço.",
+    price: 24990,
+    category: "buques",
+    image: "/images/buque-10-rosas-importadas.jpeg",
+    maxChocolates: 10,
+  },
+  {
     id: 7,
     name: "Buquê Medelin",
     description:
