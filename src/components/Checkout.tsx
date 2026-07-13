@@ -26,8 +26,12 @@ function formatBRL(cents: number): string {
   });
 }
 
-// Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h).
-const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`);
+// Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h),
+// exceto a janela de almoço 12h às 13h (loja fechada).
+const HORARIOS = Array.from(
+  { length: 9 },
+  (_, i) => `${9 + i}h às ${10 + i}h`,
+).filter((h) => h !== "12h às 13h");
 
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
 // em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
