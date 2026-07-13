@@ -26,8 +26,8 @@ function formatBRL(cents: number): string {
   });
 }
 
-// Janelas de entrega: 1 em 1 hora, das 8h às 18h (8h às 9h … 17h às 18h).
-const HORARIOS = Array.from({ length: 10 }, (_, i) => `${8 + i}h às ${9 + i}h`);
+// Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h).
+const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`);
 
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
 // em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
@@ -61,10 +61,10 @@ function isoLocalDate(offsetDias: number): string {
   return `${d.getFullYear()}-${mm}-${dd}`;
 }
 
-// Antecedência mínima de 1h30 para o DIA DE HOJE: um horário cujo início esteja a
-// menos de 1h30 do agora não pode ser escolhido (ex.: às 8h, a janela "9h às 10h"
-// já saiu; às 13h, "9h às 10h" idem). Em datas futuras não há corte por hora.
-const ANTECEDENCIA_MIN_MS = 90 * 60 * 1000;
+// Antecedência mínima de 30min para o DIA DE HOJE: um horário cujo início esteja a
+// menos de 30min do agora não pode ser escolhido (ex.: às 9h40, a janela "10h às 11h"
+// ainda vale; às 9h50, não). Em datas futuras não há corte por hora.
+const ANTECEDENCIA_MIN_MS = 30 * 60 * 1000;
 
 function horarioCedoDemais(dataIso: string, horario: string): boolean {
   if (dataIso !== isoLocalDate(0)) return false; // só corta quando a data é hoje
