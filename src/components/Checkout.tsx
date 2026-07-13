@@ -30,7 +30,7 @@ function formatBRL(cents: number): string {
 const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`);
 
 // Janela de almoço: a loja só atende das 12h às 13h aos sábados. Nos demais
-// dias esse horário aparece na lista, mas fica bloqueado (indisponível).
+// dias esse horário nem aparece na lista (ver horariosVisiveis).
 const HORARIO_SO_SABADO = "12h às 13h";
 
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
@@ -86,6 +86,12 @@ function horarioSoSabado(dataIso: string, horario: string): boolean {
   const [y, m, d] = dataIso.split("-").map(Number);
   if (!y || !m || !d) return true; // sem data válida → não libera o slot de sábado
   return new Date(y, m - 1, d).getDay() !== 6; // 6 = sábado
+}
+
+// Horários exibidos na lista para a data escolhida: esconde a janela exclusiva
+// de sábado nos demais dias (os outros bloqueios seguem visíveis como "indisponível").
+function horariosVisiveis(dataIso: string): string[] {
+  return HORARIOS.filter((h) => !horarioSoSabado(dataIso, h));
 }
 
 // Bloqueio efetivo = restrição predefinida da data OU antecedência mínima de hoje
@@ -464,7 +470,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 onChange={(e) => form.setHorario(e.target.value)}
               >
                 <option value="">— Escolha um horário —</option>
-                {HORARIOS.map((h) => {
+                {horariosVisiveis(form.data).map((h) => {
                   const bloqueado = horarioBloqueado("entrega", form.data, h);
                   return (
                     <option key={h} value={h} disabled={bloqueado}>
@@ -518,7 +524,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
                 onChange={(e) => form.setHorario(e.target.value)}
               >
                 <option value="">— Escolha um horário —</option>
-                {HORARIOS.map((h) => {
+                {horariosVisiveis(form.data).map((h) => {
                   const bloqueado = horarioBloqueado("retirada", form.data, h);
                   return (
                     <option key={h} value={h} disabled={bloqueado}>
