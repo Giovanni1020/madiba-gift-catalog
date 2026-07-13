@@ -26,12 +26,12 @@ function formatBRL(cents: number): string {
   });
 }
 
-// Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h),
-// exceto a janela de almoço 12h às 13h (loja fechada).
-const HORARIOS = Array.from(
-  { length: 9 },
-  (_, i) => `${9 + i}h às ${10 + i}h`,
-).filter((h) => h !== "12h às 13h");
+// Janelas de entrega: 1 em 1 hora, das 9h às 18h (9h às 10h … 17h às 18h).
+const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`);
+
+// Janela de almoço: a loja só atende das 12h às 13h aos sábados. Nos demais
+// dias esse horário aparece na lista, mas fica bloqueado (indisponível).
+const HORARIO_SO_SABADO = "12h às 13h";
 
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
 // em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
@@ -79,8 +79,18 @@ function horarioCedoDemais(dataIso: string, horario: string): boolean {
   return inicioSlot.getTime() - Date.now() < ANTECEDENCIA_MIN_MS;
 }
 
-// Bloqueio efetivo = restrição predefinida da data OU antecedência mínima de hoje.
-// Ponto único de verdade, usado na lista e no efeito que limpa a seleção.
+// A janela 12h às 13h só é atendida aos sábados — em qualquer outro dia (ou sem
+// data escolhida) fica bloqueada. Parse de dia da semana igual ao isDomingo.
+function horarioSoSabado(dataIso: string, horario: string): boolean {
+  if (horario !== HORARIO_SO_SABADO) return false;
+  const [y, m, d] = dataIso.split("-").map(Number);
+  if (!y || !m || !d) return true; // sem data válida → não libera o slot de sábado
+  return new Date(y, m - 1, d).getDay() !== 6; // 6 = sábado
+}
+
+// Bloqueio efetivo = restrição predefinida da data OU antecedência mínima de hoje
+// OU janela exclusiva de sábado. Ponto único de verdade, usado na lista e no
+// efeito que limpa a seleção.
 function horarioBloqueado(
   tipo: "entrega" | "retirada",
   dataIso: string,
@@ -88,7 +98,8 @@ function horarioBloqueado(
 ): boolean {
   return (
     horarioInvalido(tipo, dataIso, horario) ||
-    horarioCedoDemais(dataIso, horario)
+    horarioCedoDemais(dataIso, horario) ||
+    horarioSoSabado(dataIso, horario)
   );
 }
 
