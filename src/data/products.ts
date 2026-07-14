@@ -226,7 +226,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 21,
-    name: "Buquê Girassol",
+    name: "Buquê Girassol Tradicional",
     description:
       "Buquê de girassóis com baby breath e folhagem, embrulho temático com laço.",
     price: 4990, // "a partir de" = menor variante (2 girassóis)
@@ -286,7 +286,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 34,
-    name: "Buquê Girassol Normal",
+    name: "Buquê Girassol",
     description: "Buquê com 1 girassol, embrulho temático com laço.",
     note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
     price: 3000,
