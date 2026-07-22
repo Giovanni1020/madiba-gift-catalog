@@ -166,7 +166,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-3-rosas-cor-de-rosa.jpeg",
     maxChocolates: 3,
-    note: "Obs: pode haver pequenas variações de tonalidade. A embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: pode haver pequenas variações de tonalidade. Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 4,
@@ -180,7 +180,7 @@ export const PRODUCTS: Product[] = [
     lazyVideo: false,
     featured: true,
     maxChocolates: 5,
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 5,
@@ -191,7 +191,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-1-girassol-luxo.jpeg",
     maxChocolates: 3,
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 6,
@@ -202,7 +202,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-3-rosas-vermelhas-importadas.jpeg",
     maxChocolates: 3,
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 37,
@@ -213,7 +213,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-3-rosas-nacionais.jpeg",
     maxChocolates: 5,
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 36,
@@ -224,7 +224,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-10-rosas-importadas.jpeg",
     maxChocolates: 10,
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 7,
@@ -238,7 +238,7 @@ export const PRODUCTS: Product[] = [
     video: "/vids/buque-medelin.mp4",
     lazyVideo: false,
     maxChocolates: 5,
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 21,
@@ -249,7 +249,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-girassol.jpeg",
     maxChocolates: 4, // default/fallback; cada variante sobrepõe
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
     variants: [
       {
         id: "2-girassois",
@@ -280,13 +280,13 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-1-girassol-Mos-Azul.jpeg",
     maxChocolates: 4,
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
   },
   {
     id: 26,
     name: "Buquê Astromélias Rosas",
     description: "Buquê de astromélias rosas, embrulho temático com laço.",
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
     price: 6490,
     category: "buques",
     image: "/images/buque_astromelias_rosa.jpeg",
@@ -296,7 +296,7 @@ export const PRODUCTS: Product[] = [
     id: 27,
     name: "Buquê Astromélias Laranjas",
     description: "Buquê de astromélias laranjas, embrulho temático com laço.",
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
     price: 6490,
     category: "buques",
     image: "/images/buque_astromelias_laranja.jpeg",
@@ -306,7 +306,7 @@ export const PRODUCTS: Product[] = [
     id: 34,
     name: "Buquê Girassol",
     description: "Buquê com 1 girassol, embrulho temático com laço.",
-    note: "Obs: a embalagem pode variar de acordo com a disponibilidade.",
+    note: "Obs: Pode haver variação na embalagem e/ou folhagens utilizadas de acordo com a disponibilidade",
     price: 3000,
     category: "buques",
     image: "/images/buque-girassol-normal.jpeg",
