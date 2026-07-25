@@ -21,6 +21,7 @@
 | [adr/0003-rastreamento-meta-pixel.md](adr/0003-rastreamento-meta-pixel.md) | Meta Pixel: browser-only (sem CAPI), consentimento opt-in, funil completo de eventos. |
 | [adr/0004-navegacao-entre-itens-no-dialogo.md](adr/0004-navegacao-entre-itens-no-dialogo.md) | Diálogo de item navega a lista filtrada (swipe/setas); `?item=` na URL via `replaceState`. |
 | [adr/0005-variantes-de-produto.md](adr/0005-variantes-de-produto.md) | Variantes de produto (preço/imagem/chocolates por opção); escolha no diálogo; helper `basePrice`. |
+| [adr/0007-carregamento-de-imagens.md](adr/0007-carregamento-de-imagens.md) | Carregamento de imagens: `loading="lazy"` nativo como baseline (já em uso); sem lib nova; crescimento via segmentação por categoria quando pesar. |
 | [matriz-mental.md](matriz-mental.md) | Trilha de estudo — tópicos marcados para pesquisar depois. |
 
 ## Convenções
