@@ -21,7 +21,7 @@
 | [adr/0003-rastreamento-meta-pixel.md](adr/0003-rastreamento-meta-pixel.md) | Meta Pixel: browser-only (sem CAPI), consentimento opt-in, funil completo de eventos. |
 | [adr/0004-navegacao-entre-itens-no-dialogo.md](adr/0004-navegacao-entre-itens-no-dialogo.md) | Diálogo de item navega a lista filtrada (swipe/setas); `?item=` na URL via `replaceState`. |
 | [adr/0005-variantes-de-produto.md](adr/0005-variantes-de-produto.md) | Variantes de produto (preço/imagem/chocolates por opção); escolha no diálogo; helper `basePrice`. |
-| [adr/0006-frete-por-distancia.md](adr/0006-frete-por-distancia.md) | Frete por distância viária: proxy serverless (`/api/frete`) + geocoder (Mapbox); regra pura `frete(km)`; aviso forte, não trava. |
+| [adr/0006-frete-por-distancia.md](adr/0006-frete-por-distancia.md) | Frete por distância viária: proxy serverless (`/api/frete`) + geocoder (Google Maps); regra pura `frete(km)`; aviso forte, não trava. |
 | [matriz-mental.md](matriz-mental.md) | Trilha de estudo — tópicos marcados para pesquisar depois. |
 
 ## Convenções
