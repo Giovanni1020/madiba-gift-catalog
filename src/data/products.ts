@@ -216,6 +216,17 @@ export const PRODUCTS: Product[] = [
     note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
+    id: 38,
+    name: "Buquê de Lírio Oriental Rosa",
+    description:
+      "Buquê estilo coreano feito de lírio oriental rosa e alstromélias rosas, montado em espuma floral hidratada.",
+    note: "Obs: pode haver variação na cor das alstromélias e/ou na embalagem.",
+    price: 14990,
+    category: "buques",
+    image: "/images/buque-lirio-oriental-rosa.jpeg",
+    maxChocolates: 6,
+  },
+  {
     id: 36,
     name: "Buquê 10 Rosas Importadas",
     description:
