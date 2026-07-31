@@ -162,7 +162,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 3 Rosas Cor de Rosa",
     description:
       "Buquê com 3 rosas cor de rosa, baby breath e folhagem, embrulho temático com laço.",
-    price: 5990,
+    price: 7990,
     category: "buques",
     image: "/images/buque-3-rosas-cor-de-rosa.jpeg",
     maxChocolates: 3,
@@ -220,7 +220,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 10 Rosas Importadas",
     description:
       "Buquê com 10 rosas importadas, baby breath e folhagem, embrulho elegante com laço.",
-    price: 24990,
+    price: 29990,
     category: "buques",
     image: "/images/buque-10-rosas-importadas.jpeg",
     maxChocolates: 10,
@@ -232,7 +232,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Buquê com 3 rosas vermelhas importadas e 1 girassol, solidago, baby breath, embrulho preto e dourado.",
     featured: true,
-    price: 9990,
+    price: 12490,
     category: "buques",
     image: "/images/buque-3-rosas-importadas-1-girassol.jpeg",
     video: "/vids/buque-medelin.mp4",
@@ -276,7 +276,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 1 Girassol com Mosquitinho Azul",
     description:
       "Buquê com 1 girassol e mosquitinho azul, embrulho temático com laço.",
-    price: 4990,
+    price: 5990,
     category: "buques",
     image: "/images/buque-1-girassol-Mos-Azul.jpeg",
     maxChocolates: 4,
