@@ -162,7 +162,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 3 Rosas Cor de Rosa",
     description:
       "Buquê com 3 rosas cor de rosa, baby breath e folhagem, embrulho temático com laço.",
-    price: 5990,
+    price: 7990,
     category: "buques",
     image: "/images/buque-3-rosas-cor-de-rosa.jpeg",
     maxChocolates: 3,
@@ -173,7 +173,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 5 Rosas Importadas",
     description:
       "Buquê com 5 rosas vermelhas importadas e folhagem verde, embrulho vermelho elegante.",
-    price: 12490,
+    price: 14990,
     category: "buques",
     image: "/images/buque-5-rosas-importadas.jpeg",
     video: "/vids/buque-5-rosas-importadas.mp4",
@@ -183,36 +183,14 @@ export const PRODUCTS: Product[] = [
     note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
-    id: 5,
-    name: "Buquê 1 Girassol Luxo",
-    description:
-      "Buquê luxo com 1 girassol e baby breath, embrulho 'I Love You'.",
-    price: 4990,
-    category: "buques",
-    image: "/images/buque-1-girassol-luxo.jpeg",
-    maxChocolates: 3,
-    note: "Obs: a embalagem/folhagem podem variar.",
-  },
-  {
     id: 6,
     name: "Buquê 3 Rosas Vermelhas Importadas",
     description:
       "Buquê com 3 rosas vermelhas importadas, baby breath e folhagem, embrulho vermelho.",
-    price: 7490,
+    price: 10490,
     category: "buques",
     image: "/images/buque-3-rosas-vermelhas-importadas.jpeg",
     maxChocolates: 3,
-    note: "Obs: a embalagem/folhagem podem variar.",
-  },
-  {
-    id: 37,
-    name: "Buquê 3 Rosas Nacionais",
-    description:
-      "Buquê com 3 rosas nacionais, baby breath e folhagem, embrulho temático com laço.",
-    price: 5990,
-    category: "buques",
-    image: "/images/buque-3-rosas-nacionais.jpeg",
-    maxChocolates: 5,
     note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
@@ -227,11 +205,22 @@ export const PRODUCTS: Product[] = [
     maxChocolates: 6,
   },
   {
+    id: 39,
+    name: "Buquê de Flores do Campo",
+    description:
+      "Feito com flores variadas e coloridas, de acordo com a disponibilidade do dia.",
+    note: "Obs: a embalagem/folhagem podem variar.",
+    price: 6990,
+    category: "buques",
+    image: "/images/buque-de-flores-do-campo.jpeg",
+    maxChocolates: 5,
+  },
+  {
     id: 36,
     name: "Buquê 10 Rosas Importadas",
     description:
       "Buquê com 10 rosas importadas, baby breath e folhagem, embrulho elegante com laço.",
-    price: 24990,
+    price: 29990,
     category: "buques",
     image: "/images/buque-10-rosas-importadas.jpeg",
     maxChocolates: 10,
@@ -243,7 +232,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Buquê com 3 rosas vermelhas importadas e 1 girassol, solidago, baby breath, embrulho preto e dourado.",
     featured: true,
-    price: 9990,
+    price: 12490,
     category: "buques",
     image: "/images/buque-3-rosas-importadas-1-girassol.jpeg",
     video: "/vids/buque-medelin.mp4",
@@ -256,7 +245,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê Girassol Tradicional",
     description:
       "Buquê de girassóis com baby breath e folhagem, embrulho temático com laço.",
-    price: 4990, // "a partir de" = menor variante (2 girassóis)
+    price: 5990, // "a partir de" = menor variante (2 girassóis)
     category: "buques",
     image: "/images/buque-girassol.jpeg",
     maxChocolates: 4, // default/fallback; cada variante sobrepõe
@@ -265,19 +254,19 @@ export const PRODUCTS: Product[] = [
       {
         id: "2-girassois",
         label: "2 girassóis",
-        price: 4990,
+        price: 5990,
         maxChocolates: 4,
       },
       {
         id: "3-girassois",
         label: "3 girassóis",
-        price: 7490,
+        price: 8990,
         maxChocolates: 6,
       },
       {
         id: "4-girassois",
         label: "4 girassóis",
-        price: 9990,
+        price: 11990,
         maxChocolates: 8,
       },
     ],
@@ -287,7 +276,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 1 Girassol com Mosquitinho Azul",
     description:
       "Buquê com 1 girassol e mosquitinho azul, embrulho temático com laço.",
-    price: 4990,
+    price: 5990,
     category: "buques",
     image: "/images/buque-1-girassol-Mos-Azul.jpeg",
     maxChocolates: 4,
@@ -298,7 +287,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê Astromélias Rosas",
     description: "Buquê de astromélias rosas, embrulho temático com laço.",
     note: "Obs: a embalagem/folhagem podem variar.",
-    price: 6490,
+    price: 7490,
     category: "buques",
     image: "/images/buque_astromelias_rosa.jpeg",
     maxChocolates: 3,
@@ -308,7 +297,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê Astromélias Laranjas",
     description: "Buquê de astromélias laranjas, embrulho temático com laço.",
     note: "Obs: a embalagem/folhagem podem variar.",
-    price: 6490,
+    price: 7490,
     category: "buques",
     image: "/images/buque_astromelias_laranja.jpeg",
     maxChocolates: 3,
@@ -318,7 +307,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê Girassol",
     description: "Buquê com 1 girassol, embrulho temático com laço.",
     note: "Obs: a embalagem/folhagem podem variar.",
-    price: 3000,
+    price: 3990,
     category: "buques",
     image: "/images/buque-girassol-normal.jpeg",
     maxChocolates: 3,
@@ -328,7 +317,7 @@ export const PRODUCTS: Product[] = [
     name: "Cartão Buquê",
     description:
       "Cartão em formato de buquê com mensagem, embrulho temático com laço.",
-    price: 4990,
+    price: 5990,
     category: "buques",
     image: "/images/buque-cartao.jpeg",
     hideBalao: true, // adicional: apenas plaquinha (sem balão e sem chocolate)
