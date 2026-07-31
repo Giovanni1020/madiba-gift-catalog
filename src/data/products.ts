@@ -183,17 +183,6 @@ export const PRODUCTS: Product[] = [
     note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
-    id: 5,
-    name: "Buquê 1 Girassol Luxo",
-    description:
-      "Buquê luxo com 1 girassol e baby breath, embrulho 'I Love You'.",
-    price: 4990,
-    category: "buques",
-    image: "/images/buque-1-girassol-luxo.jpeg",
-    maxChocolates: 3,
-    note: "Obs: a embalagem/folhagem podem variar.",
-  },
-  {
     id: 6,
     name: "Buquê 3 Rosas Vermelhas Importadas",
     description:
@@ -202,17 +191,6 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-3-rosas-vermelhas-importadas.jpeg",
     maxChocolates: 3,
-    note: "Obs: a embalagem/folhagem podem variar.",
-  },
-  {
-    id: 37,
-    name: "Buquê 3 Rosas Nacionais",
-    description:
-      "Buquê com 3 rosas nacionais, baby breath e folhagem, embrulho temático com laço.",
-    price: 5990,
-    category: "buques",
-    image: "/images/buque-3-rosas-nacionais.jpeg",
-    maxChocolates: 5,
     note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
@@ -339,7 +317,7 @@ export const PRODUCTS: Product[] = [
     name: "Cartão Buquê",
     description:
       "Cartão em formato de buquê com mensagem, embrulho temático com laço.",
-    price: 4990,
+    price: 5990,
     category: "buques",
     image: "/images/buque-cartao.jpeg",
     hideBalao: true, // adicional: apenas plaquinha (sem balão e sem chocolate)
