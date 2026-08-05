@@ -49,7 +49,7 @@ export interface ChocolateExtra {
 export const CHOCOLATE_OPTIONS: ChocolateExtra[] = [
   { id: "ferrero", name: "Ferrero Rocher", price: 700 },
   { id: "sonho_de_valsa", name: "Sonho de Valsa", price: 300 },
-  { id: "rafaello", name: "Rafaello", price: 400, unavailable: true },
+  { id: "rafaello", name: "Rafaello", price: 400 },
   { id: "ouro_branco", name: "Ouro Branco", price: 300 },
 ];
 
