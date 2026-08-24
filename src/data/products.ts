@@ -247,7 +247,7 @@ export const PRODUCTS: Product[] = [
       "Buquê de girassóis com baby breath e folhagem, embrulho temático com laço.",
     price: 5990, // "a partir de" = menor variante (2 girassóis)
     category: "buques",
-    image: "/images/buque-girassol.jpeg",
+    image: "/images/buque-girassol-2.jpeg",
     maxChocolates: 4, // default/fallback; cada variante sobrepõe
     note: "Obs: a embalagem/folhagem podem variar.",
     variants: [
@@ -260,6 +260,7 @@ export const PRODUCTS: Product[] = [
       {
         id: "3-girassois",
         label: "3 girassóis",
+        image: "/images/buque-girassol-3.jpeg",
         price: 8990,
         maxChocolates: 6,
       },
