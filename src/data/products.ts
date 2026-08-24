@@ -158,6 +158,17 @@ export const CATEGORY_LABELS: Record<Category, string> = {
 export const PRODUCTS: Product[] = [
   // ── Buquês ───────────────────────────────────────────────────────────────
   {
+    id: 40,
+    name: "Buquê 1 Rosa Importada",
+    description:
+      "Buquê com 1 rosa importada, baby breath e folhagem, embrulho temático com laço.",
+    price: 4490,
+    category: "buques",
+    image: "/images/buque-1-rosa-importada.jpeg",
+    maxChocolates: 3,
+    note: "Obs: a embalagem/folhagem podem variar.",
+  },
+  {
     id: 3,
     name: "Buquê 3 Rosas Cor de Rosa",
     description:
