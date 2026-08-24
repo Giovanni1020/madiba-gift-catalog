@@ -20,16 +20,18 @@ O ID vem da variável de ambiente **`REACT_APP_FB_PIXEL_ID`** (inlinada pelo CRA
 
 - **Local:** copie [`.env.example`](../.env.example) para `.env.local` e preencha o valor.
 - **Produção:** configure a mesma variável na **Vercel** (Production + Preview) e refaça o deploy.
-- **Sem o valor:** tudo vira **no-op** — o pixel não carrega e o banner de consentimento
-  não aparece. O app funciona normalmente.
+- **Sem o valor:** tudo vira **no-op** — o pixel não carrega. O banner de consentimento
+  só some se o Google Ads também estiver sem configuração. O app funciona normalmente.
 
 ## Consentimento (LGPD, opt-in)
 
 Nada dispara antes do consentimento.
 
 - `ConsentBanner` mostra um aviso no rodapé enquanto o visitante não decidiu.
+- O **mesmo** aceite cobre o Google Ads (ver [google-ads.md](google-ads.md) e [ADR-0008](adr/0008-conversoes-google-ads.md)).
 - **Aceitar** → grava `granted` em `localStorage` (`madiba:consent:analytics`) e chama
-  `loadPixel()` (injeta o `fbevents.js` e dispara o primeiro `PageView`).
+  `loadPixel()` — injeta o `fbevents.js` e dispara o primeiro `PageView`.
+  (No mesmo efeito, `loadGtag()` carrega o Google Ads.)
 - **Recusar** → grava `denied`; o pixel nunca carrega.
 - Visitante que já aceitou: o pixel religa sozinho na próxima visita.
 - **Nunca enviamos PII** (telefone/endereço do cliente) nos parâmetros dos eventos.

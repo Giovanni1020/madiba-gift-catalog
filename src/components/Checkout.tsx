@@ -4,6 +4,7 @@ import { extrasTotal, basePrice } from "../data/products";
 import { CheckoutForm } from "../hooks/useCheckoutForm";
 import { buildWhatsAppMessage, buildWhatsAppUrl } from "./checkoutMessage";
 import { track } from "../lib/analytics/metaPixel";
+import { trackConversion } from "../lib/analytics/googleAds";
 import { STORE_PHONE } from "../config";
 import "./Checkout.css";
 
@@ -218,6 +219,11 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       currency: "BRL",
       num_items: totalCount,
     });
+
+    // Google Ads: a MESMA ação é a única conversão da conta (ADR-0008, D2).
+    // Clique de contato avulso (FAB, card de contato) não conta.
+    trackConversion({ value: totalPrice / 100, currency: "BRL" });
+
     // A aba do WhatsApp pode abrir em background/demorar/ser bloqueada. Em vez de
     // já voltar pro catálogo, abrimos um modal que confirma o envio e deixa o
     // próximo passo explícito (o pedido só fecha ao ENVIAR a msg no WhatsApp),
