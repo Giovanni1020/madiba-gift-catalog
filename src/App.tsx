@@ -154,7 +154,7 @@ export default function App() {
             p/ sobreviver à troca catálogo↔checkout, que desmonta o catálogo). */}
         <MediaPreloader />
         <CatalogPage />
-        {/* Banner LGPD: liga o Meta Pixel só após consentimento (opt-in). */}
+        {/* Banner LGPD: liga Meta Pixel e Google Ads só após consentimento (opt-in). */}
         <ConsentBanner />
       </ToastProvider>
     </CartProvider>
