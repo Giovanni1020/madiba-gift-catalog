@@ -16,12 +16,14 @@
 | [aparelhos-suportados.md](aparelhos-suportados.md) | Lista canônica de aparelhos/viewports que todo CSS deve suportar (mobile prioridade máxima). **Base do responsivo.** |
 | [branches-e-deploy.md](branches-e-deploy.md) | Estratégia de branches (feature → main → production) e a regra: **produção só com permissão humana**. |
 | [meta-pixel.md](meta-pixel.md) | Rastreamento via Meta Pixel: configuração (`REACT_APP_FB_PIXEL_ID`), consentimento (LGPD), eventos × ações e como validar. |
+| [google-ads.md](google-ads.md) | Conversões no Google Ads: configuração (`REACT_APP_GADS_SEND_TO`), consentimento (LGPD), o que conta como conversão e como criar a ação no painel. |
 | [adr/0001-filtros-na-url.md](adr/0001-filtros-na-url.md) | Filtros como estado de navegação na URL. |
 | [adr/0002-estado-e-persistencia-do-carrinho.md](adr/0002-estado-e-persistencia-do-carrinho.md) | Carrinho: Context+reducer; `sessionStorage`; `localStorage` opt-in p/ dados do cliente. |
 | [adr/0003-rastreamento-meta-pixel.md](adr/0003-rastreamento-meta-pixel.md) | Meta Pixel: browser-only (sem CAPI), consentimento opt-in, funil completo de eventos. |
 | [adr/0004-navegacao-entre-itens-no-dialogo.md](adr/0004-navegacao-entre-itens-no-dialogo.md) | Diálogo de item navega a lista filtrada (swipe/setas); `?item=` na URL via `replaceState`. |
 | [adr/0005-variantes-de-produto.md](adr/0005-variantes-de-produto.md) | Variantes de produto (preço/imagem/chocolates por opção); escolha no diálogo; helper `basePrice`. |
 | [adr/0007-carregamento-de-imagens.md](adr/0007-carregamento-de-imagens.md) | Carregamento de imagens: `loading="lazy"` nativo como baseline (já em uso); sem lib nova; crescimento via segmentação por categoria quando pesar. |
+| [adr/0008-conversoes-google-ads.md](adr/0008-conversoes-google-ads.md) | Google Ads: gtag direto (sem GTM), **uma só** conversão (envio do carrinho pelo WhatsApp), banner único e sem Consent Mode. |
 | [matriz-mental.md](matriz-mental.md) | Trilha de estudo — tópicos marcados para pesquisar depois. |
 
 ## Convenções
