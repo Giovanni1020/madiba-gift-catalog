@@ -1,6 +1,6 @@
 # ADR-0001 — Estado dos filtros na URL
 
-- **Status:** Aceito — 2026-06-01
+- **Status:** Aceito — 2026-06-01 · **revisado em 2026-08-25** por [ADR-0009](0009-migracao-nextjs.md)
 - **Contexto do projeto:** SPA em Create React App (React 18.2, TS 4.9), **sem router** e **sem lib de estado**.
 
 ## Contexto
@@ -72,3 +72,41 @@ Modelo mental dos **três baldes** que rege todo o estado do app:
   no mount, `serialize(parse(url))` reescreve a URL sem lixo/params desconhecidos.
 - **Núcleo puro testável:** `parseFilters`/`serializeFilters` em `src/hooks/filterParams.ts`,
   cobertos por `filterParams.test.ts`. O `useFilter` só os liga ao `window.location`.
+
+## Revisão — 2026-08-25 ([ADR-0009](0009-migracao-nextjs.md))
+
+A migração para Next.js **não invalida esta decisão** — invalida uma **premissa** dela.
+
+**O que continua valendo (o essencial):**
+
+- Filtro é **estado de navegação** e mora na **query string**.
+- Tokens em **PT-BR** (`?categoria=`, `?preco=`, `?ordem=`, `?q=`).
+- Serialização **canônica** (omite defaults) → auto-limpeza da URL.
+- O modelo dos **três baldes** (UI efêmero / navegação / domínio persistente) segue regendo
+  o estado do app.
+- Núcleo puro em `filterParams.ts`, testado — **porta sem uma linha alterada**.
+
+**O que muda:**
+
+| Antes (CRA) | Depois (Next) |
+|---|---|
+| "**Não** adicionar router" | **Superado.** O framework traz roteador; deixou de ser escolha. |
+| `URLSearchParams` + `history.replaceState` na mão | `useSearchParams()` + `router.replace(url, { scroll: false })` |
+| `useState` semeado de `window.location.search` no *initializer* | Leitura via `useSearchParams` **dentro de `<Suspense>`** |
+| "Sem listener de `popstate`" | Continua verdade para filtros — e agora também para os overlays (ver ADR-0004, revisado) |
+| `categoria` como query param | **Segmento de rota** (`/buques`) — ADR-0009 D10. `preco`, `ordem` e `q` seguem na query. |
+
+**Refinamento do balde "navegação":** a migração separa em dois o que este ADR tratava como
+bloco único. `categoria` é um **lugar** — tem página, `<h1>`, título e intenção de busca
+próprios, logo merece rota. `preco`/`ordem`/`q` são **refinamentos de uma vista** (mesmo
+conteúdo, outra apresentação) e continuam na query, exatamente como decidido aqui. A régua
+nova é curta: **se merece ser indexado separadamente, é rota; se não, é query.**
+
+**Restrição nova:** `useSearchParams()` empurra a rota para renderização dinâmica. Como `/`
+precisa continuar **SSG** (é o objetivo da v1.2), o consumo dos params fica num Client
+Component sob `<Suspense>` e a página estática renderiza **todos** os produtos; o filtro
+aplica após a hidratação — exatamente o que já acontece hoje em CSR.
+
+**Alternativa reavaliada:** a rejeição de `react-router-dom` previa *"reavaliar se surgirem
+rotas reais (ex.: `/produto/:id`)"*. **A condição se cumpriu** — por SEO, e com o roteador do
+Next em vez de uma lib. Ver ADR-0009, D3/D4.

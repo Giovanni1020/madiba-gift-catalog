@@ -1,6 +1,6 @@
 # ADR-0004 — Navegação entre itens dentro do diálogo (swipe/setas) + `?item=` na URL
 
-- **Status:** Aceito — 2026-06-07
+- **Status:** Aceito — 2026-06-07 · **revisado em 2026-08-25** por [ADR-0009](0009-migracao-nextjs.md) (D6 substituído)
 - **Contexto do projeto:** SPA em Create React App (React 18.2, TS 4.9), **sem router** e
   **sem lib de estado**. Jornada majoritariamente mobile (ver [aparelhos-suportados.md](../aparelhos-suportados.md)).
 
@@ -96,3 +96,39 @@ existe ([`BuqueExtrasDialog.tsx:149-161`](../../src/components/BuqueExtrasDialog
 - **Reset de scroll** do `bed__body` ao trocar de item (não cair no meio do formulário).
 - **A11y:** `aria-live` anuncia o novo produto; foco volta a um ponto estável (ex.: título)
   na troca.
+
+## Revisão — 2026-08-25 ([ADR-0009](0009-migracao-nextjs.md))
+
+A migração mantém **toda a UX** decidida aqui e **substitui o mecanismo** que a sustenta.
+
+**Continua valendo:** D1 (contrato lista + índice), D2 (percorre a lista filtrada), D3
+(swipe/setas, eixo dominante, guard de foco em `<select>`/`<input>`), D4 (fade + `prefers-reduced-motion`),
+D5 (para nas pontas, sem loop) e D7 (descarta adicionais ao trocar). Nada disso depende de
+framework.
+
+**D6 é substituído:**
+
+| Antes | Depois |
+|---|---|
+| Produto aberto = estado React espelhado em `?item=<id>` via `replaceState` | Produto aberto = **rota real** `/produto/<slug>` |
+| Diálogo = overlay que finge navegação (`pushState({ overlay: true })`) | Diálogo = **Intercepting Route** (`@modal` + `(.)produto/[slug]`) |
+| "Voltar" tratado à mão por 3 listeners de `popstate` | "Voltar" é **navegação nativa do router** |
+| `item` como param preservado no pipeline de `filterParams` | Sai da query — deixa de disputar espaço com os filtros |
+| Link compartilhável = SPA que precisa de JS para montar o produto | Link compartilhável = **página estática indexável, com OG próprio** |
+
+**Por que a troca é ganho, não só adaptação:**
+
+- Resolve uma colisão real: hoje gravamos estado nosso em `window.history.state`, que é
+  justamente onde o App Router guarda o dele.
+- **Elimina** [`overlayHistory.ts`](../../src/overlayHistory.ts) e os listeners de `popstate`
+  em `App.tsx`, `CartContext.tsx` e `ExtrasDialog.tsx`.
+- Some o "**segundo escritor da URL**" listado nas Consequências negativas — o risco de
+  clobber entre `?item=` e os filtros deixa de existir por construção.
+- O objetivo original de D6 (*"link compartilhável do produto, ótimo pro WhatsApp"*) passa a
+  ser entregue **de verdade**: com preview próprio do produto, não com o card genérico do site.
+
+**O que sobra do mecanismo antigo:** apenas o zoom da imagem (`ImageLightbox`), tratado em
+ADR-0009 D6 — com a regra de **preservar** `window.history.state` em vez de sobrescrevê-lo.
+
+**Compatibilidade obrigatória:** `?item=<id>` já circula em conversas de WhatsApp. ADR-0009 D4
+exige **redirect 301** para o slug — nenhum link já compartilhado pode virar 404.
