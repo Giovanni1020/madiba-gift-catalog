@@ -9,7 +9,9 @@
 
 ## Status
 
-- **Aberta em:** 2026-06-15.
+- **Aberta em:** 2026-06-15. **Encerrada em:** 2026-08-25.
+- **Sucessora:** [escopo-v1.2.md](escopo-v1.2.md) — migração para Next.js + SEO. O destino do
+  backlog herdado desta versão está mapeado lá, card a card.
 - **Base:** v1.0 em produção — <https://madiba-garden.vercel.app>.
 - **Backlog vivo:** board [Madiba Gift Catalog](https://trello.com/b/BAJGQ2Xg/madiba-gift-catalog) — a lista **"A Fazer"** é o backlog da 1.1.
 

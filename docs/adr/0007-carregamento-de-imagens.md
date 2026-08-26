@@ -1,6 +1,6 @@
 # ADR-0007 — Estratégia de carregamento (lazy loading) das imagens
 
-- **Status:** Aceito — 2026-07-24
+- **Status:** Aceito — 2026-07-24 · **revisado em 2026-08-25** por [ADR-0009](0009-migracao-nextjs.md) (mecanismo trocado, princípio mantido)
 - **Contexto do projeto:** SPA em CRA (React 18.2, TS 4.9), estático na Vercel, sem
   backend; jornada majoritariamente mobile. Origem: card #14 (a descrição do card estava
   desatualizada — ver "Premissa medida" abaixo).
@@ -76,3 +76,24 @@ deste ADR — ver `MediaPreloader.tsx`.)
   estático na Vercel sem framework de imagem tornaria a adoção pesada. Rejeitada.
 - **`fetchpriority="high"` no LCP da 1ª dobra:** hoje o LCP provável é a logo (já eager com
   dimensões). Micro-otimização sem medição que a justifique; adiada.
+
+## Revisão — 2026-08-25 ([ADR-0009](0009-migracao-nextjs.md))
+
+**Revisado, não substituído.** O princípio continua de pé: imagem de conteúdo nasce adiada;
+imagem de primeira dobra é eager e leva dimensões para não causar CLS.
+
+**Muda o mecanismo:** `loading="lazy"` nativo → **`next/image`** (ADR-0009, D7), que entrega o
+adiamento *e* o que este ADR não tinha como oferecer — AVIF/WebP, `srcset` por viewport e
+dimensionamento automático — sobre os 4,3 MB de JPEG servidos crus hoje.
+
+**A alternativa rejeitada perdeu a premissa.** Este ADR recusou "lib de imagem (componente
+`<Image>`)" justificando que *"CRA estático na Vercel sem framework de imagem tornaria a
+adoção pesada"*. A premissa deixa de existir com a migração: o componente passa a ser nativo
+do framework, sem dependência nova. Era a decisão certa em julho e ficou obsoleta em agosto —
+registrada aqui em vez de apagada.
+
+**A dívida da Decisão 3 é quitada de graça.** A "segmentação por categoria", adiada até a
+grade única pesar, sai resolvida pelas **rotas de categoria** do ADR-0009 D10: cada rota
+renderiza só os seus produtos. O gatilho da Decisão 4 deixa de ser necessário.
+
+**Fecha o card #14.**
