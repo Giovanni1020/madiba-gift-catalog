@@ -127,7 +127,7 @@ Inventário do que existe hoje, para o plano não refazer nem contradizer:
 | `next/image` em toda mídia | 📋 | D7 (revisa [ADR-0007](adr/0007-carregamento-de-imagens.md)) |
 | Metadata API, `generateMetadata()` por produto (OG com foto), `sitemap.ts`, `robots.ts`, JSON-LD `Product` + negócio | 📋 | D8 |
 | Filtros: `useSearchParams` sob `<Suspense>`; regra de canônicas | 📋 | D9, D10 |
-| Recorte de entrega: 13 itens, 11 critérios de aceite, janela de convivência com a v1.1 | 📋 | [`escopo-v1.2.md`](escopo-v1.2.md) |
+| Recorte de entrega: itens de escopo fechado, critérios de aceite e janela de convivência com a v1.1 | 📋 | [`escopo-v1.2.md`](escopo-v1.2.md) |
 | Revisões formais dos ADRs 0001, 0004 e 0007 | 📋 | seções "Revisão" anexadas em cada um |
 | Auditoria do ADR-0009 (fatos conferidos no código; lacunas do D5 fechadas: swipe via `replace`, filtros na query, mecânica dos 301) | 📋 | adendo de 2026-08-27 no próprio [ADR-0009](adr/0009-migracao-nextjs.md) |
 | Conversão do Google Ads (gtag, consentimento LGPD) | ✅ | [ADR-0008](adr/0008-conversoes-google-ads.md), [`google-ads.md`](google-ads.md) |
@@ -176,7 +176,7 @@ Os itens abaixo são o escopo fechado do [`escopo-v1.2.md`](escopo-v1.2.md), rep
 
 | # | Estado | Item |
 |---|---|---|
-| B1 | 📋 | E2E (Playwright) escritos **contra o app CRA atual** — o contrato de aceite da migração. **O roteiro inclui os casos do adendo de 2026-08-27 do [ADR-0009](adr/0009-migracao-nextjs.md)** (trocar de item no diálogo + "voltar"; reload com filtro ativo e produto aberto) |
+| B1 | 📋 | **Smoke set E2E (Playwright): 5 fluxos**, escritos **contra o app CRA atual** — a prova de paridade da migração: **(1)** filtro → URL canônica; **(2)** abrir produto do catálogo filtrado → trocar de item 2× (swipe/setas) → "voltar" fecha o diálogo sem desfazer trocas (caso do adendo do [ADR-0009](adr/0009-migracao-nextjs.md)); **(3)** reload com `?item=` + filtro ativo reabre o diálogo navegando a lista filtrada; **(4)** carrinho → checkout → URL do `wa.me` correta; **(5)** banner LGPD recusado ⇒ nenhum script de terceiro. Zoom + "voltar" fica no QA de aparelho (B13) |
 | B2 | 📋 | Baseline de métricas: Lighthouse/PageSpeed em produção + Search Console (**= A0 deste plano**) |
 | B3 | 📋 | Scaffold Next.js App Router; `react-scripts` → Next; testes → Vitest |
 | B4 | 📋 | Lift-and-shift: paridade total com tudo `"use client"`, build verde, E2E verdes |
@@ -194,11 +194,24 @@ Os itens abaixo são o escopo fechado do [`escopo-v1.2.md`](escopo-v1.2.md), rep
 tudo `"use client"`, otimização depois. Misturar as duas etapas é o jeito garantido de não
 saber o que quebrou.
 
+> **Alterações de escopo registradas por este plano (2026-08-27, Filipe):**
+>
+> 1. **Critério de aceite novo** no [`escopo-v1.2.md`](escopo-v1.2.md): `view-source:` de
+>    `/` **e das rotas de categoria** mostra os produtos no HTML. Motivo: a regra do D9
+>    (`useSearchParams` fora de `<Suspense>` derruba o SSG) falha **em silêncio** — o build
+>    passa e o HTML vem vazio — e o critério existente só cobria as páginas de produto.
+>    Regra que não se verifica não é regra; agora é um check binário na promoção da versão.
+> 2. **O E2E do item 1 do escopo foi recortado para um smoke set de 5 fluxos** (ver B1).
+>    Suíte ampla não paga o custo num projeto deste tamanho; zero teste deixaria a troca de
+>    framework de um site **que está vendendo** sem prova de paridade. O recorte cobre só o
+>    que quebra venda — e é escrito **antes** da migração, senão perde o sentido (E2E
+>    escrito depois só testa o app novo contra ele mesmo).
+
 **Onde o custo realmente está** — não é "aprender Next":
 
 | Parte | Custo | Por quê |
 |---|---|---|
-| **B1 — a suíte E2E** | Alto, e vem antes de tudo | Escrever teste para comportamento que ninguém documentou (filtro→URL, `?item=` no reload, "voltar" fecha overlay, funil do `wa.me`, banner LGPD) é o trabalho subestimado. |
+| **B1 — o smoke set E2E** | Baixo-médio (meio dia a 1 dia), e vem antes de tudo | Recortado de suíte ampla para 5 fluxos (alteração de escopo acima) — cobre só o que quebra venda. Escrito contra o app atual é o que o torna prova de paridade. |
 | **CSS de mídia × `next/image`** | Alto | 2.368 linhas de CSS; aspect ratios e `object-fit` reconferidos contra o wrapper injetado. |
 | **Cache do App Router** | Médio, difuso | Não é uma tarefa; é onde o tempo some. |
 | **Server/Client split (B5)** | Médio | Errar derruba o SSG **silenciosamente** — build passa, HTML vem vazio. |
@@ -265,11 +278,16 @@ precisa de cliente. Padrão: card Server Component com o botão extraído para u
 | 6 | A4 — JSON-LD `Florist` | ⏳ | 2 h |
 | 7 | A8 — Headings + `alt` | ⏳ | 2 h |
 | 8 | B1–B13 — a migração, na ordem do escopo | 📋 | Ver [`escopo-v1.2.md`](escopo-v1.2.md) |
-| 9 | Conteúdo recorrente (páginas de ocasião) | ⏳ | Contínuo |
+| 9 | Conteúdo recorrente — páginas de ocasião (prioridade: **Dia das Mães, Dia dos Namorados, aniversário** — os picos de venda da loja) | ⏳ | Contínuo |
 
-> ⚠️ **Sobre o item 9 — cuidado com *doorway pages*.** Gerar `/entrega-<bairro>` em série com
-> o mesmo texto e o nome do bairro trocado é padrão que o Google **penaliza**. Cada página
-> precisa de conteúdo genuinamente próprio, ou não deve existir.
+> ⚠️ **Sobre o item 9 — o que vale e o que não vale criar.** Página local por região é
+> prática comum e funciona — **quando cada página tem conteúdo real e distinto**. O que o
+> Google penaliza é o padrão *doorway page*: gerar `/entrega-<bairro>` em série com o mesmo
+> texto e só o nome trocado. Para o nosso caso: Alvorada é pequena — páginas **por bairro**
+> seriam cópias finas umas das outras (risco sem ganho; a informação de bairro cabe na seção
+> única de entrega do A9). O que faz sentido criar: páginas por **ocasião** (Dia das Mães,
+> aniversário, romance — cada uma com sortimento e texto próprios) e, no máximo, uma página
+> por **município vizinho** atendido, se taxa/prazo/área realmente diferirem entre eles.
 
 > **Aviso honesto sobre a migração:** migrar sozinho não move o tráfego. Dezenas de URLs com duas
 > linhas de descrição cada são *thin pages* — o Google indexa e ranqueia na página 5. A
@@ -295,6 +313,49 @@ precisa de cliente. Padrão: card Server Component com o botão extraído para u
 **Prazos, para calibrar expectativa:** indexação leva **semanas** para refletir — não avaliar
 a Trilha A antes de ~30 dias de dados. O OG por produto se mede no depurador da Meta e num
 envio real de WhatsApp, e aparece em **dias**.
+
+---
+
+## Parte 7 — Encaminhamento no Trello
+
+> ⚠️ **Isto é sugestão, não criação — conferir os cards existentes antes de executar.**
+> O board já tem cards e esta sessão **não teve acesso a ele**. O
+> [`escopo-v1.2.md`](escopo-v1.2.md) referencia pelo menos #3, #13, #14, #18, #30 e #41 no
+> backlog herdado — e alguns **já são** itens desta lista com outro nome (ex.: o **#41**,
+> "documentar regras de comportamento", foi promovido a ser exatamente o smoke set E2E do
+> card 7 abaixo). Criar duplicata é pior que não criar. Formato e estrutura de card:
+> [`trello-padrao.md`](trello-padrao.md).
+
+Estimativa: **~15 cards** — 6 da Trilha A, 9 da Trilha B. A régua do fatiamento: um card por
+branch pequena na Trilha A; na Trilha B, um por item do escopo, fundindo só os acoplados
+(que não fazem sentido entregues separados).
+
+| # | Título sugerido | Cobre | Prioridade |
+|---|---|---|---|
+| 1 | Baseline de medição: Search Console + Lighthouse | A0 + B2 (mesma tarefa, dois painéis) | 🔴 **Primeiro de todos** |
+| 2 | Head da home: `<title>`, `description` e `<h1>` com busca local | A2 + A1 (mesmos arquivos) | 🔴 |
+| 3 | Rodapé NAP + dados da loja em `config.ts` | A3 | 🔴 |
+| 4 | Seções "Sobre a loja" e "Área de entrega" na home | A9 | 🔴 (maturação lenta — quanto antes, melhor) |
+| 5 | JSON-LD `Florist` no head | A4 | 🟡 |
+| 6 | Headings de seção + `alt` descritivo nas imagens | A8 | 🟡 |
+| 7 | Smoke set E2E (5 fluxos) contra o app CRA | B1 | 🔴 **Gate da migração** (provável #41 renomeado) |
+| 8 | Scaffold Next.js + lift-and-shift com paridade | B3 + B4 | 🔴 |
+| 9 | `useFilter` → `useSearchParams` sob `<Suspense>` | B5 | 🔴 |
+| 10 | Slug em `Product` + rota `/produto/[slug]` + 301 de `?item=` | B6 | 🔴 |
+| 11 | Rotas de categoria + 301 de `?categoria=` + sitemap/robots | B7 | 🔴 |
+| 12 | Diálogo/carrinho/checkout como rotas (intercepting) | B8 | 🔴 |
+| 13 | `next/image` em toda mídia + revisão do CSS | B9 | 🟡 |
+| 14 | Metadata por produto (OG com foto) + JSON-LD `Product` | B10 | 🟡 |
+| 15 | Env `NEXT_PUBLIC_*` + `headers()` no `next.config` + QA nos aparelhos | B11 + B12 + B13 | 🟡 (fecha a versão) |
+
+**Ordem:** os cards 1–6 (Trilha A) podem andar já — qualquer ordem, desde que o 1 venha
+primeiro. Os cards 7–15 seguem a ordem da tabela, que é a ordem do escopo — e essa o
+ADR-0009 fixa como inegociável.
+
+**Fora desta lista de propósito:** as tarefas do [`google-canais.md`](google-canais.md) —
+não são código, e o dono é a loja, não o repo. Se quiserem rastrear no board, que seja
+**um** card de acompanhamento ("Perfil da Empresa — verificação e otimização"), não um por
+tarefa.
 
 ---
 

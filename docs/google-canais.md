@@ -10,9 +10,6 @@
 > **Como usar:** as tarefas estão em ordem. Faça a **Tarefa 1 primeiro** — quase tudo depende
 > dela. Cada tarefa diz o que é, por que importa e o passo a passo.
 >
-> 📷 Os marcadores de print indicam onde vale colar uma captura de tela do painel real —
-> as telas exigem login na conta da loja, então os prints são adicionados no primeiro acesso.
->
 > ⚠️ O Google muda essas telas com frequência. Se um botão não tiver exatamente o nome
 > escrito aqui, procure o parecido — o caminho geral se mantém.
 > *(Levantado em 2026-08-27, olhando o que o público vê. Sem acesso ao painel interno.)*
@@ -43,6 +40,13 @@ concorrentes com menos avaliações aparecem.
 seu**. Na página da loja no Google aparece o link *"É proprietário desta empresa?"* — e o
 Google só mostra esse link quando **ninguém comprovou ser o dono**. Cadastro sem dono
 confirmado fica em desvantagem no mapa, por melhor que seja.
+(Qualquer pessoa consegue ver: <https://www.google.com/search?q=Madiba+Garden>, no cartão
+à direita.)
+
+**E o agravante que deu origem a este documento:** a loja **já paga anúncios no Google** —
+e, mesmo pagando, não aparece bem. Isso tem explicação, e ela está ligada ao mesmo problema
+do cadastro: a seção "Anúncios pagos", mais abaixo, mostra por que o dinheiro do anúncio não
+compensa um perfil não verificado, e o que conferir na campanha.
 
 **A consequência:** existe uma tarefa de mais ou menos **duas horas** (formulário + um vídeo
 com o celular) que pode destravar anos de reputação acumulada. É a Tarefa 1 e 2 deste
@@ -93,7 +97,6 @@ ação rende uma fração do que deveria.
 | O painel da Madiba Garden, mas com aviso de **"verificação pendente"** ou pedindo verificação | O acesso foi criado, mas a prova de que a loja é sua nunca foi concluída — é o cenário mais provável. | Vá para a Tarefa 2. |
 | **Nenhuma empresa** aparece na conta | O cadastro público que existe no Google não está ligado a esta conta. Ou foi outra conta, ou nunca houve reivindicação. | Teste outras contas Google que possam ter sido usadas. Se nenhuma tiver, vá para a Tarefa 2. |
 
-📷 *print do painel, mostrando onde aparece o status*
 
 > ⚠️ **Atenção — a regra mais importante deste documento:** exista o que existir no painel,
 > **NUNCA crie um cadastro novo** da Madiba Garden. Criar um perfil duplicado faz o Google
@@ -141,7 +144,6 @@ de novo):
 Depois de enviar, o Google analisa — costuma levar de alguns dias a uma semana. O resultado
 chega por e-mail e aparece no painel.
 
-📷 *print da tela de escolha do método de verificação*
 
 **Se aparecer que outra pessoa já é dona do perfil:** o Google tem um processo para
 solicitar o acesso ao dono atual (ele tem prazo para responder; sem resposta, o Google pode
@@ -167,7 +169,6 @@ Sem isso, daqui a dois meses ninguém sabe dizer se melhorou.
    - Com **que buscas** as pessoas chegaram (a lista de termos)
 4. Guarde com a data. Repita uma vez por mês, no mesmo dia.
 
-📷 *print da tela de Desempenho*
 
 ---
 
@@ -188,7 +189,6 @@ loja aparece. Categoria errada = invisível na busca certa.
    - Loja de artigos de decoração
 5. Salvar.
 
-📷 *print da tela de categorias*
 
 > A categoria principal deve ser **a atividade que mais traz cliente**, não a mais ampla.
 > "Floricultura" é o termo que as pessoas buscam — é ela.
@@ -209,7 +209,6 @@ Viamão/Cachoeirinha na divisa.
 3. Não invente área onde não entrega — cliente frustrado vira avaliação ruim.
 4. Salvar.
 
-📷 *print da tela de área de atendimento*
 
 ---
 
@@ -301,7 +300,6 @@ cliente já está na mão.
    avaliação").
 2. O Google mostra um **link curto** (formato `g.page/r/...`). Copie e guarde.
 
-📷 *print de onde fica o botão e o link*
 
 **Passo a passo — a rotina (a cada pedido entregue):**
 
@@ -369,22 +367,89 @@ fachada), melhor. O acervo do Instagram resolve.
 
 ---
 
-## E a aba Shopping? E os anúncios pagos?
+## Google Shopping — a dúvida do carrinho de compras
 
-**Shopping (produtos no Google):** por enquanto, **nada a fazer**. A versão completa exige
-compra dentro do próprio site (carrinho com pagamento), o que hoje não existe — o pedido
-fecha no WhatsApp, e está ótimo assim. O carrossel de produtos que **já aparece** no perfil
-da loja é a versão gratuita disso e já cumpre o papel: basta mantê-lo atualizado (preço e
-foto), pelo próprio painel. Se um dia o site ganhar pagamento online (há planos para o
-futuro), o Shopping completo se destrava como consequência — não é preciso decidir nada
-agora.
+Aqui mora uma confusão que precisa ser desfeita de vez, porque ela já influenciou decisões:
 
-**Anúncios (o resultado "Patrocinado"):** hoje a primeira posição do mapa da região é um
-anúncio pago de uma concorrente. É comprável — mas **não é prioridade**. Primeiro porque
-exige o perfil verificado (Tarefas 1–2); segundo porque, com a melhor reputação da região,
-resolver a verificação provavelmente coloca a Madiba no mapa **de graça**. Anúncio faz
-sentido mais tarde, pontualmente, nas datas de pico (Dia das Mães, Namorados) — e o site já
-está preparado para medir o retorno quando esse dia chegar.
+**"O site não ter carrinho de compras completo prejudica a posição no Google?" — Não.**
+Para a busca normal e para o mapa, o Google **não olha** onde a venda fecha. O pedido
+terminar no WhatsApp não tira **nenhuma** posição. Essa preocupação pode ser riscada da
+lista.
+
+**Onde o carrinho completo faz diferença é num lugar só: a aba "Shopping".**
+
+A aba Shopping é aquela vitrine de produtos com foto e preço que aparece quando alguém
+busca, por exemplo, "buquê de rosas". Para os produtos de um site entrarem ali, o Google
+exige cadastrar o catálogo numa ferramenta chamada **Merchant Center** — e ela tem regras:
+o site precisa oferecer a **compra completa dentro dele** (escolher, pagar e receber a
+confirmação sem sair do site), além de política de troca e termos de serviço publicados.
+
+Como hoje o pedido fecha no WhatsApp, os produtos do site **não podem** aparecer na aba
+Shopping. **É só isso que se perde. Nada além disso.**
+
+**O que a loja ganharia se tivesse o carrinho completo:**
+
+- Produtos na vitrine da aba Shopping — de graça e também em anúncios de produto (aqueles
+  com foto e preço).
+- Vender para quem prefere não conversar para comprar, e fora do horário de atendimento.
+
+**Vale a pena construir o carrinho por causa disso? Não.** Pagamento online é um projeto
+grande (semanas de trabalho no site) e muda a operação da loja: pedido chegando sem
+conversa, política de troca, estorno. A conta certa é a inversa: **se um dia** o pagamento
+online fizer sentido para o **negócio** — e há planos para isso no futuro do site — a aba
+Shopping vem junto, de brinde, sem esforço extra.
+
+**Enquanto isso, a versão gratuita já está no ar:** o carrossel de produtos no perfil da
+loja no Google é a vitrine que não exige carrinho nenhum. Basta manter preço e foto em dia,
+pelo próprio painel (seção "Otimização", Tarefa 4 em diante).
+
+---
+
+## Anúncios pagos — a loja já paga; por que não aparece?
+
+A loja **já investe em Google Ads**. E a frustração que motivou este documento é essa:
+**paga e mesmo assim não aparece direito** — nem nos resultados normais, nem no mapa, e
+às vezes nem no espaço "Patrocinado". Isso tem explicação, e tem correção.
+
+**Primeiro: o que o anúncio NÃO faz.** Pagar anúncio não melhora a posição no mapa nem nos
+resultados normais. São **três disputas separadas**, cada uma com a própria regra:
+
+| Disputa | Como se ganha |
+|---|---|
+| Resultados normais (links azuis) | Conteúdo do site — é o outro documento ([`seo.md`](seo.md)) |
+| Bloco do mapa ("Locais") | Perfil da Empresa **verificado** e completo — este documento |
+| Espaço "Patrocinado" | Anúncio pago — e só ele |
+
+Dinheiro de anúncio não compra as duas primeiras colunas. Por isso a sensação de "pago e
+não adianta": o investimento só disputa a terceira.
+
+**Segundo: por que até o anúncio pago pode estar rendendo pouco.** As causas mais comuns,
+na ordem do que conferir:
+
+1. **O anúncio dentro do mapa exige perfil verificado.** O "Patrocinado" que aparece no
+   topo do bloco do mapa (hoje, de uma concorrente) só é disputável por quem tem o Perfil
+   da Empresa verificado **e** conectado à conta de anúncios. Sem as Tarefas 1–2, a loja
+   está fora dessa disputa **mesmo pagando**. É bem possível que seja exatamente o que está
+   acontecendo.
+2. **Tipo de campanha.** Anúncio de pesquisa comum não aparece no mapa; para aparecer ali,
+   a campanha precisa do perfil vinculado a ela. Quem gerencia a campanha confere isso no
+   painel do Google Ads.
+3. **Orçamento × concorrência.** O espaço patrocinado é um leilão: se a concorrente paga
+   mais por clique, ela aparece e a Madiba não. No painel do Ads, procurar a métrica
+   "parcela de impressões perdida (orçamento)".
+4. **A qualidade da página de destino mexe no preço.** O Google cobra mais barato de quem
+   leva o clique para uma página rápida e relevante. O site hoje é pesado para carregar
+   imagens — e a reforma técnica em andamento ([`seo.md`](seo.md)) melhora exatamente isso.
+   Efeito prático esperado: **o mesmo anúncio ficando mais barato**.
+
+**O que já está pronto do nosso lado:** o site já mede quando um clique de anúncio vira
+pedido enviado no WhatsApp (a "conversão" já está configurada). Então o painel do Google
+Ads consegue mostrar quanto cada real investido retorna — vale olhar esse número antes de
+aumentar ou cortar a verba.
+
+**Resumo prático:** não cortar o anúncio — mas também não aumentar a verba antes de:
+**(1)** verificar o perfil (Tarefas 1–2); **(2)** vincular o perfil verificado à conta do
+Google Ads; **(3)** revisar com quem gerencia a campanha os itens 2 e 3 acima.
 
 ---
 
@@ -404,6 +469,8 @@ Em ordem. As duas primeiras destravam todas as outras.
 - [ ] **10.** Link de avaliação + mensagem pós-entrega no WhatsApp (rotina)
 - [ ] **11.** Perguntas e respostas preenchidas
 - [ ] **12.** Publicação semanal reaproveitando o Instagram
+- [ ] **13.** Depois da verificação: vincular o perfil à conta do Google Ads e revisar a
+      campanha (seção "Anúncios pagos")
 
 **Rotina permanente depois do mutirão:** responder avaliações e perguntas novas (semanal),
 publicar novidade (semanal), pedir avaliação pós-entrega (a cada pedido), conferir horários
