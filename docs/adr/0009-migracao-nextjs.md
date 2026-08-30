@@ -288,3 +288,55 @@ reflete todos.
   aparece no índice do [README](../README.md). A ausência é **decisão consciente**, não
   esquecimento: a documentação é mergeada quando a v1.4 abrir, junto do código de frete que
   a acompanha.
+
+## Adendo — auditoria de 2026-08-27
+
+Auditoria em duas camadas: (a) toda afirmação factual deste ADR sobre o código foi conferida
+contra a `main` — **13 exatas, 2 imprecisões**, anotadas abaixo; (b) as decisões D1–D10 foram
+revisadas em mérito — **todas mantidas**, com três pontos do D5 que o texto original não
+especificava, fechados aqui. O texto acima permanece como mergeado; este adendo é a camada
+de correção, no mesmo padrão das revisões que este ADR aplicou aos ADRs 0001/0004/0007.
+
+### Correções factuais
+
+- **D4, "o mapa `id → slug` já existe em `products.ts`"** — impreciso: não existe campo
+  `slug` no arquivo (verificado; zero ocorrências). O que existe é o array com `id`; o mapa
+  passa a existir quando o campo for criado, e aí sim os 301 saem dele. A intenção da frase
+  está correta; a letra, não.
+- **Contagens de produtos** — este ADR cita "40"; outros docs, "42". Contagem real na
+  auditoria: **39** (campo `category:`, obrigatório, 1× por produto). O catálogo muda com
+  commits; nenhum doc deve citar o número como fixo — a fonte é `products.ts`.
+
+### D5 — três pontos que o texto não fechava, fechados agora
+
+**1. Trocar de item dentro do diálogo (swipe/setas) usa `router.replace`, não `router.push`.**
+Hoje o swipe usa `replaceState` de propósito ([`App.tsx:55`](../../src/App.tsx#L55)): trocar
+de item **não empilha histórico**, e o "voltar" fecha o diálogo em vez de desfazer swipes.
+Com `router.push`, cada swipe viraria uma entrada de histórico — regressão de paridade.
+Portanto: navegação entre itens dentro da rota interceptada é `router.replace` para o
+`/produto/<slug>` seguinte, mantendo o modal. Comportamento de `replace` sobre intercepting
+route é área pouco documentada do Next → **caso obrigatório nos E2E** (item 1 do escopo):
+*abrir produto do catálogo → trocar de item 2× (swipe/seta) → "voltar" fecha o diálogo e
+volta ao catálogo (não desfaz as trocas)*.
+
+**2. Os filtros acompanham a navegação para `/produto/[slug]` como query string.**
+Decidido em 2026-08-27, após as alternativas terem sido postas. Ao abrir um produto a partir
+do catálogo filtrado, a query de refinamento vai junto:
+`/produto/buque-3-girassois?preco=ate-100`. É o que preserva a **régua de paridade** do
+[escopo-v1.2.md](../escopo-v1.2.md): hoje, reload com produto aberto e filtro ativo reabre o
+diálogo navegando **a lista filtrada** (filtros estão na URL); descartar a query no clique
+guardaria a lista em memória React, que evapora no reload — regressão silenciosa. Também é
+coerente com o princípio do [ADR-0001](0001-filtros-na-url.md): estado de navegação mora na
+URL. Mesmo padrão do `&list=` do YouTube e dos params de busca do Airbnb em página de anúncio.
+
+**Efeito sobre a regra de canônica (D10), agora explícito para rotas de produto:** o item 3
+da regra se estende a `/produto/[slug]` — variantes com `?preco=`/`?ordem=`/`?q=` servem o
+mesmo HTML estático, que declara `canonical` da rota limpa; os `<a href>` renderizados no
+servidor são limpos (a query entra só na navegação client-side); o sitemap segue listando só
+canônicas. Nada disso é indexado com query.
+
+**3. Mecânica dos 301 de `?item=` (D4) e `?categoria=` (D10) — decisão fica na execução.**
+Duas implementações possíveis: `redirects()` no `next.config` **gerado** de `products.ts`
+(uma regra por produto, com `has` de query) ou middleware único que consulta o mapa. Ambas
+atendem; a escolha é do item 6 do escopo, na implementação — registrada aqui apenas para o
+executor não descobrir o problema na hora.

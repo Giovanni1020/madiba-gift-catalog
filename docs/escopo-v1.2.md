@@ -43,7 +43,7 @@ exige (rotas de produto, metadata, sitemap, JSON-LD).
 
 | # | Item | Referência |
 |---|---|---|
-| 1 | **E2E (Playwright) escritos contra o app CRA atual** — contrato de aceite da migração | ADR-0009, Notas |
+| 1 | **Smoke set E2E (Playwright, 5 fluxos) escrito contra o app CRA atual** — contrato de aceite da migração. *Recorte fechado em 2026-08-27: só os fluxos que quebram venda — ver [seo.md](seo.md), B1.* | ADR-0009, Notas |
 | 2 | **Baseline de métricas** — Lighthouse/PageSpeed em produção + Search Console, antes de tocar em código | ADR-0009, Notas |
 | 3 | Scaffold Next.js App Router; `react-scripts` → Next; `react-scripts test` → Vitest | D1 |
 | 4 | Lift-and-shift: `src/` movido, `app/layout.tsx` com a metadata do `index.html`, paridade total | D1, D2 |
@@ -65,10 +65,15 @@ segue em aberto.
 
 A versão só é promovível quando **todos** passam:
 
-- [ ] Os E2E do item 1 passam **na base CRA e na base Next**, sem alteração no roteiro.
+- [ ] Os 5 fluxos do smoke set (item 1) passam **na base CRA e na base Next**, sem
+      alteração no roteiro.
 - [ ] Paridade visual e funcional confirmada nos aparelhos suportados — com atenção ao
       **"voltar" do celular** em iOS Safari e Chrome Android.
 - [ ] `view-source:` de `/produto/<slug>` mostra **nome, descrição e preço** no HTML.
+- [ ] `view-source:` de `/` **e de cada rota de categoria** mostra os produtos no HTML —
+      o SSG não regrediu para render dinâmico (guarda do D9: `useSearchParams` fora de
+      `<Suspense>` derruba o estático em silêncio). *Adicionado em 2026-08-27 — ver
+      [seo.md](seo.md).*
 - [ ] OG por produto validado no depurador da Meta **e** num envio real de WhatsApp.
 - [ ] Lighthouse mobile: **LCP melhor que o baseline** do item 2.
 - [ ] URLs `?item=<id>` antigas respondem **301** para o slug — nenhuma vira 404.
