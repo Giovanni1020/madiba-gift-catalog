@@ -268,19 +268,38 @@ precisa de cliente. Padrão: card Server Component com o botão extraído para u
 
 ## Parte 5 — Ordem de execução consolidada
 
-| Ordem | Tarefa | Estado | Esforço |
-|---|---|---|---|
-| 1 | A0 — Search Console + baseline (habilita medir tudo; = B2) | ⏳ | 1 h |
-| 2 | A2 — `title`/`description` | ⏳ | 30 min |
-| 3 | A1 — `<h1>` | ⏳ | 30 min |
-| 4 | A3 — NAP no rodapé + `config.ts` | ⏳ | 2 h |
-| 5 | A9 — Seções "sobre" e "entrega" | ⏳ | 1 dia |
-| 6 | A4 — JSON-LD `Florist` | ⏳ | 2 h |
-| 7 | A8 — Headings + `alt` | ⏳ | 2 h |
-| 8 | B1–B13 — a migração, na ordem do escopo | 📋 | Ver [`escopo-v1.2.md`](escopo-v1.2.md) |
-| 9 | Conteúdo recorrente — páginas de ocasião (prioridade: **Dia das Mães, Dia dos Namorados, aniversário** — os picos de venda da loja) | ⏳ | Contínuo |
+> **Revisada em 2026-08-30.** A versão anterior ia do fim da Trilha A **direto** para
+> `B1–B13`. A leitura de código feita no desenho dos E2E — registrada em
+> [`achados-pre-migracao.md`](achados-pre-migracao.md) — mostrou que **o B1 não era
+> acionável** como especificado: faltam âncoras de seletor, o carrinho fechado torna o teste
+> falso-verde, e sem um build de teste o fluxo (5) não roda. **Dois degraus entraram** (itens
+> 8 e 9). O resto da ordem não mudou.
 
-> ⚠️ **Sobre o item 9 — o que vale e o que não vale criar.** Página local por região é
+| Ordem | Tarefa | Card | Estado | Esforço |
+|---|---|---|---|---|
+| 1 | A0 — Search Console + baseline (habilita medir tudo; = B2) | #56 | ⏳ | 1 h |
+| 2 | A2 — `title`/`description` | #58 | ⏳ | 30 min |
+| 3 | A1 — `<h1>` | #58 | ⏳ | 30 min |
+| 4 | A3 — NAP no rodapé + `config.ts` | #59 | ⏳ | 2 h |
+| 5 | A9 — Seções "sobre" e "entrega" | #60 | ⏳ | 1 dia |
+| 6 | A4 — JSON-LD `Florist` | #61 | ⏳ | 2 h |
+| 7 | A8 — Headings + `alt` | #62 | ⏳ | 2 h |
+| 8 | **Correções na base CRA** — F1, F6, F3 (âncoras do B1); F2 (+F4), F5 | a criar | ⏳ | ~3 h |
+| 9 | **Build de teste + travas** — `.env.test` **e o script de build que o consome**, bloqueio de rede, `page.clock` | #50/#41 | ⏳ | — |
+| 10 | B1 — smoke set (5 fluxos) | #41 | 📋 | meio dia a 1 dia |
+| 11 | B3–B13 — a migração, na ordem do escopo | #63–#70 | 📋 | Ver [`escopo-v1.2.md`](escopo-v1.2.md) |
+| 12 | Conteúdo recorrente — páginas de ocasião (prioridade: **Dia das Mães, Dia dos Namorados, aniversário** — os picos de venda da loja) | — | ⏳ | Contínuo |
+
+> **Por que tudo que toca `src/` vem antes do item 11.** A **janela de convivência**
+> ([`escopo-v1.2.md`](escopo-v1.2.md)) mantém a v1.1 (CRA) no ar durante toda a migração, e
+> hotfix é **reaplicado à mão** na base Next. Logo: o que for escrito na base CRA **antes** do
+> scaffold é carregado de graça pelo lift-and-shift; o que for escrito **depois** é trabalho
+> feito **duas vezes**. Isso vale para a Trilha A inteira, para o item 8, e também para o card
+> **#48** (persistência do carrinho), que é mudança na mesma base.
+>
+> É por isso que a Trilha A é **sequencial antes da migração**, e não paralela a ela.
+
+> ⚠️ **Sobre o item 12 — o que vale e o que não vale criar.** Página local por região é
 > prática comum e funciona — **quando cada página tem conteúdo real e distinto**. O que o
 > Google penaliza é o padrão *doorway page*: gerar `/entrega-<bairro>` em série com o mesmo
 > texto e só o nome trocado. Para o nosso caso: Alvorada é pequena — páginas **por bairro**

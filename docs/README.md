@@ -20,6 +20,7 @@
 | [google-ads.md](google-ads.md) | Conversões no Google Ads: configuração (`REACT_APP_GADS_SEND_TO`), consentimento (LGPD), o que conta como conversão e como criar a ação no painel. |
 | [seo.md](seo.md) | **Plano de SEO do site**: diagnóstico medido (2026-08-27), inventário do que já foi decidido/feito na `main`, e as tarefas com estado (Trilha A no CRA + Trilha B/migração). |
 | [google-canais.md](google-canais.md) | **Manual não-técnico** da presença no Google (Perfil da Empresa, mapa, avaliações): tarefas passo a passo para quem cuida da loja, sem código. |
+| [achados-pre-migracao.md](achados-pre-migracao.md) | **Achados de código (F1–F8)** levantados no desenho dos E2E da v1.2: pré-requisitos do smoke set, superfície morta, falsos positivos verificados e as decisões de execução da fase. |
 | [adr/0001-filtros-na-url.md](adr/0001-filtros-na-url.md) | Filtros como estado de navegação na URL. |
 | [adr/0002-estado-e-persistencia-do-carrinho.md](adr/0002-estado-e-persistencia-do-carrinho.md) | Carrinho: Context+reducer; `sessionStorage`; `localStorage` opt-in p/ dados do cliente. |
 | [adr/0003-rastreamento-meta-pixel.md](adr/0003-rastreamento-meta-pixel.md) | Meta Pixel: browser-only (sem CAPI), consentimento opt-in, funil completo de eventos. |

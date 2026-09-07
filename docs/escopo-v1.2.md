@@ -43,7 +43,7 @@ exige (rotas de produto, metadata, sitemap, JSON-LD).
 
 | # | Item | Referência |
 |---|---|---|
-| 1 | **Smoke set E2E (Playwright, 5 fluxos) escrito contra o app CRA atual** — contrato de aceite da migração. *Recorte fechado em 2026-08-27: só os fluxos que quebram venda — ver [seo.md](seo.md), B1.* | ADR-0009, Notas |
+| 1 | **Smoke set E2E (Playwright, 5 fluxos) escrito contra o app CRA atual** — contrato de aceite da migração. *Recorte fechado em 2026-08-27: só os fluxos que quebram venda — ver [seo.md](seo.md), B1. Tem **pré-requisitos de código** (âncoras de seletor + build de teste) levantados em [achados-pre-migracao.md](achados-pre-migracao.md) — não é acionável sem eles.* | ADR-0009, Notas |
 | 2 | **Baseline de métricas** — Lighthouse/PageSpeed em produção + Search Console, antes de tocar em código | ADR-0009, Notas |
 | 3 | Scaffold Next.js App Router; `react-scripts` → Next; `react-scripts test` → Vitest | D1 |
 | 4 | Lift-and-shift: `src/` movido, `app/layout.tsx` com a metadata do `index.html`, paridade total | D1, D2 |
