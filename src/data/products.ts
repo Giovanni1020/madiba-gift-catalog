@@ -205,6 +205,17 @@ export const PRODUCTS: Product[] = [
     note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
+    id: 41,
+    name: "Buquê 3 Rosas Nacionais",
+    description:
+      "Buquê com 3 rosas vermelhas nacionais, baby breath e folhagem, embrulho temático com laço.",
+    price: 6990,
+    category: "buques",
+    image: "/images/buque-3-rosas-vermelhas-nacionais.jpeg",
+    maxChocolates: 5,
+    note: "Obs: a embalagem/folhagem podem variar.",
+  },
+  {
     id: 38,
     name: "Buquê de Lírio Oriental Rosa",
     description:
@@ -333,6 +344,17 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-cartao.jpeg",
     hideBalao: true, // adicional: apenas plaquinha (sem balão e sem chocolate)
+  },
+  {
+    id: 42,
+    name: "Solitário de Rosa",
+    description: "Rosa solitária com folhagem, embrulho temático com laço.",
+    price: 2290,
+    category: "buques",
+    image: "/images/solitario-rosa.jpeg",
+    hideBalao: true, // sem adicionais: nem balão, nem plaquinha, nem chocolate
+    hidePlaquinha: true,
+    note: "Obs: a embalagem/folhagem podem variar.",
   },
 
   // ── Buquês de rosa de cetim com chocolates inclusos ────────────────────────
