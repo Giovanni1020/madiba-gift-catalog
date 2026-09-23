@@ -15,7 +15,7 @@
 | [escopo-v1.1.md](escopo-v1.1.md) | Escopo da **v1.1**: release de feedback + polimento (sem major feature fixa), backlog herdado e o que já entrou. **Encerrada em 2026-08-25.** |
 | [escopo-v1.2.md](escopo-v1.2.md) | Escopo da **v1.2** (ativa): migração CRA → Next.js + SEO. Critérios de aceite, janela de convivência com a v1.1 em produção e roadmap declarado v1.3–v1.5. |
 | [aparelhos-suportados.md](aparelhos-suportados.md) | Lista canônica de aparelhos/viewports que todo CSS deve suportar (mobile prioridade máxima). **Base do responsivo.** |
-| [branches-e-deploy.md](branches-e-deploy.md) | Estratégia de branches (feature → main → production) e a regra: **produção só com permissão humana**. |
+| [branches-e-deploy.md](branches-e-deploy.md) | Estratégia de branches (feature → main → production) e a regra: **produção só com permissão humana** + branch de integração `next` durante a v1.2. |
 | [meta-pixel.md](meta-pixel.md) | Rastreamento via Meta Pixel: configuração (`REACT_APP_FB_PIXEL_ID`), consentimento (LGPD), eventos × ações e como validar. |
 | [google-ads.md](google-ads.md) | Conversões no Google Ads: configuração (`REACT_APP_GADS_SEND_TO`), consentimento (LGPD), o que conta como conversão e como criar a ação no painel. |
 | [seo.md](seo.md) | **Plano de SEO do site**: diagnóstico medido (2026-08-27), inventário do que já foi decidido/feito na `main`, e as tarefas com estado (Trilha A no CRA + Trilha B/migração). |
@@ -36,4 +36,9 @@
 - Toda decisão de arquitetura nova → um **ADR numerado** em `adr/`.
 - Este índice é **mantido atualizado** sempre que um doc é criado ou muda de propósito.
 - **Toda mudança nasce numa branch** (`feat/…`, `fix/…`, `docs/…`) → PR para `main`.
+  - **Durante a migração da v1.2**, o alvo do PR muda: os **itens 3–13 do escopo** fazem PR
+    para a branch de integração `next`, e não para `main` — `main` precisa continuar sendo a
+    base CRA para que o hotfix da v1.1 tenha por onde passar até `production`. Hotfix e todo
+    o trabalho pré-scaffold seguem indo para `main`. Ver
+    [branches-e-deploy.md](branches-e-deploy.md#branch-de-integração-durante-a-migração-v12).
 - **`production` só com permissão humana explícita** (ver [branches-e-deploy.md](branches-e-deploy.md)).

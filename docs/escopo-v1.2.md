@@ -45,7 +45,7 @@ exige (rotas de produto, metadata, sitemap, JSON-LD).
 |---|---|---|
 | 1 | **Smoke set E2E (Playwright, 5 fluxos) escrito contra o app CRA atual** — contrato de aceite da migração. *Recorte fechado em 2026-08-27: só os fluxos que quebram venda — ver [seo.md](seo.md), B1. Tem **pré-requisitos de código** (âncoras de seletor + build de teste) levantados em [achados-pre-migracao.md](achados-pre-migracao.md) — não é acionável sem eles.* | ADR-0009, Notas |
 | 2 | **Baseline de métricas** — Lighthouse/PageSpeed em produção + Search Console, antes de tocar em código | ADR-0009, Notas |
-| 3 | Scaffold Next.js App Router; `react-scripts` → Next; `react-scripts test` → Vitest | D1 |
+| 3 | Scaffold Next.js App Router; `react-scripts` → Next; `react-scripts test` → Vitest. **Cria a branch `next`**; conferir preset/output dir na Vercel antes | D1 |
 | 4 | Lift-and-shift: `src/` movido, `app/layout.tsx` com a metadata do `index.html`, paridade total | D1, D2 |
 | 5 | `useFilter` → `useSearchParams` sob `<Suspense>`, mantendo a query canônica em PT-BR | D9 |
 | 6 | Campo `slug` estável em `Product`; rota `/produto/[slug]` SSG; **301 de `?item=<id>`** | D3, D4 |
@@ -54,7 +54,7 @@ exige (rotas de produto, metadata, sitemap, JSON-LD).
 | 9 | `next/image` em toda mídia; revisão do CSS de imagem | D7 |
 | 10 | `generateMetadata()` por produto (**OG com a foto do produto**), `sitemap.ts` só com canônicas, `robots.ts`, JSON-LD `Product` + `LocalBusiness` | D8, D10 |
 | 11 | Env `REACT_APP_*` → `NEXT_PUBLIC_*` (local + Vercel Production/Preview) | ADR-0009, Notas |
-| 12 | `vercel.json` (cache de `/vids/`) → `headers()` no `next.config` | ADR-0009, Notas |
+| 12 | `vercel.json` (cache de `/vids/`) → `headers()` no `next.config` (o `vercel.json` pode permanecer só com `framework`) | ADR-0009, Notas |
 | 13 | QA nos aparelhos de [aparelhos-suportados.md](aparelhos-suportados.md) | ADR-0009, Notas |
 
 **Confirmado em 2026-08-25:** as rotas de categoria entram (D10) e o lightbox mantém a
@@ -89,11 +89,15 @@ A versão só é promovível quando **todos** passam:
 
 Enquanto a v1.2 é construída, **a v1.1 continua no ar vendendo**. Consequência operacional:
 
+- A **base Next vive na branch `next`** durante toda a janela; `main` continua sendo a base
+  CRA. Regras completas em
+  [branches-e-deploy.md](branches-e-deploy.md#branch-de-integração-durante-a-migração-v12).
 - Hotfix de produção entra pelo fluxo normal na base CRA (`main` → `production`, com
-  permissão humana) e é **reaplicado à mão** na base Next.
+  permissão humana) e depois é **reaplicado em `next`** — `cherry-pick` quando aplica limpo;
+  à mão caso contrário.
 - [`src/data/products.ts`](../src/data/products.ts) fica **congelado byte a byte** entre as
   duas bases. Produto novo/preço alterado durante a janela sincroniza com
-  `git checkout main -- src/data/products.ts`.
+  `git checkout main -- src/data/products.ts`, rodado **na branch `next`**.
 - É o único ponto de atrito real da versão — não há features concorrentes, porque a migração
   **é** a versão.
 
@@ -136,7 +140,16 @@ pagamento entrasse junto e a conversão oscilasse, não haveria como saber o que
 Sem exceções ao [como-trabalhamos.md](como-trabalhamos.md) e ao
 [branches-e-deploy.md](branches-e-deploy.md):
 
-- Cada item do escopo fechado nasce em sua própria branch → PR para `main`.
+- **Base de PR durante a migração** (decisão de 2026-09-16 — regras completas em
+  [branches-e-deploy.md](branches-e-deploy.md#branch-de-integração-durante-a-migração-v12)):
+  cada item do escopo fechado nasce em sua própria branch, mas o **alvo do PR depende da
+  base**:
+  - **itens 1 e 2** (smoke set E2E e baseline) e todo o trabalho **pré-scaffold** → PR para
+    **`main`** (base CRA);
+  - **itens 3 a 13** (B3–B13) → PR para **`next`**, a branch de integração de vida longa que
+    nasce de `main` no scaffold e existe só durante a v1.2;
+  - **fechamento:** **um** PR `next → main` quando todos os critérios de aceite passarem;
+    depois `main → production`, com permissão humana. `next` é apagada.
 - **`production` só com permissão humana explícita.**
 - Decisão de arquitetura nova durante a migração → **novo ADR numerado**, não um parágrafo
   solto no PR.

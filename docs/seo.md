@@ -297,6 +297,11 @@ precisa de cliente. Padrão: card Server Component com o botão extraído para u
 > feito **duas vezes**. Isso vale para a Trilha A inteira, para o item 8, e também para o card
 > **#48** (persistência do carrinho), que é mudança na mesma base.
 >
+> **Onde cada coisa é mergeada:** o item 11 acontece na branch **`next`** (a branch de
+> integração da v1.2, criada no scaffold); tudo que vem antes dele entra em **`main`**, que
+> continua sendo a base CRA e a base de hotfix — ver
+> [branches-e-deploy.md](branches-e-deploy.md#branch-de-integração-durante-a-migração-v12).
+>
 > É por isso que a Trilha A é **sequencial antes da migração**, e não paralela a ela.
 
 > ⚠️ **Sobre o item 12 — o que vale e o que não vale criar.** Página local por região é
