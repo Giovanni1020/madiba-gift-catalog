@@ -176,16 +176,16 @@ Os itens abaixo são o escopo fechado do [`escopo-v1.2.md`](escopo-v1.2.md), rep
 
 | # | Estado | Item |
 |---|---|---|
-| B1 | 📋 | **Smoke set E2E (Playwright): 5 fluxos**, escritos **contra o app CRA atual** — a prova de paridade da migração: **(1)** filtro → URL canônica; **(2)** abrir produto do catálogo filtrado → trocar de item 2× (swipe/setas) → "voltar" fecha o diálogo sem desfazer trocas (caso do adendo do [ADR-0009](adr/0009-migracao-nextjs.md)); **(3)** reload com `?item=` + filtro ativo reabre o diálogo navegando a lista filtrada; **(4)** carrinho → checkout → URL do `wa.me` correta; **(5)** banner LGPD recusado ⇒ nenhum script de terceiro. Zoom + "voltar" fica no QA de aparelho (B13) |
+| B1 | 📋 | **Smoke set E2E (Playwright): 5 fluxos**, escritos **contra o app CRA atual** — a prova de paridade da migração: **(1)** filtro → URL canônica; **(2)** abrir produto do catálogo filtrado → trocar de item 2× (swipe/setas) → "voltar" — **base CRA:** fecha o diálogo sem desfazer trocas (caso do adendo do [ADR-0009](adr/0009-migracao-nextjs.md)); **base Next:** as trocas são `replace`, e o "voltar" fecha o modal e volta ao catálogo; **(3)** **base CRA:** reload com `?item=` + filtro ativo reabre o diálogo navegando a lista filtrada; **base Next:** reload de `/produto/<slug>?categoria=…&ordem=…` mostra o produto em **modo página**, navegando a lista da query, e o **X** leva a `/<categoria>` (adendo 2, A/B); **(4)** carrinho → checkout → URL do `wa.me` correta; **(5)** banner LGPD recusado ⇒ nenhum script de terceiro. Zoom + "voltar" fica no QA de aparelho (B13) |
 | B2 | 📋 | Baseline de métricas: Lighthouse/PageSpeed em produção + Search Console (**= A0 deste plano**) |
 | B3 | 📋 | Scaffold Next.js App Router; `react-scripts` → Next; testes → Vitest |
 | B4 | 📋 | Lift-and-shift: paridade total com tudo `"use client"`, build verde, E2E verdes |
 | B5 | 📋 | `useFilter` → `useSearchParams` sob `<Suspense>` |
-| B6 | 📋 | `slug` em `Product`; `/produto/[slug]` SSG; **301 de `?item=`** (mecânica: ver adendo do ADR-0009, ponto 3) |
-| B7 | 📋 | Rotas de categoria SSG; chips viram `<Link>`; **301 de `?categoria=`**; sitemap/robots gerados |
-| B8 | 📋 | Diálogo/carrinho/checkout viram rotas (intercepting); `overlayHistory.ts` deletado — **conforme adendo do ADR-0009** (swipe via `router.replace`; filtros acompanham na query) |
+| B6 | 📋 | `slug` em `Product`; `/produto/[slug]` SSG; **301 de `?item=`** (mecânica: ver adendo do ADR-0009, ponto 3, fechada no **adendo 2: E**); acesso direto abre o produto em **modo página** (**adendo 2: A**) |
+| B7 | 📋 | Rotas de categoria SSG; chips viram `<Link>`; **301 de `?categoria=`** (só na home); sitemap/robots gerados; `categoria` na query **só na URL de produto** (**adendo 2: B**) |
+| B8 | 📋 | Diálogo/carrinho/checkout viram rotas (intercepting); `overlayHistory.ts` deletado — **conforme adendo do ADR-0009** (swipe via `router.replace`; filtros acompanham na query) e o mapa de transições + as **4 verificações obrigatórias** como primeiros itens do checklist (**adendo 2: C**) |
 | B9 | 📋 | `next/image` em toda mídia + revisão do CSS de imagem |
-| B10 | 📋 | `generateMetadata()` por produto (**OG com a foto**), JSON-LD `Product` + negócio |
+| B10 | 📋 | `generateMetadata()` por produto (**OG com a foto**), JSON-LD `Product` + negócio; variantes usam `AggregateOffer` (**adendo 2: F**) |
 | B11 | 📋 | Env `REACT_APP_*` → `NEXT_PUBLIC_*` (local + Vercel) |
 | B12 | 📋 | `vercel.json` → `headers()` no `next.config` |
 | B13 | 📋 | QA nos aparelhos de [aparelhos-suportados.md](aparelhos-suportados.md), foco no "voltar" |
@@ -253,7 +253,7 @@ O caso interessante é o card ([`ProductCard.tsx`](../src/components/ProductCard
 precisa de cliente. Padrão: card Server Component com o botão extraído para um filho
 `'use client'`.
 
-### As duas armadilhas conhecidas
+### As três armadilhas conhecidas
 
 1. **`useSearchParams()` derruba o SSG.** Ele empurra a rota para renderização dinâmica — e
    se a home vira dinâmica, a migração perde o sentido. A saída (D9): o consumo dos params
@@ -263,6 +263,18 @@ precisa de cliente. Padrão: card Server Component com o botão extraído para u
 2. **Hidratação × `window`.** [`useFilter.ts:33`](../src/hooks/useFilter.ts) lê
    `window.location.search` no *initializer* do `useState` — no servidor `window` não existe.
    É o primeiro lugar a quebrar, e o motivo de o B5 ser um item próprio.
+3. **Hidratação × estado do navegador.** É a armadilha 2 generalizada, e a mais traiçoeira:
+   `"use client"` diz o que vai para o *bundle*, **não** "roda só no navegador" — na build o
+   Next executa o componente no servidor e o React hidrata **assumindo saída idêntica**.
+   Divergência de **texto/estrutura** dá erro no console; divergência de **atributo** é
+   **silenciosa** em produção — o DOM fica com o valor do servidor e nada corrige depois.
+   **Regra (adendo 2, D — item de revisão de PR):** estado vindo do navegador (URL, storage,
+   relógio, viewport) **nunca** é lido no *initializer* do `useState`; é semeado em
+   `useEffect` ou lido via `useSyncExternalStore` com `getServerSnapshot`. Três arquivos já
+   mapeados: [`useFilter.ts:33`](../src/hooks/useFilter.ts) (quebra a build),
+   [`useConsent.ts:21`](../src/hooks/useConsent.ts) (banner pisca — F9) e
+   [`Checkout.tsx:147-148`](../src/components/Checkout.tsx) (`min`/`max` presos no dia da
+   build — F10). Ver [`achados-pre-migracao.md`](achados-pre-migracao.md).
 
 ---
 
@@ -284,8 +296,8 @@ precisa de cliente. Padrão: card Server Component com o botão extraído para u
 | 5 | A9 — Seções "sobre" e "entrega" | #60 | ⏳ | 1 dia |
 | 6 | A4 — JSON-LD `Florist` | #61 | ⏳ | 2 h |
 | 7 | A8 — Headings + `alt` | #62 | ⏳ | 2 h |
-| 8 | **Correções na base CRA** — F1, F6, F3 (âncoras do B1); F2 (+F4), F5 | a criar | ⏳ | ~3 h |
-| 9 | **Build de teste + travas** — `.env.test` **e o script de build que o consome**, bloqueio de rede, `page.clock` | #50/#41 | ⏳ | — |
+| 8 | **Correções na base CRA** — F1, F6, F3 (âncoras do B1); F2 (+F4), F5; **F9 e F10** (hidratação — adendo 2, D). O card **#48** nasce já na forma **SSR-safe** | a criar | ⏳ | ~3 h |
+| 9 | **Build de teste + travas** — `.env.test` **carregado pelo Playwright e injetado em `webServer.env`** (ver F8 nos achados) — não há script de build separado; bloqueio de rede, `page.clock` | #50/#41 | ⏳ | — |
 | 10 | B1 — smoke set (5 fluxos) | #41 | 📋 | meio dia a 1 dia |
 | 11 | B3–B13 — a migração, na ordem do escopo | #63–#70 | 📋 | Ver [`escopo-v1.2.md`](escopo-v1.2.md) |
 | 12 | Conteúdo recorrente — páginas de ocasião (prioridade: **Dia das Mães, Dia dos Namorados, aniversário** — os picos de venda da loja) | — | ⏳ | Contínuo |

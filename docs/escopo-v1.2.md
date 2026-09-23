@@ -46,14 +46,14 @@ exige (rotas de produto, metadata, sitemap, JSON-LD).
 | 1 | **Smoke set E2E (Playwright, 5 fluxos) escrito contra o app CRA atual** — contrato de aceite da migração. *Recorte fechado em 2026-08-27: só os fluxos que quebram venda — ver [seo.md](seo.md), B1. Tem **pré-requisitos de código** (âncoras de seletor + build de teste) levantados em [achados-pre-migracao.md](achados-pre-migracao.md) — não é acionável sem eles.* | ADR-0009, Notas |
 | 2 | **Baseline de métricas** — Lighthouse/PageSpeed em produção + Search Console, antes de tocar em código | ADR-0009, Notas |
 | 3 | Scaffold Next.js App Router; `react-scripts` → Next; `react-scripts test` → Vitest. **Cria a branch `next`**; conferir preset/output dir na Vercel antes | D1 |
-| 4 | Lift-and-shift: `src/` movido, `app/layout.tsx` com a metadata do `index.html`, paridade total | D1, D2 |
+| 4 | Lift-and-shift: `src/` movido, `app/layout.tsx` com a metadata do `index.html`, paridade total. Inclui o `PUBLIC_URL` do [`Header.tsx`](../src/components/Header.tsx) e a **regra de hidratação** do adendo 2 (D) | D1, D2 |
 | 5 | `useFilter` → `useSearchParams` sob `<Suspense>`, mantendo a query canônica em PT-BR | D9 |
-| 6 | Campo `slug` estável em `Product`; rota `/produto/[slug]` SSG; **301 de `?item=<id>`** | D3, D4 |
-| 7 | **Rotas de categoria** (`/buques`, `/buques-cetim`, `/cestas`, `/doces`) SSG; chips da `FilterBar` viram `<Link>`; **301 de `?categoria=<x>`** | D10 |
-| 8 | **Diálogo, carrinho e checkout viram rotas** (intercepting routes); `overlayHistory.ts` **deletado** | D5 |
+| 6 | Campo `slug` estável em `Product`; rota `/produto/[slug]` SSG; **301 de `?item=<id>`**. Acesso direto **abre o produto em modo página** (adendo 2, A); setas/swipe navegam a lista da query; o **X leva ao catálogo** | D3, D4 |
+| 7 | **Rotas de categoria** (`/buques`, `/buques-cetim`, `/cestas`, `/doces`) SSG; chips da `FilterBar` viram `<Link>`; **301 de `?categoria=<x>`** (só na home). `categoria` viaja na query **só na URL de produto** (adendo 2, B) | D10 |
+| 8 | **Diálogo, carrinho e checkout viram rotas** (intercepting routes); `overlayHistory.ts` **deletado** — conforme o **mapa de transições** e as **4 verificações** do adendo 2 (C); acesso direto a `/carrinho` = catálogo com o drawer aberto; define o comportamento de `/checkout` direto (escolha do executor, registrada no PR) | D5 |
 | 9 | `next/image` em toda mídia; revisão do CSS de imagem | D7 |
-| 10 | `generateMetadata()` por produto (**OG com a foto do produto**), `sitemap.ts` só com canônicas, `robots.ts`, JSON-LD `Product` + `LocalBusiness` | D8, D10 |
-| 11 | Env `REACT_APP_*` → `NEXT_PUBLIC_*` (local + Vercel Production/Preview) | ADR-0009, Notas |
+| 10 | `generateMetadata()` por produto (**OG com a foto do produto**), `sitemap.ts` só com canônicas, `robots.ts`, JSON-LD `Product` + `LocalBusiness`; produtos com variantes usam **`AggregateOffer`** (adendo 2, F) | D8, D10 |
+| 11 | Env `REACT_APP_*` → `NEXT_PUBLIC_*` (local + Vercel Production/Preview) — as **duas famílias coexistem** na Vercel durante a janela; nenhuma é removida antes do fechamento | ADR-0009, Notas |
 | 12 | `vercel.json` (cache de `/vids/`) → `headers()` no `next.config` (o `vercel.json` pode permanecer só com `framework`) | ADR-0009, Notas |
 | 13 | QA nos aparelhos de [aparelhos-suportados.md](aparelhos-suportados.md) | ADR-0009, Notas |
 
@@ -65,8 +65,16 @@ segue em aberto.
 
 A versão só é promovível quando **todos** passam:
 
-- [ ] Os 5 fluxos do smoke set (item 1) passam **na base CRA e na base Next**, sem
-      alteração no roteiro.
+- [ ] Os 5 fluxos do smoke set (item 1) passam **nas duas bases** com o **mesmo roteiro**
+      (`roteiro/`) e o **contrato de URL de cada base** (`contrato/urls.ts`); as asserções
+      `@expira-na-migracao` têm a **versão Next escrita antes do scaffold**.
+- [ ] Acesso direto a `/produto/<slug>` mostra **o produto aberto** (modo página) e o **X**
+      leva ao catálogo; `view-source:` dessa página **NÃO** contém a grade do catálogo.
+- [ ] **Zero erros de hidratação** no console nos 5 fluxos (o Playwright falha em erro de
+      console) **+** asserção de que o `min` do input de data em `/checkout` é a data do
+      `page.clock`.
+- [ ] Voltar do checkout cai no **catálogo**; `/carrinho` → `/checkout` **fecha o drawer**
+      (adendo 2, C).
 - [ ] Paridade visual e funcional confirmada nos aparelhos suportados — com atenção ao
       **"voltar" do celular** em iOS Safari e Chrome Android.
 - [ ] `view-source:` de `/produto/<slug>` mostra **nome, descrição e preço** no HTML.

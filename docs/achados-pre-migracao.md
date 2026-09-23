@@ -11,7 +11,7 @@
 
 ## Numeração
 
-Os achados usam **`F1–F8`** (*finding*). O prefixo `A0–A9` é **reservado às tarefas da
+Os achados usam **`F1–F10`** (*finding*). O prefixo `A0–A9` é **reservado às tarefas da
 Trilha A** da [`seo.md`](seo.md) — os dois esquemas colidiam (o `A2` da `seo.md` é
 `title`/`description`; o achado sobre o filtro de preço morto também tinha sido chamado de
 `A2` no hand-off original). Quem ler "A4" deve encontrar uma coisa só: o JSON-LD `Florist`.
@@ -28,6 +28,8 @@ Trilha A** da [`seo.md`](seo.md) — os dois esquemas colidiam (o `A2` da `seo.m
 | F6 | Contagem "N itens" não tem âncora acessível | Testabilidade | **Sim** — fluxo (1) | a criar |
 | F7 | `ExtrasDialog` sobrescreve `window.history.state` | Risco de migração | Não | **sem ação** — ADR-0009 D6 |
 | F8 | `.env.local` com tokens reais seria disparado pelos E2E | Risco operacional | **Sim** — fluxo (5) | verificar #50/#41 |
+| F9 | `useConsent` lê `localStorage` no initializer (hidratação) | Risco de migração | Não | bloco do item 8 |
+| F10 | `Checkout` calcula `minData`/`maxData` no initializer | **Bug latente sob SSG** | Não | bloco do item 8 |
 
 ---
 
@@ -197,6 +199,60 @@ domínios" são observáveis com a rede cortada, e ficam determinísticos e offl
 > F8 volta inteiro), ou não carrega nenhum — e aí o `ConsentBanner` retorna `null`, o banner
 > não renderiza e **o fluxo (5) não tem como rodar**. Falta, portanto, um **script de build de
 > teste** que consuma o `.env.test`.
+>
+> ✅ **Resolvido (2026-09-16).** Não é preciso script de build: o
+> **`playwright.config.ts` carrega o `.env.test`** (dotenv) e passa os valores em
+> **`webServer.env`**, o ambiente do comando de *build + serve* que o próprio Playwright
+> sobe. Funciona **igual nas duas bases**, porque tanto o CRA quanto o Next **inlinam** as
+> variáveis na build — é exatamente por serem inlinadas que elas precisam estar no ambiente
+> do build, e é isso que o `webServer.env` faz. **Fecha a pendência "script de build de
+> teste".**
+
+**Nota de hidratação (2026-09-16).** O card **#48** (persistência do carrinho) **nasce já na
+forma SSR-safe** — estado inicial vazio, semeado em efeito — pela regra do
+[adendo 2, D do ADR-0009](adr/0009-migracao-nextjs.md). Ver **F9** e **F10**.
+
+---
+
+## F9 — `useConsent` lê `localStorage` no initializer
+
+**Onde:** [`useConsent.ts:21`](../src/hooks/useConsent.ts)
+
+O estado do consentimento é inicializado lendo `localStorage` no *initializer* do `useState`.
+No servidor não há `localStorage`: o HTML sai **com o banner**, e quem já consentiu hidrata
+**sem ele** — o banner **pisca** e o React registra **erro de hidratação** no console.
+
+**Tipo:** risco de migração. **Bloqueia o #41?** Não — não muda nenhum dos 5 fluxos na base CRA.
+
+**Card:** entra no **bloco do item 8** da [`seo.md`](seo.md) (base CRA, **antes do scaffold**).
+A correção é **inofensiva no CRA** — no navegador o efeito roda antes da primeira pintura útil
+— e é **carregada de graça pelo lift-and-shift**, em vez de virar trabalho feito duas vezes
+(decisão 9).
+
+**Correção:** estado inicial `null` (= "ainda não sei"), semeado em `useEffect`; o banner só
+renderiza quando o estado já foi semeado.
+
+## F10 — `Checkout` calcula `minData`/`maxData` no initializer
+
+**Onde:** [`Checkout.tsx:147-148`](../src/components/Checkout.tsx)
+
+As datas mínima e máxima do input de entrega são calculadas a partir de `new Date()` no
+*initializer* do `useState`. Sob **SSG**, esse `new Date()` é **o dia da build**, e o valor vai
+para os atributos `min`/`max` do `<input type="date">` no HTML estático.
+
+**Por que é BUG, e não só um pisca:** divergência de **atributo** não é corrigida pela
+hidratação — o DOM **mantém** o valor do servidor, **sem erro no console** em build de
+produção. Efeito prático: datas já passadas continuam selecionáveis e, **30 dias após a
+build, nenhuma data é aceita** — o checkout trava e ninguém vê motivo. Renderizar por request
+**não resolve** (o relógio do servidor é UTC); a correção é **só no cliente**.
+
+**Tipo:** bug latente sob SSG. **Bloqueia o #41?** Não — no CRA o cálculo roda sempre no
+navegador.
+
+**Card:** **mesmo bloco do item 8**, pelas mesmas razões do F9.
+
+**Correção:** estado inicial `""`, semeado em `useEffect`; **mais** asserção no E2E, com
+`page.clock` fixado (decisão 6), de que o `min` do input é a data do relógio.
 
 ---
 
@@ -243,3 +299,12 @@ Contexto de execução, não achados:
     Trilha A e o #48 seguem fazendo PR para `main`** — o que confirma a decisão 9 acima e a
     torna operacional. Regras completas em
     [`branches-e-deploy.md`](branches-e-deploy.md#branch-de-integração-durante-a-migração-v12).
+11. **`.env.test` via `webServer.env`** (2026-09-16). O `playwright.config.ts` carrega o
+    `.env.test` com dotenv e injeta os valores no `webServer.env` do comando de build+serve.
+    Vale para as duas bases (CRA e Next inlinam na build). **Substitui** o "script de build de
+    teste" que a decisão 5 dava como pendente — ver o quadro do **F8**.
+12. **Regra de hidratação como item de revisão de PR** (2026-09-16). Estado vindo do navegador
+    (URL, storage, relógio, viewport) **nunca** é lido no *initializer* do `useState`; é
+    semeado em `useEffect` ou lido via `useSyncExternalStore` com `getServerSnapshot`
+    ([adendo 2, D do ADR-0009](adr/0009-migracao-nextjs.md)). Cobre F9, F10, o `useFilter` e
+    o card #48.
