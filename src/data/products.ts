@@ -416,7 +416,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 43,
     name: "Buquê Amor Eterno Rosa",
-    description: "Contém: 1 balão Te Amo, 3 rosas de cetim rosa, 8 Sonho de Valsa.",
+    description:
+      "Contém: 1 balão Com Carinho, 3 rosas de cetim rosa, 4 Ouro Branco e 4 Sonho de Valsa.",
     price: 6990,
     category: "buques-cetim",
     image: "/images/buque-amor-eterno-rosa.jpeg",
