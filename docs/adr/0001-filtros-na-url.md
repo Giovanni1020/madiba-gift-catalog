@@ -110,3 +110,6 @@ aplica após a hidratação — exatamente o que já acontece hoje em CSR.
 **Alternativa reavaliada:** a rejeição de `react-router-dom` previa *"reavaliar se surgirem
 rotas reais (ex.: `/produto/:id`)"*. **A condição se cumpriu** — por SEO, e com o roteador do
 Next em vez de uma lib. Ver ADR-0009, D3/D4.
+
+**Exceção registrada em 2026-09-16** ([ADR-0009](0009-migracao-nextjs.md), adendo 2, B): na URL
+de produto, `categoria` segue na query como **contexto de navegação**.
