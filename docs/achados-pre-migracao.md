@@ -237,3 +237,9 @@ Contexto de execução, não achados:
    v1.1 no ar durante a migração, e hotfix é reaplicado à mão na base Next: o que for escrito
    antes do scaffold é carregado de graça pelo lift-and-shift; depois, é trabalho feito duas
    vezes. Vale para a Trilha A, para este bloco e para o card **#48** (persistência do carrinho).
+10. **Branch de integração `next`** (2026-09-16). A base Next vive numa branch de vida longa
+    `next`, criada de `main` no scaffold (#63); os itens 3–13 do escopo fazem PR para ela.
+    `main` continua CRA e continua sendo a base de hotfix, então **este bloco (F1–F8), a
+    Trilha A e o #48 seguem fazendo PR para `main`** — o que confirma a decisão 9 acima e a
+    torna operacional. Regras completas em
+    [`branches-e-deploy.md`](branches-e-deploy.md#branch-de-integração-durante-a-migração-v12).
