@@ -209,7 +209,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê 3 Rosas Nacionais",
     description:
       "Buquê com 3 rosas vermelhas nacionais, baby breath e folhagem, embrulho temático com laço.",
-    price: 6990,
+    price: 7990,
     category: "buques",
     image: "/images/buque-3-rosas-vermelhas-nacionais.jpeg",
     maxChocolates: 5,
