@@ -414,6 +414,17 @@ export const PRODUCTS: Product[] = [
     hidePlaquinha: true,
   },
   {
+    id: 43,
+    name: "Buquê Amor Eterno Rosa",
+    description:
+      "Contém: 1 balão Com Carinho, 3 rosas de cetim rosa, 4 Ouro Branco e 4 Sonho de Valsa.",
+    price: 6990,
+    category: "buques-cetim",
+    image: "/images/buque-amor-eterno-rosa.jpeg",
+    hideBalao: true,
+    hidePlaquinha: true,
+  },
+  {
     id: 23,
     name: "Buquê Angel",
     description: "Buquê Angel de rosas de cetim, embrulho temático com laço.",
