@@ -340,3 +340,197 @@ Duas implementações possíveis: `redirects()` no `next.config` **gerado** de `
 (uma regra por produto, com `has` de query) ou middleware único que consulta o mapa. Ambas
 atendem; a escolha é do item 6 do escopo, na implementação — registrada aqui apenas para o
 executor não descobrir o problema na hora.
+
+## Adendo 2 — decisões de 2026-09-16
+
+Segunda camada de correção/decisão, no mesmo padrão do adendo de 2026-08-27: **o texto acima
+permanece como está**. Este adendo registra sete decisões já tomadas e confirmadas em
+2026-09-16 — a principal delas **revisa o D5** — com o porquê, o que muda em relação ao que o
+ADR dizia e as alternativas consideradas. Toda afirmação sobre o código foi conferida contra a
+`main` na redação.
+
+### A — D5 revisado: acesso direto a `/produto/[slug]` abre **o produto**
+
+O D5 dizia: *"acesso direto, reload ou crawler → **página inteira** de produto"*. A frase
+ficava ambígua sobre **o que** essa página mostra. Fica decidido: mostra **o produto**.
+
+**Por quê.** O link de produto é o **principal ativo de compartilhamento** do negócio — o
+cliente manda o buquê para alguém pelo WhatsApp. O preview dinâmico de OG (D8) perde o sentido
+se o link, ao ser aberto, não entregar o produto pronto para comprar.
+
+**Desenho decidido.** A página `/produto/[slug]` é **estática (SSG)** e o seu conteúdo
+principal é o produto, renderizado com o **mesmo componente `ExtrasDialog`, em "modo página"**:
+
+- **Mesma aparência.** No celular o diálogo já ocupa a tela inteira menos a margem de 16px
+  (`.bed` usa `max-width: calc(100vw - 32px)` e `max-height: calc(100dvh - 32px …)` —
+  [`ExtrasDialog.css`](../../src/components/ExtrasDialog.css)), então "modo página" não é uma
+  segunda UI: é o mesmo diálogo sem catálogo atrás.
+- **Setas/swipe** navegam a lista definida pela query (ver decisão B).
+- **O "X" leva ao catálogo:** `<Link>` para `/<categoria>` se a query trouxer categoria,
+  senão para `/`.
+- **O catálogo NÃO é renderizado atrás no HTML.**
+- **Navegação suave a partir do catálogo continua sendo a rota interceptada** (modal sobre o
+  catálogo vivo), exatamente como o D5 já dizia.
+
+O **layout visual** da página já foi definido pelo time; este ADR registra o **comportamento**,
+não o visual.
+
+**Alternativas rejeitadas**
+
+- **"Catálogo + diálogo aberto no HTML estático".** Geraria uma URL por produto (o número sai
+  de [`products.ts`](../../src/data/products.ts), não deste doc) com **a grade inteira
+  idêntica** e só o diálogo diferente. O Google agrupa páginas quase idênticas e escolhe uma
+  canônica: o risco real é **indexar só uma delas** — o oposto do objetivo da versão. Além
+  disso, o LCP de cada página de produto passaria a carregar a grade inteira, contra o
+  critério de aceite de LCP do [escopo-v1.2.md](../escopo-v1.2.md).
+- **"Híbrido".** HTML só com o produto e o catálogo montado no cliente, atrás do diálogo,
+  depois da hidratação. Código extra cujo efeito só aparece no desktop. Descartado.
+
+**Mudanças de comportamento em relação a hoje — documentadas e aceitas em 2026-09-16**
+
+1. **O "voltar" do navegador, a partir de um link compartilhado, volta para onde o cliente
+   veio** (ex.: o WhatsApp). Hoje [`App.tsx`](../../src/App.tsx) tem um efeito de mount que,
+   ao ler `?item=` válido, chama `pushOverlayOnce()`
+   ([`overlayHistory.ts`](../../src/overlayHistory.ts)) e **segura o cliente no site**. Isso
+   some: o critério de aceite da v1.2 proíbe `pushState` manual fora do lightbox. O **"X"**
+   assume o papel de levar ao catálogo.
+2. **`?item=<id>` vira `/produto/<slug>`** (301 do D4). O link antigo continua funcionando.
+3. **No desktop, o catálogo não aparece atrás do produto** em acesso direto.
+
+**Incerteza registrada.** Swipe em modo página usa `router.replace` para o próximo
+`/produto/<slug>`. A partir de uma página carregada direto (não interceptada), esse `replace`
+pode renderizar o **modal interceptado por cima** da página de produto. **Fallback escrito:**
+em modo página, setas/swipe navegam com `<Link replace>` para a **página inteira** do vizinho
+(SSG + prefetch = rápido, sem modal). A verificação é item do checklist do card **B8**
+([seo.md](../seo.md)) — ver decisão C.
+
+### B — `categoria` acompanha a navegação para `/produto/[slug]`
+
+O **adendo 1, ponto 2** decidiu que os filtros vão como query na navegação para a rota de
+produto, para o swipe percorrer a lista filtrada. Só que o **D10 tirou `categoria` da query**,
+e o `pathname` dentro de uma rota interceptada já é o **do produto**, não o da página de baixo.
+Logo, quem abre um produto a partir de `/buques` chegaria a `/produto/x?ordem=nome` — e o modal
+não teria como saber qual é a lista.
+
+**Decisão:** `categoria` viaja na query **só na URL de produto** —
+`/produto/<slug>?categoria=buques&ordem=nome`.
+
+**Refinamento do D10** (não revogação): a regra *"categoria é rota"* vale para as **páginas de
+lista**; na **URL de produto**, `categoria` é **contexto de navegação**, igual a `ordem` e `q`.
+
+**Consequências**
+
+- O **301 de `?categoria=`** (regra 2 do D10) vale **apenas para a home `/`**. Em
+  `/produto/[slug]` a query é **aceita e ignorada pela canônica** (regra 3: canonical é a rota
+  limpa).
+- Em rotas de categoria (`/buques?categoria=cestas`), **o segmento vence** e a auto-limpeza do
+  [ADR-0001](0001-filtros-na-url.md) remove o param da query.
+- `parseFilters`/`serializeFilters` em [`filterParams.ts`](../../src/hooks/filterParams.ts)
+  **continuam conhecendo `categoria`** — não é removido no lift-and-shift.
+
+**Alternativa considerada:** interceptar dentro de cada rota de categoria
+(`app/[categoria]/@modal/(..)produto/[slug]`) e ler a categoria por `useParams`. **Rejeitada:**
+duplica a rota do modal para resolver o que um param resolve.
+
+### C — Mapa de transições de histórico e verificações do card B8
+
+Hoje [`overlayHistory.ts`](../../src/overlayHistory.ts) garante profundidade **um**: a entrada
+`{ overlay: true }` é **reaproveitada** entre extras → carrinho → checkout, e o "voltar" sempre
+volta ao catálogo. O ADR não dizia como isso se traduz em rotas. **Decisão — tabela:**
+
+| Transição | Operação | Por quê |
+|---|---|---|
+| catálogo → produto (clique no card) | `push` (`<Link>`) | entra uma camada |
+| produto → produto (swipe/setas) | `replace` | adendo 1, ponto 1 |
+| produto → carrinho (após "Adicionar") | `replace` | hoje o cart reusa a entrada do diálogo |
+| carrinho aberto pelo FAB (do catálogo) | `push` | entra uma camada |
+| carrinho → checkout ("Finalizar") | `replace` | hoje reusa a entrada; voltar do checkout cai no catálogo |
+| fechar qualquer overlay (X / fora / Esc / "voltar") | `router.back()` | navegação nativa |
+| X em **modo página** (acesso direto) | `push` para o catálogo | não há entrada anterior no site |
+
+**Acesso direto a `/carrinho` (decidido):** renderiza **o catálogo com o drawer aberto**. A
+rota é `noindex` (D3), então não há custo de SEO nem de duplicidade; sem persistência do
+carrinho o drawer aparece **vazio**, igual a hoje após reload. Se a implementação mostrar que
+isso não é viável com o slot `@modal`, o **fallback é `redirect('/')`**, registrado no PR.
+
+**Acesso direto a `/checkout` com carrinho vazio:** mesmo comportamento que hoje ao abrir o
+checkout sem itens, se existir; senão, `redirect` para `/`. A escolha é **do executor** e fica
+registrada no PR.
+
+**Verificações obrigatórias, como PRIMEIROS itens do checklist do card B8.** Um spike separado
+foi considerado e **dispensado** em 2026-09-16; em vez dele, cada verificação carrega o seu
+fallback:
+
+1. **Swipe no modal via `router.replace` mantém o modal aberto.** Fallback: `<Link replace>`
+   para a página inteira.
+2. **`/carrinho` (modal) → `/checkout` fecha o drawer.** Em parallel routes, a navegação suave
+   **mantém o slot que não casou com a URL**; o slot `@modal` precisa se fechar lendo o
+   `pathname` (ou `useSelectedLayoutSegment`). Fallback: fechar via `router.back()` antes de
+   navegar.
+3. **"Voltar" do checkout cai no catálogo**, não no drawer (consequência do `replace`).
+4. **Swipe a partir de página carregada direto** (ver a incerteza da decisão A).
+
+### D — Hidratação: regra e lista completa
+
+`"use client"` marca **o que vai para o bundle**; **não** significa "renderiza só no navegador".
+Na build, o Next executa componentes client **no servidor** para gerar HTML; no navegador, o
+React hidrata **assumindo saída idêntica**. Divergência de **estrutura/texto** → re-render no
+cliente com erro no console. Divergência de **ATRIBUTO** → **não há garantia de correção**: o
+DOM fica com o valor do servidor e nada depois corrige — e em build de produção isso é
+**silencioso**.
+
+**Regra (item de revisão de PR):** estado que vem do navegador (URL, storage, relógio,
+viewport) **nunca** é lido no *initializer* do `useState`; é **semeado em `useEffect`** ou lido
+via `useSyncExternalStore` com `getServerSnapshot`.
+
+**Casos conhecidos no código:**
+
+- [`useFilter.ts:33`](../../src/hooks/useFilter.ts) — `window.location` no initializer (já
+  citado no ADR; **quebra a build**).
+- [`useConsent.ts:21`](../../src/hooks/useConsent.ts) — `localStorage` no initializer. O HTML
+  sai **com o banner**, e quem já consentiu hidrata **sem ele**: pisca + erro no console.
+- [`Checkout.tsx:147-148`](../../src/components/Checkout.tsx) — `minData`/`maxData` no
+  initializer. Com SSG, o HTML de `/checkout` carrega **o dia da BUILD** no `min`/`max` do input
+  de data; por ser **atributo**, o DOM mantém o valor da build. Consequência: **datas passadas
+  selecionáveis** e, **30 dias após a build, nenhuma data aceita** — checkout travado, sem erro
+  visível. Render por request **não resolve** (o relógio do servidor é UTC). Correção **só no
+  cliente**.
+- **Card #48** (persistência do carrinho): nasce **já na forma correta** — estado inicial
+  vazio, semeado em efeito.
+
+**Critério de aceite novo** (registrado no escopo pelo PR seguinte): **zero erros de hidratação
+no console** nos 5 fluxos **+** asserção explícita no E2E, com `page.clock` fixado, de que o
+`min` do input de data em `/checkout` é a **data do relógio** — divergência de atributo **não**
+aparece no console em produção.
+
+### E — Mecânica dos 301: decidida
+
+Fecha o **ponto 3 do adendo 1**: **`redirects()` no `next.config`**, **gerado de
+[`products.ts`](../../src/data/products.ts)** — uma regra por produto com `has` de query
+`item`, mais a regra de `?categoria=` na home.
+
+**Middleware rejeitado:** custo por request, código de runtime, e API que **mudou de nome** em
+versão recente do Next.
+
+**Verificação obrigatória (teste):**
+
+- `/?item=40&ordem=nome` → `/produto/<slug>?ordem=nome`, com **`item` NÃO sobrevivendo** ao
+  destino;
+- `/?categoria=buques&q=rosa` → `/buques?q=rosa`.
+
+### F — D8: JSON-LD com variantes
+
+Produtos com `variants` ([ADR-0005](0005-variantes-de-produto.md)) usam **`AggregateOffer`**
+(`lowPrice`, `highPrice`, `offerCount`), **não** `Offer` com preço único. `availability` deriva
+de `inStock`.
+
+### G — Lift-and-shift: pequenos pontos verificados no código
+
+- [`Header.tsx:8`](../../src/components/Header.tsx) e `:13` usam **`process.env.PUBLIC_URL`**,
+  que **não existe no Next** (vira `undefined/images/…`). O `%PUBLIC_URL%` do `index.html` some
+  junto com o arquivo, substituído pelo layout.
+- As Notas de implementação **"`products.ts` congelado"** e **"Rollback"** rodam na branch
+  **`next`** ([branches-e-deploy.md](../branches-e-deploy.md)): é lá que o
+  `git checkout main -- src/data/products.ts` é executado durante a janela, e é de lá que o
+  caminho até `production` passa (PR `next → main`, depois `main → production` com permissão
+  humana).

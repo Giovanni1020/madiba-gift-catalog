@@ -132,3 +132,7 @@ ADR-0009 D6 — com a regra de **preservar** `window.history.state` em vez de so
 
 **Compatibilidade obrigatória:** `?item=<id>` já circula em conversas de WhatsApp. ADR-0009 D4
 exige **redirect 301** para o slug — nenhum link já compartilhado pode virar 404.
+
+**2026-09-16** ([ADR-0009](0009-migracao-nextjs.md), adendo 2, A): acesso direto a
+`/produto/<slug>` abre **o produto em modo página**; o "voltar" do navegador em link
+compartilhado **deixa de ser segurado no site**.
