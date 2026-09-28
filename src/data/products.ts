@@ -169,6 +169,17 @@ export const PRODUCTS: Product[] = [
     note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
+    id: 45,
+    name: "Buquê 1 Rosa Nacional",
+    description:
+      "Buquê com 1 rosa nacional, baby breath, solidago e folhagem, embrulho temático com laço.",
+    price: 3990,
+    category: "buques",
+    image: "/images/buque-1-rosa-nacional.jpeg",
+    maxChocolates: 3,
+    note: "Obs: a embalagem/folhagem podem variar.",
+  },
+  {
     id: 3,
     name: "Buquê 3 Rosas Cor de Rosa",
     description:
@@ -334,6 +345,16 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-girassol-normal.jpeg",
     maxChocolates: 3,
+  },
+  {
+    id: 44,
+    name: "Buquê de Letras",
+    description:
+      "Buquê com 15 a 17 rosas importadas e letra feita com flores naturais.",
+    price: 43490,
+    category: "buques",
+    image: "/images/buque-letras.jpeg",
+    note: "Obs: a letra é personalizada (combinada no pedido). A embalagem/folhagem podem variar.",
   },
   {
     id: 22,
