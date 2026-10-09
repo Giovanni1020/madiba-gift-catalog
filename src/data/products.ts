@@ -230,8 +230,8 @@ export const PRODUCTS: Product[] = [
     id: 38,
     name: "Buquê de Lírio Oriental Rosa",
     description:
-      "Buquê estilo coreano feito de lírio oriental rosa e alstromélias rosas, montado em espuma floral hidratada.",
-    note: "Obs: pode haver variação na cor das alstromélias e/ou na embalagem.",
+      "Buquê estilo coreano feito de lírio oriental rosa e alstroemélias rosas, montado em espuma floral hidratada.",
+    note: "Obs: pode haver variação na cor das alstroemélias e/ou na embalagem.",
     price: 14990,
     category: "buques",
     image: "/images/buque-lirio-oriental-rosa.jpeg",
@@ -318,8 +318,9 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 26,
-    name: "Buquê Astromélias Rosas",
-    description: "Buquê de astromélias rosas, embrulho temático com laço.",
+    name: "Buquê Alstroemélias Rosas",
+    description:
+      "Buquê de alstroemélias rosas (astromélias), embrulho temático com laço.",
     note: "Obs: a embalagem/folhagem podem variar.",
     price: 7490,
     category: "buques",
@@ -328,8 +329,9 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 27,
-    name: "Buquê Astromélias Laranjas",
-    description: "Buquê de astromélias laranjas, embrulho temático com laço.",
+    name: "Buquê Alstroemélias Laranjas",
+    description:
+      "Buquê de alstroemélias laranjas (astromélias), embrulho temático com laço.",
     note: "Obs: a embalagem/folhagem podem variar.",
     price: 7490,
     category: "buques",
@@ -345,6 +347,17 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-girassol-normal.jpeg",
     maxChocolates: 3,
+  },
+  {
+    id: 46,
+    name: "Buquê Debutante",
+    description:
+      "Buquê com 15 rosas cor de rosa, alstroemélias rosas e complementos.",
+    price: 44990,
+    category: "buques",
+    image: "/images/buque-debutante.jpeg",
+    maxChocolates: 10,
+    note: "Obs: a embalagem/folhagem podem variar.",
   },
   {
     id: 44,
