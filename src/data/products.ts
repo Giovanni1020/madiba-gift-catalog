@@ -465,6 +465,7 @@ export const PRODUCTS: Product[] = [
     price: 6990,
     category: "buques-cetim",
     image: "/images/buque-angel.jpeg",
+    inStock: false,
   },
   {
     id: 24,
