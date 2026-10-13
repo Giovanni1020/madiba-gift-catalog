@@ -288,14 +288,17 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
         >
           💠 Pix
         </button>
+        {/* Link de pagamento indisponível no momento: mesmo tratamento visual
+            do "Esgotado" dos produtos (botão desabilitado + selo). */}
         <button
           type="button"
           role="radio"
-          aria-checked={form.pagamento === "link"}
-          className={`checkout__toggle-btn${form.pagamento === "link" ? " is-active" : ""}`}
-          onClick={() => form.setPagamento("link")}
+          aria-checked={false}
+          disabled
+          className="checkout__toggle-btn"
         >
           🔗 Link de pagamento
+          <span className="checkout__toggle-badge">Indisponível</span>
         </button>
       </div>
 
