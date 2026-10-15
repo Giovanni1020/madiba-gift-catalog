@@ -461,7 +461,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 23,
     name: "Buquê Angel",
-    description: "Buquê Angel de rosas de cetim, embrulho temático com laço.",
+    description:
+      "Buquê Angel com 4 sonhos de valsa, 2 ouro branco e 2 kit-kat.",
     price: 6990,
     category: "buques-cetim",
     image: "/images/buque-angel.jpeg",
@@ -470,7 +471,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 24,
     name: "Buquê Stitch",
-    description: "Buquê Stitch de rosas de cetim, embrulho temático com laço.",
+    description:
+      "Buquê Stitch com 4 sonhos de valsa, 2 ouro branco e 2 bis extra.",
     price: 6990,
     category: "buques-cetim",
     image: "/images/buque-stitch.jpeg",
