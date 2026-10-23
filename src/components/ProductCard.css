@@ -77,6 +77,12 @@
   color: #fff;
 }
 
+.card__badge--promo {
+  background: var(--promo);
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
 .card__badge--oos {
   background: var(--color-text);
   color: #fff;
@@ -121,12 +127,67 @@
   justify-content: space-between;
   gap: 8px;
   margin-top: auto;
+  /* O botão é o elemento mais alto do footer. Fixar essa altura mínima mantém
+     o footer idêntico com e sem promoção, então "Adicionar" fica na mesma
+     linha em toda a fileira da grade (o preço promocional é maior, mas sua
+     caixa de linha continua abaixo deste valor). */
+  min-height: 33px;
 }
 
 .card__price {
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Promoção (ADR-0006) ───────────────────────────────────────────────────── */
+
+/* Preço promocional: é o maior número do card, mas com line-height travado
+   para não crescer o footer e desalinhar a grade. */
+.card__price--promo {
+  font-size: 1.1875rem;
+  line-height: 1.35;
+  color: var(--promo);
+}
+
+/* Linha acima do footer: prazo (âmbar) à esquerda, preço antigo à direita. */
+.card__promo-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.card__promo-days {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--urgent-soft);
+  color: var(--urgent);
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.card__promo-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.card__price-was {
+  font-size: 0.8125rem;
+  color: var(--color-text-subtle);
+  text-decoration-thickness: 1px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .card__price-from {
@@ -169,6 +230,15 @@
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
+    /* Empilhado, o footer cresce com o conteúdo — a altura fixa do desktop
+       não faz sentido aqui. */
+    min-height: 0;
+  }
+  /* Em 2 colunas o prazo e o preço antigo não cabem lado a lado. */
+  .card__promo-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
   .card__btn {
     width: 100%;

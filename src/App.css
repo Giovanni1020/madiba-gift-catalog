@@ -18,6 +18,15 @@
   --color-border-hover: #D4C8C0;
 
   /* ── Texto ── */
+  /* Promoção: vermelho = desconto, âmbar = prazo. Duas cores porque são duas
+     informações distintas ("é barato" vs. "é agora") — ver ADR-0006. */
+  --promo:          #C0392B;  /* contraste AA sobre branco e sobre --promo-soft */
+  --promo-deep:     #96281B;
+  --promo-soft:     #FDEDEA;
+  --promo-border:   #F6DED9;
+  --urgent:         #B9550E;
+  --urgent-soft:    #FDF0E3;
+
   --color-text:        #1A1A1A;
   --color-text-muted:  #888888;
   --color-text-subtle: #B0A8A2;
@@ -62,4 +71,17 @@ body {
     padding: 0 1rem;
     padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   }
+}
+
+/* Texto só para leitor de tela (ex.: rotular o preço riscado da promoção). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

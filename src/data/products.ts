@@ -12,6 +12,14 @@ export interface ProductVariant {
   maxChocolates?: number; // opcional: sobrepõe o maxChocolates do produto
 }
 
+// Promoção por tempo limitado (campo opcional em `Product`).
+// `price` é o preço promocional ABSOLUTO em centavos; `expiresAt` é o último dia
+// de validade (inclusive), em ISO `YYYY-MM-DD` para comparação segura.
+export interface ProductPromo {
+  price: number; // em centavos BRL, ex: 8990 = R$89,90
+  expiresAt: string; // ISO date, ex: "2026-10-31"
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -29,6 +37,7 @@ export interface Product {
   hideBalao?: boolean; // não oferecer balão como adicional (cesta que já vem com balão, ou item sem opção de balão)
   hidePlaquinha?: boolean; // não oferecer plaquinha como adicional
   variants?: ProductVariant[]; // opções por produto (ADR-0005); quando presente, o cliente escolhe uma no diálogo
+  promo?: ProductPromo; // promoção por tempo limitado; `price` segue sendo o preço original (riscado na vitrine)
 }
 
 // ─── Extras ──────────────────────────────────────────────────────────────────
@@ -134,14 +143,63 @@ export function extrasTotal(extras: BuqueExtras): number {
 export function basePrice(
   product: Product,
   variant?: ProductVariant | null,
+  today: string = todayISO(),
 ): number {
-  return variant?.price ?? product.price;
+  return variant?.price ?? activePromo(product, today)?.price ?? product.price;
 }
 
 // Preço "a partir de" para o card: a menor variante, ou o próprio price quando não há.
-export function priceFrom(product: Product): number {
-  if (!product.variants?.length) return product.price;
+export function priceFrom(product: Product, today: string = todayISO()): number {
+  if (!product.variants?.length)
+    return activePromo(product, today)?.price ?? product.price;
   return Math.min(...product.variants.map((v) => v.price));
+}
+
+// ─── Promoções ───────────────────────────────────────────────────────────────
+// Funções PURAS: recebem o "hoje" como parâmetro (default só por conveniência
+// nos componentes). Datas em ISO `YYYY-MM-DD` comparam lexicograficamente, o
+// que dispensa parser e fuso horário.
+
+// "Hoje" no calendário LOCAL do visitante, em ISO. É o relógio do cliente, não
+// do servidor: o build é estático, então a promoção vira/cai no render.
+export function todayISO(now: Date = new Date()): string {
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+// A promoção do produto, ou null se não há / já venceu.
+// `expiresAt` é o ÚLTIMO dia válido (inclusive).
+// Promoção + variantes não é suportado (o preço da variante é absoluto e venceria
+// a promo): nesse caso devolve null, para o card não anunciar desconto que o
+// carrinho não aplica.
+export function activePromo(
+  product: Product,
+  today: string = todayISO(),
+): ProductPromo | null {
+  const { promo, variants } = product;
+  if (!promo || variants?.length) return null;
+  return today <= promo.expiresAt ? promo : null;
+}
+
+// Dias restantes CONTANDO hoje: 1 = último dia, 0 = vencida.
+// Ambas as datas são lidas como UTC, então o horário de verão não desloca a conta.
+export function promoDaysLeft(
+  promo: ProductPromo,
+  today: string = todayISO(),
+): number {
+  const DIA_MS = 86_400_000;
+  const fim = Date.parse(`${promo.expiresAt}T00:00:00Z`);
+  const hoje = Date.parse(`${today}T00:00:00Z`);
+  if (Number.isNaN(fim) || Number.isNaN(hoje)) return 0;
+  return Math.max(0, Math.round((fim - hoje) / DIA_MS) + 1);
+}
+
+// Desconto em pontos percentuais inteiros (para o selo "-10%").
+export function promoDiscountPct(product: Product, promo: ProductPromo): number {
+  if (product.price <= 0) return 0;
+  return Math.round((1 - promo.price / product.price) * 100);
 }
 
 // ─── Category labels ──────────────────────────────────────────────────────────
@@ -214,6 +272,18 @@ export const PRODUCTS: Product[] = [
     image: "/images/buque-3-rosas-vermelhas-importadas.jpeg",
     maxChocolates: 3,
     note: "Obs: a embalagem/folhagem podem variar.",
+  },
+  {
+    id: 47,
+    name: "Buquê 5 Rosas Nacionais",
+    description:
+      "Buquê com 5 rosas vermelhas nacionais, baby breath e folhagem, embrulho temático com laço.",
+    price: 9990,
+    category: "buques",
+    image: "/images/buque-5-rosas-nacionais-promo.jpeg",
+    maxChocolates: 5,
+    note: "Obs: a embalagem/folhagem podem variar.",
+    promo: { price: 8990, expiresAt: "2026-10-31" },
   },
   {
     id: 41,

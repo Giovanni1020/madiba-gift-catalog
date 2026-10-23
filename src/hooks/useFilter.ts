@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { PRODUCTS, Product } from "../data/products";
+import { PRODUCTS, Product, activePromo, priceFrom, todayISO } from "../data/products";
 import { parseFilters, parseOpenItem, serializeFilters } from "./filterParams";
 import type { Filters, PriceRange, SortOrder } from "./filterParams";
 
@@ -14,17 +14,30 @@ function matchesPrice(price: number, range: PriceRange): boolean {
   return true;
 }
 
-function sortProducts(products: Product[], order: SortOrder): Product[] {
-  const copy = [...products];
+// Prioridade na vitrine: promoção ativa > "Popular" > resto.
+function rank(product: Product, today: string): number {
+  if (activePromo(product, today)) return 2;
+  if (product.featured) return 1;
+  return 0;
+}
 
-  if (order === "price-asc") copy.sort((a, b) => a.price - b.price);
-  else if (order === "price-desc") copy.sort((a, b) => b.price - a.price);
+function sortProducts(
+  products: Product[],
+  order: SortOrder,
+  today: string,
+): Product[] {
+  const copy = [...products];
+  // Ordena pelo preço EFETIVO (promo já aplicada), que é o anunciado no card.
+  const preco = (p: Product) => priceFrom(p, today);
+
+  if (order === "price-asc") copy.sort((a, b) => preco(a) - preco(b));
+  else if (order === "price-desc") copy.sort((a, b) => preco(b) - preco(a));
   else if (order === "name") copy.sort((a, b) => a.name.localeCompare(b.name));
   // "default" — preserves original order
 
-  // Produtos "Popular" (featured) vêm primeiro, preservando a ordenação acima
-  // entre os itens de cada grupo (Array.prototype.sort é estável).
-  return copy.sort((a, b) => Number(b.featured ?? false) - Number(a.featured ?? false));
+  // Promoção e "Popular" vêm primeiro, preservando a ordenação acima entre os
+  // itens de cada grupo (Array.prototype.sort é estável).
+  return copy.sort((a, b) => rank(b, today) - rank(a, today));
 }
 
 export function useFilter() {
@@ -69,11 +82,13 @@ export function useFilter() {
 
   const filtered = useMemo(() => {
     const query = filters.search.trim().toLowerCase();
+    // Um único "hoje" por recálculo: todos os produtos são avaliados na mesma data.
+    const today = todayISO();
 
     const result = PRODUCTS.filter((p) => {
       if (filters.category !== "todos" && p.category !== filters.category)
         return false;
-      if (!matchesPrice(p.price, filters.priceRange)) return false;
+      if (!matchesPrice(priceFrom(p, today), filters.priceRange)) return false;
       if (
         query &&
         !p.name.toLowerCase().includes(query) &&
@@ -83,7 +98,7 @@ export function useFilter() {
       return true;
     });
 
-    return sortProducts(result, filters.sortOrder);
+    return sortProducts(result, filters.sortOrder, today);
   }, [filters]);
 
   return {
