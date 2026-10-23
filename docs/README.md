@@ -26,6 +26,7 @@
 | [adr/0003-rastreamento-meta-pixel.md](adr/0003-rastreamento-meta-pixel.md) | Meta Pixel: browser-only (sem CAPI), consentimento opt-in, funil completo de eventos. |
 | [adr/0004-navegacao-entre-itens-no-dialogo.md](adr/0004-navegacao-entre-itens-no-dialogo.md) | Diálogo de item navega a lista filtrada (swipe/setas); `?item=` na URL via `replaceState`. |
 | [adr/0005-variantes-de-produto.md](adr/0005-variantes-de-produto.md) | Variantes de produto (preço/imagem/chocolates por opção); escolha no diálogo; helper `basePrice`. |
+| [adr/0006-promocoes-por-tempo-limitado.md](adr/0006-promocoes-por-tempo-limitado.md) | Promoções por tempo limitado: `promo` com preço absoluto + `expiresAt` ISO; entra pelo `basePrice`; selo substitui o "Popular". |
 | [adr/0007-carregamento-de-imagens.md](adr/0007-carregamento-de-imagens.md) | Carregamento de imagens: `loading="lazy"` nativo como baseline (já em uso); sem lib nova; crescimento via segmentação por categoria quando pesar. |
 | [adr/0008-conversoes-google-ads.md](adr/0008-conversoes-google-ads.md) | Google Ads: gtag direto (sem GTM), **uma só** conversão (envio do carrinho pelo WhatsApp), banner único e sem Consent Mode. |
 | [adr/0009-migracao-nextjs.md](adr/0009-migracao-nextjs.md) | **Migração para Next.js (App Router)**: SSG + rotas de produto indexáveis, diálogo como intercepting route (`overlayHistory.ts` deletado), `next/image`, metadata dinâmica. **Revisa ADR-0001, 0004 e 0007.** |

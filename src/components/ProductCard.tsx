@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Product, CATEGORY_LABELS, priceFrom } from "../data/products";
+import {
+  Product,
+  CATEGORY_LABELS,
+  priceFrom,
+  activePromo,
+  promoDaysLeft,
+  promoDiscountPct,
+} from "../data/products";
 import { useCart } from "../context/CartContext";
 import "./ProductCard.css";
 
@@ -13,6 +20,14 @@ function formatPrice(cents: number): string {
     style: "currency",
     currency: "BRL",
   });
+}
+
+// 1 dia tem texto próprio, senão sai "faltam 1 dias". 0 não chega aqui:
+// activePromo já devolve null quando a promoção venceu.
+function diasLabel(dias: number): string {
+  if (dias <= 1) return "Último dia!";
+  if (dias <= 3) return `Faltam ${dias} dias`;
+  return `Termina em ${dias} dias`;
 }
 
 export default function ProductCard({ product, onOpenExtras }: Props) {
@@ -31,6 +46,10 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
   // Com variantes, o card mostra "a partir de" + a menor variante (ADR-0005).
   const hasVariants = !!variants?.length;
   const displayPrice = priceFrom(product);
+  // Promoção ativa (ADR-0006): o selo substitui o "Popular" e o preço original
+  // vira referência riscada. `displayPrice` já é o promocional.
+  const promo = activePromo(product);
+  const dias = promo ? promoDaysLeft(promo) : 0;
 
   const handleAdd = () => {
     if (
@@ -89,8 +108,14 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
             loading="lazy"
           />
         )}
-        {featured && (
-          <span className="card__badge card__badge--featured">Popular</span>
+        {promo ? (
+          <span className="card__badge card__badge--promo">
+            {`−${promoDiscountPct(product, promo)}%`}
+          </span>
+        ) : (
+          featured && (
+            <span className="card__badge card__badge--featured">Popular</span>
+          )
         )}
         {!inStock && (
           <span className="card__badge card__badge--oos">Esgotado</span>
@@ -102,8 +127,25 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
         <h3 className="card__name">{name}</h3>
         <p className="card__desc">{description}</p>
         {note && <p className="card__note">{note}</p>}
+        {promo && (
+          // Fica FORA do footer de propósito: o footer precisa ter a mesma
+          // altura em todos os cards, senão o botão "Adicionar" desalinha na
+          // grade do desktop.
+          <div className="card__promo-meta">
+            <span className="card__promo-days">
+              <i className="card__promo-dot" aria-hidden="true" />
+              {diasLabel(dias)}
+            </span>
+            <s className="card__price-was">
+              <span className="sr-only">preço anterior: </span>
+              {formatPrice(product.price)}
+            </s>
+          </div>
+        )}
         <div className="card__footer">
-          <span className="card__price">
+          <span
+            className={`card__price${promo ? " card__price--promo" : ""}`}
+          >
             {hasVariants && (
               <span className="card__price-from">a partir de </span>
             )}

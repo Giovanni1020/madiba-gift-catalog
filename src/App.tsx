@@ -5,6 +5,7 @@ import { PRODUCTS, Product } from "./data/products";
 import Header from "./components/Header";
 import FilterBar from "./components/FilterBar";
 import ProductGrid from "./components/ProductGrid";
+import PromoBanner from "./components/PromoBanner";
 import CartDrawer from "./components/CartDrawer";
 import CartFab from "./components/CartFab";
 import SocialFab from "./components/SocialFab";
@@ -123,6 +124,9 @@ function CatalogPage() {
             setSearch={filter.setSearch}
             total={filter.total}
           />
+          {/* Catálogo inteiro, não a lista filtrada: o aviso não deve sumir
+              porque o filtro atual esconde o item em promoção. */}
+          <PromoBanner products={PRODUCTS} />
           <ProductGrid products={filter.filtered} onOpenExtras={openExtras} />
         </div>
       </main>

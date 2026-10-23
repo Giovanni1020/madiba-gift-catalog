@@ -1,0 +1,42 @@
+/* Faixa suave acima da grade. Vermelho de desconto em fundo claro, para não
+   competir com o rosa da marca no header e na FilterBar. */
+.promo-banner {
+  background: var(--promo-soft);
+  border: 1px solid var(--promo-border);
+  border-radius: 10px;
+  color: var(--promo-deep);
+  padding: 11px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.promo-banner__lead {
+  font-weight: 700;
+}
+
+.promo-banner__body {
+  min-width: 0;
+}
+
+.promo-banner__price {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.promo-banner__meta {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 480px) {
+  .promo-banner {
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    gap: 2px 8px;
+  }
+}
