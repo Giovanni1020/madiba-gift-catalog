@@ -484,6 +484,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-cartao.jpeg",
     hideBalao: true, // adicional: apenas plaquinha (sem balão e sem chocolate)
+    polaroidesMax: 0,
   },
   {
     id: 42,
