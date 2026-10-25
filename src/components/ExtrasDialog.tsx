@@ -11,6 +11,8 @@ import {
   EXTRAS_PRICES,
   extrasTotal,
   basePrice,
+  polaroidesMax,
+  polaroidesPrice,
 } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { track } from "../lib/analytics/metaPixel";
@@ -175,6 +177,7 @@ const EMPTY_EXTRAS: BuqueExtras = {
   cartao: null,
   cartaoMensagem: "",
   chocolates: {},
+  polaroides: false,
 };
 
 // Texto do cartão "em branco": limite curto e sem emoji (cabe no cartão físico).
@@ -463,12 +466,13 @@ export default function ExtrasDialog({
 
   if (!product) return null;
 
-  const extrasCost = extrasTotal(extras);
+  const extrasCost = extrasTotal(extras, product);
   const price = basePrice(product, variant); // preço-base da variante escolhida (ADR-0005)
   const media = variant?.image ?? product.image; // variante pode trocar a mídia
   const showBalao = !product.hideBalao; // item que não oferece balão como adicional
   const showPlaquinha = !product.hidePlaquinha; // item que não oferece plaquinha como adicional
   const exclusive = !!product.exclusiveExtras; // cestas: balão XOR plaquinha
+  const maxFotos = polaroidesMax(product); // 0 = item não oferece polaroides
 
   return (
     <>
@@ -753,6 +757,41 @@ export default function ExtrasDialog({
               </>
             )}
           </div>
+
+          {/* ── Polaroides (só buquês; limite e preço vêm do produto) ───── */}
+          {maxFotos > 0 && (
+            <div className="bed__section">
+              <div className="bed__section-header">
+                <h3 className="bed__section-title">Polaroides</h3>
+                <span className="bed__section-price">
+                  {formatPrice(polaroidesPrice(product))}
+                </span>
+              </div>
+
+              <RefImage
+                src="/images/polaroide.jpeg"
+                alt="Polaroides"
+                onZoom={openZoom}
+              />
+
+              <label className="bed__check-row">
+                <input
+                  type="checkbox"
+                  className="bed__check"
+                  checked={!!extras.polaroides}
+                  onChange={(e) =>
+                    setExtras((p) => ({ ...p, polaroides: e.target.checked }))
+                  }
+                />
+                <span className="bed__check-label">Quero polaroides</span>
+                <span className="bed__check-limit">Máx.: {maxFotos} fotos</span>
+              </label>
+
+              <p className="bed__section-hint bed__section-hint--disclaimer">
+                Imagens enviadas em contato no WhatsApp ao concluir compra
+              </p>
+            </div>
+          )}
 
           {/* ── Balão (escondido se a cesta já vem com balão) ───────────── */}
           {showBalao && (

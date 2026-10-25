@@ -509,6 +509,51 @@
   }
 }
 
+/* Polaroides — checkbox sim/não com o limite de fotos à direita */
+.bed__check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border-input);
+  border-radius: 8px;
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.bed__check {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--brand-pink);
+  cursor: pointer;
+}
+
+.bed__check-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.bed__check-limit {
+  margin-left: auto;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-subtle);
+}
+
+/* Disclaimer: vem DEPOIS do controle, então a margem inferior do hint sai */
+.bed__section-hint--disclaimer {
+  margin: 8px 0 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bed__check-row:hover {
+    border-color: var(--brand-pink);
+  }
+}
+
 /* Cartão (grátis) — opções segmentadas (em branco / com mensagem), mesmo
    estilo das variantes, mas fixas (sem preço). Sem seleção default/forçada. */
 .bed__cartao-opts {

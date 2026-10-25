@@ -36,6 +36,7 @@ export interface Product {
   exclusiveExtras?: boolean; // cestas: balão e plaquinha são mutuamente exclusivos
   hideBalao?: boolean; // não oferecer balão como adicional (cesta que já vem com balão, ou item sem opção de balão)
   hidePlaquinha?: boolean; // não oferecer plaquinha como adicional
+  polaroidesMax?: number; // sobrepõe o limite de fotos da categoria (0 = não oferece polaroides). Ver polaroidesMax().
   variants?: ProductVariant[]; // opções por produto (ADR-0005); quando presente, o cliente escolhe uma no diálogo
   promo?: ProductPromo; // promoção por tempo limitado; `price` segue sendo o preço original (riscado na vitrine)
 }
@@ -117,14 +118,44 @@ export interface BuqueExtras {
   cartao: CartaoTipo | null; // null = sem cartão; "branco" ou "pre_escrito"
   cartaoMensagem?: string; // texto escrito pelo cliente (quando cartao === "branco")
   chocolates: Partial<Record<ChocolateOption, number>>;
+  polaroides?: boolean; // fotos polaroide impressas (só buquês); limite/preço vêm do produto
 }
 
 export const EXTRAS_PRICES = {
   balao: 1000,
   plaquinha: 990,
+  // Polaroides: duas faixas, escolhidas pelo limite de fotos do produto.
+  polaroidesAte3: 1000,
+  polaroidesAte6: 1500,
 } as const;
 
-export function extrasTotal(extras: BuqueExtras): number {
+// ─── Polaroides ───────────────────────────────────────────────────────────────
+// Adicional só de buquês: o cliente manda as fotos no WhatsApp depois da compra.
+// O limite de fotos (e com ele o preço) vem da categoria; buquês de uma flor só
+// levam até 3, como os de rosa de cetim com chocolate. `polaroidesMax` no produto
+// sobrepõe o default — 0 = não oferece.
+const POLAROIDES_MAX_BY_CATEGORY: Record<Category, number> = {
+  buques: 6,
+  "buques-cetim": 3,
+  cestas: 0,
+  doces: 0,
+};
+
+// Limite de fotos do produto. 0 = o produto não oferece polaroides.
+export function polaroidesMax(product: Product): number {
+  return product.polaroidesMax ?? POLAROIDES_MAX_BY_CATEGORY[product.category];
+}
+
+// Preço das polaroides do produto, em centavos. 0 quando não oferece.
+export function polaroidesPrice(product: Product): number {
+  const max = polaroidesMax(product);
+  if (max <= 0) return 0;
+  return max <= 3 ? EXTRAS_PRICES.polaroidesAte3 : EXTRAS_PRICES.polaroidesAte6;
+}
+
+// Total dos adicionais. Precisa do produto porque o preço das polaroides varia
+// por produto (ver polaroidesPrice).
+export function extrasTotal(extras: BuqueExtras, product: Product): number {
   const chocTotal = CHOCOLATE_OPTIONS.reduce(
     (sum, c) => sum + (extras.chocolates[c.id] ?? 0) * c.price,
     0,
@@ -132,6 +163,7 @@ export function extrasTotal(extras: BuqueExtras): number {
   return (
     (extras.balao ? EXTRAS_PRICES.balao : 0) +
     (extras.plaquinha ? EXTRAS_PRICES.plaquinha : 0) +
+    (extras.polaroides ? polaroidesPrice(product) : 0) +
     chocTotal
   );
 }
@@ -223,6 +255,7 @@ export const PRODUCTS: Product[] = [
     price: 4490,
     category: "buques",
     image: "/images/buque-1-rosa-importada.jpeg",
+    polaroidesMax: 3, // buquê de uma flor só: até 3 fotos
     maxChocolates: 3,
     note: "Obs: a embalagem/folhagem podem variar.",
   },
@@ -234,6 +267,7 @@ export const PRODUCTS: Product[] = [
     price: 3990,
     category: "buques",
     image: "/images/buque-1-rosa-nacional.jpeg",
+    polaroidesMax: 3, // buquê de uma flor só: até 3 fotos
     maxChocolates: 3,
     note: "Obs: a embalagem/folhagem podem variar.",
   },
@@ -383,6 +417,7 @@ export const PRODUCTS: Product[] = [
     price: 5990,
     category: "buques",
     image: "/images/buque-1-girassol-Mos-Azul.jpeg",
+    polaroidesMax: 3, // buquê de uma flor só: até 3 fotos
     maxChocolates: 4,
     note: "Obs: a embalagem/folhagem podem variar.",
   },
@@ -416,6 +451,7 @@ export const PRODUCTS: Product[] = [
     price: 3990,
     category: "buques",
     image: "/images/buque-girassol-normal.jpeg",
+    polaroidesMax: 3, // buquê de uma flor só: até 3 fotos
     maxChocolates: 3,
   },
   {
@@ -448,6 +484,7 @@ export const PRODUCTS: Product[] = [
     category: "buques",
     image: "/images/buque-cartao.jpeg",
     hideBalao: true, // adicional: apenas plaquinha (sem balão e sem chocolate)
+    polaroidesMax: 0,
   },
   {
     id: 42,
@@ -458,6 +495,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/solitario-rosa.jpeg",
     hideBalao: true, // sem adicionais: nem balão, nem plaquinha, nem chocolate
     hidePlaquinha: true,
+    polaroidesMax: 0,
     note: "Obs: a embalagem/folhagem podem variar.",
   },
 
