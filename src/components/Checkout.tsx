@@ -266,7 +266,7 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       {items.length > 0 && (
         <ul className="checkout__items">
           {items.map((item, i) => {
-            const extras = item.extras ? extrasTotal(item.extras) : 0;
+            const extras = item.extras ? extrasTotal(item.extras, item.product) : 0;
             const unit = basePrice(item.product, item.variant) + extras;
             return (
               <li key={i} className="checkout__item">

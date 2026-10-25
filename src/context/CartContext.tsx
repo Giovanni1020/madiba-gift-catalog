@@ -89,7 +89,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         content_name: product.name,
         content_type: "product",
         content_category: product.category,
-        value: (basePrice(product, variant) + extrasTotal(extras)) / 100,
+        value: (basePrice(product, variant) + extrasTotal(extras, product)) / 100,
         currency: "BRL",
       });
       pushOverlayOnce();
@@ -117,7 +117,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totalCount = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce((sum, i) => {
     const base = basePrice(i.product, i.variant) * i.quantity;
-    const extra = i.extras ? extrasTotal(i.extras) * i.quantity : 0;
+    const extra = i.extras ? extrasTotal(i.extras, i.product) * i.quantity : 0;
     return sum + base + extra;
   }, 0);
 

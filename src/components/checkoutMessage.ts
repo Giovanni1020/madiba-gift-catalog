@@ -41,7 +41,7 @@ export interface Pedido {
 export function buildWhatsAppMessage(pedido: Pedido): string {
   const blocos = pedido.itens.map((item) => {
     const ex = item.extras; // const local → narrowing persiste dentro do forEach
-    const adicional = ex ? extrasTotal(ex) : 0;
+    const adicional = ex ? extrasTotal(ex, item.product) : 0;
     const linhaTotal =
       item.quantity * (basePrice(item.product, item.variant) + adicional);
 
@@ -53,6 +53,7 @@ export function buildWhatsAppMessage(pedido: Pedido): string {
     if (ex) {
       if (ex.balao) linhas.push(`    + Balão: ${ex.balao}`);
       if (ex.plaquinha) linhas.push(`    + Plaquinha: ${ex.plaquinha}`);
+      if (ex.polaroides) linhas.push(`    + Com polaroides`);
       if (ex.cartao === "pre_escrito") {
         linhas.push(`    + Cartão pré-escrito`);
       } else if (ex.cartao === "branco") {

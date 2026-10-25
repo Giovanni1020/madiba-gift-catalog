@@ -157,6 +157,32 @@ test("cartão em branco sem texto cai no marcador sem dois-pontos", () => {
   expect(msg).not.toContain("+ Cartão em branco:");
 });
 
+test("polaroides viram uma linha e entram no valor do item", () => {
+  const msg = buildWhatsAppMessage({
+    itens: [
+      {
+        product: buque, // sem polaroidesMax: categoria "buques" = até 6 fotos, R$15
+        quantity: 1,
+        extras: {
+          balao: null,
+          plaquinha: null,
+          cartao: null,
+          chocolates: {},
+          polaroides: true,
+        },
+      },
+    ],
+    total: 13990,
+    cliente: { nome: "Ana", telefone: "5133334444" },
+    pagamento: "pix",
+    entrega: { tipo: "retirada", data: "2026-06-12", horario: "15h às 16h" },
+  });
+
+  expect(msg).toContain("+ Com polaroides");
+  // 124,90 do buquê + 15,00 das polaroides (regex evita o espaço da moeda)
+  expect(msg).toMatch(/- 1x Buquê 5 Rosas Importadas — R\$.139,90/);
+});
+
 test("buildWhatsAppUrl encoda a mensagem (\\n -> %0A)", () => {
   expect(buildWhatsAppUrl("555186103494", "a\nb")).toBe(
     "https://wa.me/555186103494?text=a%0Ab",

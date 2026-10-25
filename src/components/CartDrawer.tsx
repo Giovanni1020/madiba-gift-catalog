@@ -1,6 +1,11 @@
 import React, { useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import { CHOCOLATE_OPTIONS, EXTRAS_PRICES, basePrice } from "../data/products";
+import {
+  CHOCOLATE_OPTIONS,
+  EXTRAS_PRICES,
+  basePrice,
+  polaroidesPrice,
+} from "../data/products";
 import "./CartDrawer.css";
 
 function formatPrice(cents: number): string {
@@ -132,6 +137,11 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                 extraLines.push({
                   label: `🪧 Plaquinha — ${extras.plaquinha}`,
                   price: EXTRAS_PRICES.plaquinha,
+                });
+              if (extras?.polaroides)
+                extraLines.push({
+                  label: "📷 Com polaroides",
+                  price: polaroidesPrice(product),
                 });
               CHOCOLATE_OPTIONS.forEach((c) => {
                 const qty = extras?.chocolates[c.id] ?? 0;
