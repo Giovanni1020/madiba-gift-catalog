@@ -471,6 +471,7 @@ export default function ExtrasDialog({
   const media = variant?.image ?? product.image; // variante pode trocar a mídia
   const showBalao = !product.hideBalao; // item que não oferece balão como adicional
   const showPlaquinha = !product.hidePlaquinha; // item que não oferece plaquinha como adicional
+  const showCartao = !product.hideCartao; // item que não oferece cartão como adicional
   const exclusive = !!product.exclusiveExtras; // cestas: balão XOR plaquinha
   const maxFotos = polaroidesMax(product); // 0 = item não oferece polaroides
 
@@ -681,82 +682,84 @@ export default function ExtrasDialog({
           ) : null}
 
           {/* ── Cartão (grátis — só adiciona ou remove); primeiro da lista ── */}
-          <div className="bed__section">
-            <div className="bed__section-header">
-              <h3 className="bed__section-title">Cartão</h3>
-              <span className="bed__section-price">Grátis</span>
-            </div>
+          {showCartao && (
+            <div className="bed__section">
+              <div className="bed__section-header">
+                <h3 className="bed__section-title">Cartão</h3>
+                <span className="bed__section-price">Grátis</span>
+              </div>
 
-            {/* Reference image */}
-            <RefImage src="/images/cartao.jpeg" alt="Cartão" onZoom={openZoom} />
+              {/* Reference image */}
+              <RefImage src="/images/cartao.jpeg" alt="Cartão" onZoom={openZoom} />
 
-            {/* Tipo de cartão — botões segmentados (estilo das variantes). Sem
-                default e sem seleção forçada: clicar no ativo desmarca. */}
-            <div
-              className="bed__cartao-opts"
-              role="radiogroup"
-              aria-label="Tipo de cartão"
-            >
-              {(
-                [
-                  { id: "branco", label: "Cartão em branco" },
-                  { id: "pre_escrito", label: "Cartão pré-escrito" },
-                ] as const
-              ).map((opt) => {
-                const active = extras.cartao === opt.id;
-                return (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={active}
-                    className={`bed__cartao-opt${active ? " bed__cartao-opt--active" : ""}`}
-                    onClick={() =>
-                      setExtras((p) => ({
-                        ...p,
-                        cartao: active ? null : opt.id,
-                      }))
-                    }
-                  >
-                    <span className="bed__cartao-opt-label">{opt.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+              {/* Tipo de cartão — botões segmentados (estilo das variantes). Sem
+                  default e sem seleção forçada: clicar no ativo desmarca. */}
+              <div
+                className="bed__cartao-opts"
+                role="radiogroup"
+                aria-label="Tipo de cartão"
+              >
+                {(
+                  [
+                    { id: "branco", label: "Cartão em branco" },
+                    { id: "pre_escrito", label: "Cartão pré-escrito" },
+                  ] as const
+                ).map((opt) => {
+                  const active = extras.cartao === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      className={`bed__cartao-opt${active ? " bed__cartao-opt--active" : ""}`}
+                      onClick={() =>
+                        setExtras((p) => ({
+                          ...p,
+                          cartao: active ? null : opt.id,
+                        }))
+                      }
+                    >
+                      <span className="bed__cartao-opt-label">{opt.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
 
-            {/* Mensagem escrita pelo cliente (opcional) — vai junto no WhatsApp.
-                Até 50 caracteres, sem emoji. */}
-            {extras.cartao === "branco" && (
-              <>
-                <textarea
-                  className={`bed__cartao-msg${cartaoLimitHit ? " bed__cartao-msg--limit" : ""}`}
-                  value={extras.cartaoMensagem ?? ""}
-                  onChange={(e) => handleCartaoMensagem(e.target.value)}
-                  placeholder="Escreva a mensagem do cartão (opcional)"
-                  rows={3}
-                  aria-describedby="bed-cartao-msg-foot"
-                />
-                <div className="bed__cartao-msg-foot" id="bed-cartao-msg-foot">
-                  <button
-                    type="button"
-                    className="bed__cartao-msg-clear"
-                    onClick={() => handleCartaoMensagem("")}
-                    disabled={!(extras.cartaoMensagem ?? "").length}
-                  >
-                    Limpar
-                  </button>
-                  {cartaoLimitHit && (
-                    <span className="bed__cartao-msg-warn" role="alert">
-                      Limite de {CARTAO_MSG_MAX} caracteres
+              {/* Mensagem escrita pelo cliente (opcional) — vai junto no WhatsApp.
+                  Até 50 caracteres, sem emoji. */}
+              {extras.cartao === "branco" && (
+                <>
+                  <textarea
+                    className={`bed__cartao-msg${cartaoLimitHit ? " bed__cartao-msg--limit" : ""}`}
+                    value={extras.cartaoMensagem ?? ""}
+                    onChange={(e) => handleCartaoMensagem(e.target.value)}
+                    placeholder="Escreva a mensagem do cartão (opcional)"
+                    rows={3}
+                    aria-describedby="bed-cartao-msg-foot"
+                  />
+                  <div className="bed__cartao-msg-foot" id="bed-cartao-msg-foot">
+                    <button
+                      type="button"
+                      className="bed__cartao-msg-clear"
+                      onClick={() => handleCartaoMensagem("")}
+                      disabled={!(extras.cartaoMensagem ?? "").length}
+                    >
+                      Limpar
+                    </button>
+                    {cartaoLimitHit && (
+                      <span className="bed__cartao-msg-warn" role="alert">
+                        Limite de {CARTAO_MSG_MAX} caracteres
+                      </span>
+                    )}
+                    <span className="bed__cartao-msg-count">
+                      {(extras.cartaoMensagem ?? "").length}/{CARTAO_MSG_MAX}
                     </span>
-                  )}
-                  <span className="bed__cartao-msg-count">
-                    {(extras.cartaoMensagem ?? "").length}/{CARTAO_MSG_MAX}
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
 
           {/* ── Polaroides (só buquês; limite e preço vêm do produto) ───── */}
           {maxFotos > 0 && (

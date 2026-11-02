@@ -36,6 +36,7 @@ export interface Product {
   exclusiveExtras?: boolean; // cestas: balão e plaquinha são mutuamente exclusivos
   hideBalao?: boolean; // não oferecer balão como adicional (cesta que já vem com balão, ou item sem opção de balão)
   hidePlaquinha?: boolean; // não oferecer plaquinha como adicional
+  hideCartao?: boolean; // não oferecer cartão como adicional (item que já é um cartão, ou sem essa opção)
   polaroidesMax?: number; // sobrepõe o limite de fotos da categoria (0 = não oferece polaroides). Ver polaroidesMax().
   variants?: ProductVariant[]; // opções por produto (ADR-0005); quando presente, o cliente escolhe uma no diálogo
   promo?: ProductPromo; // promoção por tempo limitado; `price` segue sendo o preço original (riscado na vitrine)
@@ -314,10 +315,9 @@ export const PRODUCTS: Product[] = [
       "Buquê com 5 rosas vermelhas nacionais, baby breath e folhagem, embrulho temático com laço.",
     price: 9990,
     category: "buques",
-    image: "/images/buque-5-rosas-nacionais-promo.jpeg",
+    image: "/images/buque-5-rosas-nacionais.jpeg",
     maxChocolates: 5,
     note: "Obs: a embalagem/folhagem podem variar.",
-    promo: { price: 8990, expiresAt: "2026-10-31" },
   },
   {
     id: 41,
@@ -475,6 +475,100 @@ export const PRODUCTS: Product[] = [
     image: "/images/buque-letras.jpeg",
     note: "Obs: a letra é personalizada (combinada no pedido). A embalagem/folhagem podem variar.",
   },
+
+  // ── Buquês da princesa: 1 gérbera + mosquitinho, embrulho e plaquinha temáticos ─
+  // Mesmo preço e mesmos adicionais (só chocolate, até 2) para os seis.
+  {
+    id: 48,
+    name: "Buquê da Princesa Jasmine",
+    description:
+      "Buquê com 1 gérbera amarela, mosquitinho e samambaia, embrulho azul e branco com laço e plaquinha da princesa Jasmine.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-princesa-1.jpeg",
+    maxChocolates: 2,
+    hideBalao: true, // adicional: apenas chocolate (sem balão, plaquinha, cartão ou polaroides)
+    hidePlaquinha: true,
+    hideCartao: true,
+    polaroidesMax: 0,
+    note: "Obs: consulte a disponibilidade. Podem haver pequenas mudanças na composição.",
+  },
+  {
+    id: 49,
+    name: "Buquê da Princesa Cinderela",
+    description:
+      "Buquê com 1 gérbera branca, mosquitinho e samambaia, embrulho azul com laço e plaquinha da princesa Cinderela.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-princesa-2.jpeg",
+    maxChocolates: 2,
+    hideBalao: true,
+    hidePlaquinha: true,
+    hideCartao: true,
+    polaroidesMax: 0,
+    note: "Obs: consulte a disponibilidade. Podem haver pequenas mudanças na composição.",
+  },
+  {
+    id: 50,
+    name: "Buquê da Princesa Moana",
+    description:
+      "Buquê com 1 gérbera laranja, mosquitinho e samambaia, embrulho branco e verde com laço e plaquinha da princesa Moana.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-princesa-3.jpeg",
+    maxChocolates: 2,
+    hideBalao: true,
+    hidePlaquinha: true,
+    hideCartao: true,
+    polaroidesMax: 0,
+    note: "Obs: consulte a disponibilidade. Podem haver pequenas mudanças na composição.",
+  },
+  {
+    id: 51,
+    name: "Buquê da Princesa Branca de Neve",
+    description:
+      "Buquê com 1 gérbera amarela, mosquitinho e samambaia, embrulho branco e azul com laço e plaquinha da princesa Branca de Neve.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-princesa-4.jpeg",
+    maxChocolates: 2,
+    hideBalao: true,
+    hidePlaquinha: true,
+    hideCartao: true,
+    polaroidesMax: 0,
+    note: "Obs: consulte a disponibilidade. Podem haver pequenas mudanças na composição.",
+  },
+  {
+    id: 52,
+    name: "Buquê da Princesa Ariel",
+    description:
+      "Buquê com 1 gérbera vermelha, mosquitinho e folhagem, embrulho vermelho e branco com laço e plaquinha da princesa Ariel.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-princesa-5.jpeg",
+    maxChocolates: 2,
+    hideBalao: true,
+    hidePlaquinha: true,
+    hideCartao: true,
+    polaroidesMax: 0,
+    note: "Obs: consulte a disponibilidade. Podem haver pequenas mudanças na composição.",
+  },
+  {
+    id: 53,
+    name: "Buquê da Princesa Rapunzel",
+    description:
+      "Buquê com 1 gérbera rosa, mosquitinho e samambaia, embrulho rosa e branco com laço e plaquinha da princesa Rapunzel.",
+    price: 4990,
+    category: "buques",
+    image: "/images/buque-princesa-6.jpeg",
+    maxChocolates: 2,
+    hideBalao: true,
+    hidePlaquinha: true,
+    hideCartao: true,
+    polaroidesMax: 0,
+    note: "Obs: consulte a disponibilidade. Podem haver pequenas mudanças na composição.",
+  },
+
   {
     id: 22,
     name: "Cartão Buquê",
