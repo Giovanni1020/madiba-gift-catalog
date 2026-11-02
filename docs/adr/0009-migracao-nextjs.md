@@ -52,10 +52,18 @@ A v1.2 é o primeiro passo de um roteiro acordado: v1.3 (produtos no servidor), 
 justificativa** da migração; o SEO se sustenta sozinho. Mas decide escolhas abaixo,
 sobretudo D2.
 
-Nota: o [ADR-0006](0006-frete-por-distancia.md) já aceitou (2026-07-06) uma **função
-serverless** `/api/frete` com chave de provedor no servidor — o invariante "100% estático"
-já estava rompido por decisão anterior. No Next, aquilo vira um **Route Handler** nativo, sem
-`vercel dev` à parte.
+Nota: quando este ADR foi escrito, uma decisão de **frete por distância** (2026-07-06) já
+havia aceito uma **função serverless** `/api/frete` com chave de provedor no servidor — o
+invariante "100% estático" já estava rompido por decisão anterior. Essa decisão vivia só na
+branch `feat/frete-distancia`, numerada como "ADR-0006", e foi **descartada em 2026-11-02**
+(branch apagada, feature obsoleta antes de ser implementada); o número 0006 hoje é
+[Promoções por tempo limitado](0006-promocoes-por-tempo-limitado.md).
+
+Com ela descartada, **esta premissa caiu**: hoje não há decisão aceita que rompa o "100%
+estático". Isso não reabre o ADR-0009 — a migração se justifica pelo SEO sozinho, como dito
+acima —, mas o argumento "já estava rompido" não vale mais como apoio. O que permanece é a
+**capacidade**: no Next, um proxy desse tipo é um **Route Handler** nativo, sem `vercel dev`
+à parte, se e quando a v1.4 decidir precisar dele.
 
 ## Decisão
 
@@ -209,7 +217,7 @@ entregam isso de graça — cada rota renderiza só os seus produtos.
 - **Menos código de risco**: `overlayHistory.ts` deletado e três listeners de `popstate`
   removidos.
 - Sai do CRA: TypeScript, React e toolchain voltam a acompanhar as versões correntes.
-- Infra pronta para v1.3–v1.5 (inclusive o `/api/frete` do ADR-0006) sem outra migração.
+- Infra pronta para v1.3–v1.5 (inclusive um eventual `/api/frete` na v1.4) sem outra migração.
 
 **Negativas / custos**
 - Modelo mental novo: Server vs. Client Components e o **cache do App Router** — a maior
@@ -283,11 +291,14 @@ reflete todos.
   seta do telefone é comportamento esperado e não se sacrifica por conveniência de migração.
 - **[ADR-0007](0007-carregamento-de-imagens.md) — revisado, não substituído.** O princípio
   (imagem de conteúdo nasce adiada) continua; o `next/image` passa a ser o mecanismo.
-- **[ADR-0006](0006-frete-por-distancia.md) — dorme até a v1.4.** Está aceito desde
-  2026-07-06, mas vive só na branch `feat/frete-distancia`, fora da `main` — por isso **não**
-  aparece no índice do [README](../README.md). A ausência é **decisão consciente**, não
-  esquecimento: a documentação é mergeada quando a v1.4 abrir, junto do código de frete que
-  a acompanha.
+- **Frete por distância — decisão descartada em 2026-11-02.** Vivia como "ADR-0006" na
+  branch `feat/frete-distancia`, fora da `main`, esperando a v1.4. A feature foi desenhada
+  muito antes da hora de implementar e envelheceu: a branch foi apagada sem merge (commit
+  preservado na tag local `arquivo/frete-distancia-obsoleto`). **A v1.4 abre sem decisão de
+  frete** e precisa de um ADR novo — não é retomar aquele. O número 0006 foi reaproveitado
+  por [Promoções por tempo limitado](0006-promocoes-por-tempo-limitado.md) em 2026-10-23;
+  referências a "ADR-0006" em commits ou docs anteriores a essa data falam de frete, não de
+  promoções.
 
 ## Adendo — auditoria de 2026-08-27
 

@@ -117,7 +117,7 @@ Enquanto a v1.2 é construída, **a v1.1 continua no ar vendendo**. Consequênci
 | [#41](https://trello.com/c/qy8cc64S) — documentar regras de comportamento | **Promovido** — os E2E do item 1 *são* essa documentação, executável. |
 | [#13](https://trello.com/c/9Wmoxfun) — SPEC das regras de adicionais | Independe de framework. Entra se sobrar espaço; senão, v1.3. |
 | [#30](https://trello.com/c/rs4YzbD4) — diálogo como bottom sheet no mobile | **Adiado.** D5 reescreve o diálogo; mexer no visual antes seria retrabalho garantido. |
-| [#18](https://trello.com/c/cp3si14Y) — raio/cobertura de entrega | **Vai para v1.4** — já tem decisão aceita no [ADR-0006](adr/0006-frete-por-distancia.md). |
+| [#18](https://trello.com/c/cp3si14Y) — raio/cobertura de entrega | **Vai para v1.4** — e **sem decisão herdada**: a de 2026-07-06 (frete por distância, nunca mergeada) foi descartada em 2026-11-02. A v1.4 decide do zero, em ADR novo. |
 | [#3](https://trello.com/c/wd1RpfrY) — "lembrar meus dados" | **Adiado para v1.5**, quando a discussão de conta de cliente for real. |
 
 ## Fora do escopo
@@ -125,7 +125,7 @@ Enquanto a v1.2 é construída, **a v1.1 continua no ar vendendo**. Consequênci
 Explicitamente **não** entram na v1.2, mesmo que tentador durante a migração:
 
 - Pagamento online, carrinho persistido no servidor, pedidos em banco.
-- Sistema de entregas, geocoding, cálculo de frete (**v1.4**, ADR-0006).
+- Sistema de entregas, geocoding, cálculo de frete (**v1.4**).
 - Produtos vindos de banco/CMS — seguem em `products.ts` (**v1.3**).
 - Painel administrativo, autenticação, controle de estoque.
 - Canal de contato dentro do checkout, política de estorno/troca (**v1.5**, com apoio
@@ -137,7 +137,7 @@ Explicitamente **não** entram na v1.2, mesmo que tentador durante a migração:
 | Versão | Entrega | Observação |
 |---|---|---|
 | **v1.3** | Produtos saem do TS para banco/CMS; **preço autoritativo no servidor**; feed estruturado | Invisível para o cliente. Pré-requisito de segurança da v1.5: o servidor precisa recalcular o preço, nunca confiar no que vem do navegador. |
-| **v1.4** | Entregas: endereço, distância viária, taxa, cobertura, agenda | A mais complexa. Decisão já aceita no [ADR-0006](adr/0006-frete-por-distancia.md) (proxy `/api/frete` + geocoder), que na v1.2 vira Route Handler nativo. |
+| **v1.4** | Entregas: endereço, distância viária, taxa, cobertura, agenda | A mais complexa, e **sem decisão aceita**: a anterior (proxy `/api/frete` + geocoder, 2026-07-06) foi descartada em 2026-11-02 por ter envelhecido antes de ser implementada. Abre com ADR novo; a v1.2 deixa pronto o Route Handler nativo, se ele for o caminho. |
 | **v1.5** | Pagamento online (Pix + cartão), pedido persistido, notificação ao lojista; WhatsApp vira suporte | Exige decisões ainda em aberto: estoque, operação dos pedidos, termos de serviço e política de estorno (com advogado). |
 
 **Por que o SEO vem primeiro:** a v1.2 vai ao ar sozinha, com **uma variável mudando**. Se
