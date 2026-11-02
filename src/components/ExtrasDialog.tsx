@@ -11,6 +11,7 @@ import {
   EXTRAS_PRICES,
   extrasTotal,
   basePrice,
+  baseImage,
   polaroidesMax,
   polaroidesPrice,
 } from "../data/products";
@@ -468,7 +469,7 @@ export default function ExtrasDialog({
 
   const extrasCost = extrasTotal(extras, product);
   const price = basePrice(product, variant); // preço-base da variante escolhida (ADR-0005)
-  const media = variant?.image ?? product.image; // variante pode trocar a mídia
+  const media = baseImage(product, variant); // variante ou promoção podem trocar a mídia
   const showBalao = !product.hideBalao; // item que não oferece balão como adicional
   const showPlaquinha = !product.hidePlaquinha; // item que não oferece plaquinha como adicional
   const showCartao = !product.hideCartao; // item que não oferece cartão como adicional

@@ -3,6 +3,7 @@ import {
   Product,
   CATEGORY_LABELS,
   priceFrom,
+  baseImage,
   activePromo,
   promoDaysLeft,
   promoDiscountPct,
@@ -37,7 +38,6 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
     name,
     description,
     category,
-    image,
     featured,
     inStock = true,
     note,
@@ -50,6 +50,8 @@ export default function ProductCard({ product, onOpenExtras }: Props) {
   // vira referência riscada. `displayPrice` já é o promocional.
   const promo = activePromo(product);
   const dias = promo ? promoDaysLeft(promo) : 0;
+  // A promoção pode trazer imagem própria, que volta à normal sozinha no fim.
+  const image = baseImage(product);
 
   const handleAdd = () => {
     if (

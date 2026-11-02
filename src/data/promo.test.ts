@@ -3,6 +3,7 @@ import {
   Product,
   activePromo,
   basePrice,
+  baseImage,
   priceFrom,
   promoDaysLeft,
   promoDiscountPct,
@@ -70,4 +71,43 @@ test("promoDiscountPct: arredonda para inteiro", () => {
 
 test("todayISO: formata YYYY-MM-DD no calendário local", () => {
   expect(todayISO(new Date(2026, 9, 5))).toBe("2026-10-05");
+});
+
+// ─── Imagem da promoção ──────────────────────────────────────────────────────
+
+const comImagem: Product = {
+  ...base,
+  promo: {
+    price: 8990,
+    expiresAt: "2026-11-21",
+    image: "/images/x-promo.jpeg",
+  },
+};
+
+test("baseImage: promoção ativa usa a imagem da campanha", () => {
+  expect(baseImage(comImagem, null, "2026-11-02")).toBe("/images/x-promo.jpeg");
+});
+
+test("baseImage: promoção vencida volta à imagem do produto, sem edição manual", () => {
+  expect(baseImage(comImagem, null, "2026-11-22")).toBe("/images/x.jpeg");
+});
+
+test("baseImage: promo sem imagem própria mantém a do produto", () => {
+  expect(baseImage(comPromo, null, "2026-10-23")).toBe("/images/x.jpeg");
+});
+
+test("baseImage: imagem da variante vence a da promoção", () => {
+  const comVariantes: Product = {
+    ...comImagem,
+    variants: [
+      { id: "a", label: "A", price: 7990, image: "/images/variante-a.jpeg" },
+    ],
+  };
+  expect(
+    baseImage(comVariantes, comVariantes.variants![0], "2026-11-02"),
+  ).toBe("/images/variante-a.jpeg");
+});
+
+test("baseImage: sem promo e sem variante é a imagem do produto", () => {
+  expect(baseImage(base, null, "2026-11-02")).toBe("/images/x.jpeg");
 });
