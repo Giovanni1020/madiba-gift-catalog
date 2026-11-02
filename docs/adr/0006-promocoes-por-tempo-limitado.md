@@ -6,6 +6,15 @@
   [`products.ts`](../../src/data/products.ts). Migração para Next.js em andamento
   ([ADR-0009](0009-migracao-nextjs.md)) — nada aqui depende de CRA.
 
+> **Nota de numeração:** o `0006` esteve **reservado** de 2026-07-06 a 2026-11-02 para uma
+> decisão de *frete por distância* que vivia só na branch `feat/frete-distancia`, fora da
+> `main` — por isso o índice pulava de 0005 para 0007, e por isso o
+> [ADR-0008](0008-conversoes-google-ads.md) traz uma nota explicando o salto. Essa decisão
+> foi descartada (feature obsoleta antes de ser implementada; branch apagada, commit na tag
+> local `arquivo/frete-distancia-obsoleto`) e o número ficou com este ADR. **Referência a
+> "ADR-0006" anterior a 2026-10-23 fala de frete, não de promoções** — inclusive o commit
+> `docs(frete): troca provedor do ADR-0006 para Google Maps`.
+
 ## Contexto
 
 A loja quer baixar o preço de **um** item por um período curto e anunciar isso na vitrine.

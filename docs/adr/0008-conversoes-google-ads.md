@@ -6,8 +6,12 @@
 - **Relacionado:** [ADR-0003](0003-rastreamento-meta-pixel.md) (Meta Pixel) — este ADR reusa
   o mesmo desenho de módulo e o mesmo fluxo de consentimento.
 
-> **Nota de numeração:** não existe ADR-0006 neste repo (nem no índice). Este ADR pula para
-> `0008` de propósito, para não reaproveitar um número que possa ter sido usado e descartado.
+> **Nota de numeração:** este ADR pula para `0008` de propósito. Quando foi escrito, o `0006`
+> estava ocupado por uma decisão de frete que vivia fora da `main` (branch
+> `feat/frete-distancia`) e o `0007` já existia, então pular evitava reaproveitar um número
+> em uso. Aquela decisão de frete foi **descartada em 2026-11-02** e o `0006` hoje é
+> [Promoções por tempo limitado](0006-promocoes-por-tempo-limitado.md) — ver a nota de
+> numeração lá. O `0008` permanece: renumerar ADR aceito só move o problema.
 
 ## Contexto
 
