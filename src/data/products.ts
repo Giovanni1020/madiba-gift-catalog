@@ -17,7 +17,8 @@ export interface ProductVariant {
 // de validade (inclusive), em ISO `YYYY-MM-DD` para comparação segura.
 export interface ProductPromo {
   price: number; // em centavos BRL, ex: 8990 = R$89,90
-  expiresAt: string; // ISO date, ex: "2026-10-31"
+  expiresAt: string; // ISO date, ex: "2026-11-21"
+  image?: string; // opcional: imagem só da campanha; expira junto com a promoção
 }
 
 export interface Product {
@@ -181,6 +182,19 @@ export function basePrice(
   return variant?.price ?? activePromo(product, today)?.price ?? product.price;
 }
 
+// Ponto único de verdade da imagem: variante > promoção > produto. Usar SEMPRE em
+// vez de `product.image` (card, carrinho, diálogo), senão a imagem da campanha
+// aparece num lugar e não no outro — ou sobrevive ao fim da promoção.
+export function baseImage(
+  product: Product,
+  variant?: ProductVariant | null,
+  today: string = todayISO(),
+): string {
+  return (
+    variant?.image ?? activePromo(product, today)?.image ?? product.image
+  );
+}
+
 // Preço "a partir de" para o card: a menor variante, ou o próprio price quando não há.
 export function priceFrom(product: Product, today: string = todayISO()): number {
   if (!product.variants?.length)
@@ -318,6 +332,11 @@ export const PRODUCTS: Product[] = [
     image: "/images/buque-5-rosas-nacionais.jpeg",
     maxChocolates: 5,
     note: "Obs: a embalagem/folhagem podem variar.",
+    promo: {
+      price: 8990,
+      expiresAt: "2026-11-21",
+      image: "/images/buque-5-rosas-nacionais-promo.jpeg",
+    },
   },
   {
     id: 41,

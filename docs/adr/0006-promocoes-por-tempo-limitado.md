@@ -107,3 +107,27 @@ filtro ativo esconde o item em promoção.
   anunciado no card. Um item promocional pode mudar de faixa de preço durante a promoção.
 - Promoção com variantes fica pendente de decisão (D4). Se for preciso, o caminho é promoção
   **por variante**, não por produto.
+
+## Adendo — 2026-11-02: imagem própria da promoção
+
+A primeira campanha (Buquê 5 Rosas Nacionais, 23–31/10) usou uma imagem de divulgação com
+selo de desconto. Ao vencer, a promoção se desligou sozinha como previsto, **mas a imagem
+não** — ela morava em `product.image` e precisou de edição manual (troca do arquivo e da
+referência) depois do fim. Dado morto que exige intervenção humana é exatamente o que D1
+tentou evitar no preço.
+
+**D9 — `ProductPromo` ganha `image?`.** A imagem da campanha vive dentro de `promo`, então
+expira com ela. `product.image` volta a valer sozinho, sem deploy de limpeza.
+
+**D10 — `baseImage(product, variant, today)` é o ponto único de verdade da imagem**, espelhando
+o `basePrice` de D3. Precedência **variante > promoção > produto**, a mesma do preço. Usar
+`product.image` direto volta a ser erro: a imagem da campanha apareceria no card e não no
+diálogo, ou sobreviveria ao fim da promoção em um dos dois. Os três consumidores
+(`ProductCard`, `CartDrawer`, `ExtrasDialog`) passam por ele.
+
+Consequência aceita: um item no carrinho desde antes do vencimento tem a miniatura trocada
+quando a promoção cai, porque `baseImage` recalcula no render. É o mesmo comportamento do
+preço (D3) — e o preço é o que importa estar coerente com o que o cliente vai pagar.
+
+`promo.image` não cobre `video`: nenhuma campanha pediu vídeo próprio ainda, e um segundo
+campo opcional sem caso de uso é especulação.

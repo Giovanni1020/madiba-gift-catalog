@@ -4,6 +4,7 @@ import {
   CHOCOLATE_OPTIONS,
   EXTRAS_PRICES,
   basePrice,
+  baseImage,
   polaroidesPrice,
 } from "../data/products";
 import "./CartDrawer.css";
@@ -156,7 +157,7 @@ export default function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                 <li key={index} className="cart-item">
                   <div className="cart-item__img-wrap">
                     <img
-                      src={product.image}
+                      src={baseImage(product, variant)}
                       alt={product.name}
                       className="cart-item__img"
                       onError={(e) => {
