@@ -8,9 +8,13 @@
   padding: 11px 16px;
   margin-bottom: 20px;
   display: flex;
-  align-items: center;
+  /* A faixa é uma frase, não uma fileira de chips: o espaço entre as partes
+     tem que ler como espaço de palavra (~4px nesse corpo), não como gap de
+     layout. E `baseline` em vez de `center` porque a meta é menor — centrada,
+     ela flutuava acima da linha do texto. */
+  align-items: baseline;
   flex-wrap: wrap;
-  gap: 4px 10px;
+  gap: 4px 6px;
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
 }
@@ -37,6 +41,6 @@
   .promo-banner {
     padding: 10px 12px;
     margin-bottom: 12px;
-    gap: 2px 8px;
+    gap: 2px 6px;
   }
 }
