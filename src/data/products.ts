@@ -1,6 +1,11 @@
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type Category = "buques" | "buques-cetim" | "cestas" | "doces";
+export type Category =
+  | "buques"
+  | "buques-cetim"
+  | "cestas"
+  | "doces"
+  | "misc";
 
 // Variante de um produto (ADR-0005): opção mutuamente exclusiva escolhida no diálogo.
 // Carrega preço ABSOLUTO (não delta) e pode sobrepor a imagem e o nº de chocolates.
@@ -141,6 +146,7 @@ const POLAROIDES_MAX_BY_CATEGORY: Record<Category, number> = {
   "buques-cetim": 3,
   cestas: 0,
   doces: 0,
+  misc: 0,
 };
 
 // Limite de fotos do produto. 0 = o produto não oferece polaroides.
@@ -256,12 +262,28 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   "buques-cetim": "Buquês Doce",
   cestas: "Cestas",
   doces: "Doces",
+  misc: "Diversos",
 };
 
 // ─── Products ────────────────────────────────────────────────────────────────
 
 export const PRODUCTS: Product[] = [
   // ── Buquês ───────────────────────────────────────────────────────────────
+  // O combo abre a lista de propósito: `featured` o põe logo depois da promoção
+  // ativa (ver rank() em useFilter), e entre os "Popular" vale a ordem daqui —
+  // ser o primeiro deles é o que o deixa em 2º na vitrine, ao lado da promo.
+  {
+    id: 54,
+    name: "Combo Pelúcia + Buquê 5 Rosas",
+    description:
+      "Buquê com 5 rosas vermelhas, mosquitinho e folhagem, embrulho temático com laço, acompanhado de uma pelúcia.",
+    price: 12990,
+    category: "buques",
+    image: "/images/combo-pelucia-buque-5-rosas-nacionais.jpeg",
+    featured: true,
+    maxChocolates: 6,
+    note: "Obs: a pelúcia pode variar. A embalagem/folhagem podem variar.",
+  },
   {
     id: 40,
     name: "Buquê 1 Rosa Importada",
@@ -841,6 +863,17 @@ export const PRODUCTS: Product[] = [
     exclusiveExtras: true,
     hideBalao: true,
   },
+  {
+    id: 57,
+    name: "Caixa Coração MDF",
+    description:
+      "Bandeja de coração em MDF com 10 bombons sortidos, embalada com celofane e laço.",
+    price: 4490,
+    category: "cestas",
+    image: "/images/caixa-coracao.jpeg",
+    hideBalao: true, // adicional: apenas cartão
+    hidePlaquinha: true,
+  },
 
   // ── Doces ────────────────────────────────────────────────────────────────
   {
@@ -866,5 +899,23 @@ export const PRODUCTS: Product[] = [
     price: 4990,
     category: "doces",
     image: "/images/ferrero_8U.jpeg",
+  },
+
+  // ── Diversos ─────────────────────────────────────────────────────────────
+  {
+    id: 55,
+    name: "Pelúcia 20cm",
+    description: "Pelúcia de 20cm, consulte a disponibilidade no WhatsApp",
+    price: 4000,
+    category: "misc",
+    image: "/images/pelucia-1.jpeg",
+  },
+  {
+    id: 56,
+    name: "Pelúcia 30cm",
+    description: "Pelúcia de 30cm, consulte a disponibilidade no WhatsApp",
+    price: 5000,
+    category: "misc",
+    image: "/images/pelucia-2.jpeg",
   },
 ];

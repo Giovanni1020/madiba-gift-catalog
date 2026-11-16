@@ -3,7 +3,7 @@ import { CATEGORY_LABELS, Category } from "../data/products";
 import { PriceRange, SortOrder } from "../hooks/useFilter";
 import "./FilterBar.css";
 
-const CATEGORIES: Array<Category | "todos"> = ["todos", "buques", "buques-cetim", "cestas", "doces"];
+const CATEGORIES: Array<Category | "todos"> = ["todos", "buques", "buques-cetim", "cestas", "doces", "misc"];
 
 interface Props {
   category: Category | "todos";
