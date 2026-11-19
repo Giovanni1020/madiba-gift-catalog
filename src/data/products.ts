@@ -269,9 +269,9 @@ export const CATEGORY_LABELS: Record<Category, string> = {
 
 export const PRODUCTS: Product[] = [
   // ── Buquês ───────────────────────────────────────────────────────────────
-  // O combo abre a lista de propósito: `featured` o põe logo depois da promoção
-  // ativa (ver rank() em useFilter), e entre os "Popular" vale a ordem daqui —
-  // ser o primeiro deles é o que o deixa em 2º na vitrine, ao lado da promo.
+  // Os combos abrem a lista de propósito: `featured` os põe logo depois da
+  // promoção ativa (ver rank() em useFilter), e entre os "Popular" vale a ordem
+  // daqui — serem os primeiros é o que os mantém no topo da vitrine, juntos.
   {
     id: 54,
     name: "Combo Pelúcia + Buquê 5 Rosas",
@@ -280,6 +280,18 @@ export const PRODUCTS: Product[] = [
     price: 12990,
     category: "buques",
     image: "/images/combo-pelucia-buque-5-rosas-nacionais.jpeg",
+    featured: true,
+    maxChocolates: 6,
+    note: "Obs: a pelúcia pode variar. A embalagem/folhagem podem variar.",
+  },
+  {
+    id: 58,
+    name: "Combo Pelúcia + Buquê 2 Girassóis",
+    description:
+      "Buquê com 2 girassóis, mosquitinho, solidago e folhagem, embrulho temático com laço, acompanhado de uma pelúcia.",
+    price: 9990,
+    category: "buques",
+    image: "/images/combo-pelucia-buque-2-girassois.jpeg",
     featured: true,
     maxChocolates: 6,
     note: "Obs: a pelúcia pode variar. A embalagem/folhagem podem variar.",
