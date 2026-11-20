@@ -34,6 +34,9 @@ const HORARIOS = Array.from({ length: 9 }, (_, i) => `${9 + i}h às ${10 + i}h`)
 // dias esse horário nem aparece na lista (ver horariosVisiveis).
 const HORARIO_SO_SABADO = "12h às 13h";
 
+// Todas as janelas que começam antes das 15h (9h às 10h … 14h às 15h).
+const HORARIOS_ANTES_DAS_15H = HORARIOS.filter((h) => parseInt(h, 10) < 15);
+
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
 // em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
 // Separado por tipo: entrega e retirada têm restrições independentes.
@@ -43,25 +46,14 @@ const HORARIOS_INVALIDOS: Record<
 > = {
   // Ex.: loja sem disponibilidade no começo do dia em 12/06/2026 (só entrega).
   entrega: {
-    "2026-10-20": [
-      "9h às 10h",
-      "10h às 11h",
-      "11h às 12h",
-      "12h às 13h",
-      "13h às 14h",
-      "14h às 15h",
-    ],
+    "2026-10-20": [...HORARIOS_ANTES_DAS_15H],
+    // 20/11/2026: sem atendimento antes das 15h (entrega e retirada).
+    "2026-11-20": [...HORARIOS_ANTES_DAS_15H],
   },
   // Retirada mantém a lógica, mas sem horários inválidos por enquanto.
   retirada: {
-    "2026-10-20": [
-      "9h às 10h",
-      "10h às 11h",
-      "11h às 12h",
-      "12h às 13h",
-      "13h às 14h",
-      "14h às 15h",
-    ],
+    "2026-10-20": [...HORARIOS_ANTES_DAS_15H],
+    "2026-11-20": [...HORARIOS_ANTES_DAS_15H],
   },
 };
 
@@ -266,7 +258,9 @@ export default function Checkout({ form, onClose, onSent }: CheckoutProps) {
       {items.length > 0 && (
         <ul className="checkout__items">
           {items.map((item, i) => {
-            const extras = item.extras ? extrasTotal(item.extras, item.product) : 0;
+            const extras = item.extras
+              ? extrasTotal(item.extras, item.product)
+              : 0;
             const unit = basePrice(item.product, item.variant) + extras;
             return (
               <li key={i} className="checkout__item">
