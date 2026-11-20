@@ -37,6 +37,9 @@ const HORARIO_SO_SABADO = "12h às 13h";
 // Todas as janelas que começam antes das 15h (9h às 10h … 14h às 15h).
 const HORARIOS_ANTES_DAS_15H = HORARIOS.filter((h) => parseInt(h, 10) < 15);
 
+// Todas as janelas que começam antes das 12h (9h às 10h … 11h às 12h).
+const HORARIOS_ANTES_DAS_12H = HORARIOS.filter((h) => parseInt(h, 10) < 12);
+
 // "Modo inválido": horários que aparecem na lista, mas NÃO podem ser escolhidos
 // em datas específicas (data ISO yyyy-mm-dd → conjunto de horários bloqueados).
 // Separado por tipo: entrega e retirada têm restrições independentes.
@@ -49,11 +52,14 @@ const HORARIOS_INVALIDOS: Record<
     "2026-10-20": [...HORARIOS_ANTES_DAS_15H],
     // 20/11/2026: sem atendimento antes das 15h (entrega e retirada).
     "2026-11-20": [...HORARIOS_ANTES_DAS_15H],
+    // 21/11/2026: sem atendimento antes das 12h (entrega e retirada).
+    "2026-11-21": [...HORARIOS_ANTES_DAS_12H],
   },
   // Retirada mantém a lógica, mas sem horários inválidos por enquanto.
   retirada: {
     "2026-10-20": [...HORARIOS_ANTES_DAS_15H],
     "2026-11-20": [...HORARIOS_ANTES_DAS_15H],
+    "2026-11-21": [...HORARIOS_ANTES_DAS_12H],
   },
 };
 
