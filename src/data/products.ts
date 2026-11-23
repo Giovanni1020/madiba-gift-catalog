@@ -1,11 +1,6 @@
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type Category =
-  | "buques"
-  | "buques-cetim"
-  | "cestas"
-  | "doces"
-  | "misc";
+export type Category = "buques" | "buques-cetim" | "cestas" | "doces" | "misc";
 
 // Variante de um produto (ADR-0005): opção mutuamente exclusiva escolhida no diálogo.
 // Carrega preço ABSOLUTO (não delta) e pode sobrepor a imagem e o nº de chocolates.
@@ -196,13 +191,14 @@ export function baseImage(
   variant?: ProductVariant | null,
   today: string = todayISO(),
 ): string {
-  return (
-    variant?.image ?? activePromo(product, today)?.image ?? product.image
-  );
+  return variant?.image ?? activePromo(product, today)?.image ?? product.image;
 }
 
 // Preço "a partir de" para o card: a menor variante, ou o próprio price quando não há.
-export function priceFrom(product: Product, today: string = todayISO()): number {
+export function priceFrom(
+  product: Product,
+  today: string = todayISO(),
+): number {
   if (!product.variants?.length)
     return activePromo(product, today)?.price ?? product.price;
   return Math.min(...product.variants.map((v) => v.price));
@@ -250,7 +246,10 @@ export function promoDaysLeft(
 }
 
 // Desconto em pontos percentuais inteiros (para o selo "-10%").
-export function promoDiscountPct(product: Product, promo: ProductPromo): number {
+export function promoDiscountPct(
+  product: Product,
+  promo: ProductPromo,
+): number {
   if (product.price <= 0) return 0;
   return Math.round((1 - promo.price / product.price) * 100);
 }
@@ -368,7 +367,7 @@ export const PRODUCTS: Product[] = [
     note: "Obs: a embalagem/folhagem podem variar.",
     promo: {
       price: 8990,
-      expiresAt: "2026-11-21",
+      expiresAt: "2026-11-30",
       image: "/images/buque-5-rosas-nacionais-promo.jpeg",
     },
   },
@@ -409,7 +408,7 @@ export const PRODUCTS: Product[] = [
     id: 59,
     name: "Buquê Van Gogh - Noite Estrelada",
     description:
-      "Buquê inspirado em \"A Noite Estrelada\", de Van Gogh, com embrulho temático da obra.",
+      'Buquê inspirado em "A Noite Estrelada", de Van Gogh, com embrulho temático da obra.',
     price: 7490,
     category: "buques",
     image: "/images/buque-van-gogh.jpeg",
