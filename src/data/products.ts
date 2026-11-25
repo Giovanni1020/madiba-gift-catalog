@@ -409,7 +409,7 @@ export const PRODUCTS: Product[] = [
     name: "Buquê Van Gogh - Noite Estrelada",
     description:
       'Buquê inspirado em "A Noite Estrelada", de Van Gogh, com embrulho temático da obra.',
-    price: 7490,
+    price: 10490,
     category: "buques",
     image: "/images/buque-van-gogh.jpeg",
     maxChocolates: 6,
