@@ -634,6 +634,21 @@ export const PRODUCTS: Product[] = [
   },
 
   {
+    id: 60,
+    name: "Buquê Bailarina",
+    description:
+      "Buquê com flores e folhagem, embrulho temático com laço e bailarina decorativa.",
+    price: 4490,
+    category: "buques",
+    image: "/images/buque-bailarina.jpeg",
+    maxChocolates: 3,
+    hideBalao: true,
+    hidePlaquinha: true,
+    polaroidesMax: 3,
+    note: "Obs: consulte a disponibilidade. Podem haver pequenas mudanças na composição.",
+  },
+
+  {
     id: 22,
     name: "Cartão Buquê",
     description:
